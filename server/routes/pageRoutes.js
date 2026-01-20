@@ -1,60 +1,59 @@
-var express = require('express');
-var pageRoutes = express.Router();
-var path = require('path');
-var User = require('../models/user.js');
+const express = require('express');
+const router = express.Router();
+const path = require('path');
+const User = require('../models/user.js');
 
-pageRoutes.get('/login', function(req, res) {
-	var cookie = req.cookies; 
-	console.log(cookie);
-	if (req.isAuthenticated()&&cookie.userId&&cookie.username) {
-		
-    	User.findOne({$and:[{userId:{$eq:parseInt(cookie.userId)}},{username:{$eq:cookie.username}}]})
-	      .exec(function(err,userTime){
-			  console.log(userTime);
-	        if(err){
-	        	res.sendFile(path.join(__dirname, '../../client', 'login.html'));
-	        }
-	        else{
-	         	if(userTime.role==0){
-	         		res.redirect('admin');
-	         	}
-	         	else{
-	         		res.redirect('user');
-	         	}
-	        }
-	     });
-  	}
-  	else{
-  		res.sendFile(path.join(__dirname, '../../client', 'login.html'));
-  	}
-});
-pageRoutes.get('/user', function(req, res) {
-  res.sendFile(path.join(__dirname, '../../client', 'index.html'));
-});
-pageRoutes.get('/admin', function(req, res) {
-	var cookie = req.cookies; 
-	console.log(cookie);
-	if (req.isAuthenticated()&&cookie.userId&&cookie.username) {
-		console.log(req.isAuthenticated());
-    	User.findOne({$and:[{userId:{$eq:parseInt(cookie.userId)}},{username:{$eq:cookie.username}}]})
-	      .exec(function(err,userTime){
-	        if(err){
-	        	res.sendFile(path.join(__dirname, '../../client', 'login.html'));
-	        }
-	        else{
-	         	if(userTime.role==0){
-	         		res.sendFile(path.join(__dirname, '../../client', 'admin.html'));
-	         	}
-	         	else{
-	         		res.redirect('user');
-	         	}
-	        }
-	     });
-  	}
-  	else{
-  		res.sendFile(path.join(__dirname, '../../client', 'login.html'));
-  	}
-  
+/**
+ * Try to resolve an authenticated user from request cookies.
+ * Returns the user document or null.
+ */
+async function getUserFromCookies(req) {
+  try {
+    const cookies = req.cookies || {};
+    const { userId, username } = cookies;
+
+    if (!req.isAuthenticated() || !userId || !username) {
+      return null;
+    }
+
+    const id = Number.parseInt(userId, 10);
+    if (Number.isNaN(id)) {
+      return null;
+    }
+
+    const user = await User.findOne({ userId: id, username }).exec();
+    return user || null;
+  } catch (err) {
+    // keep failure silent here — caller will send login page
+    console.error('Error resolving user from cookies:', err);
+    return null;
+  }
+}
+
+router.get('/login', async (req, res) => {
+  const user = await getUserFromCookies(req);
+  if (user) {
+    // role === 0 is treated as admin (preserved from original)
+    return user.role === 0 ? res.redirect('admin') : res.redirect('user');
+  }
+
+  return res.sendFile(path.join(__dirname, '../../client', 'login.html'));
 });
 
-module.exports = pageRoutes;
+router.get('/user', (req, res) => {
+  return res.sendFile(path.join(__dirname, '../../client', 'index.html'));
+});
+
+router.get('/admin', async (req, res) => {
+  const user = await getUserFromCookies(req);
+  if (user) {
+    if (user.role === 0) {
+      return res.sendFile(path.join(__dirname, '../../client', 'admin.html'));
+    }
+    return res.redirect('user');
+  }
+
+  return res.sendFile(path.join(__dirname, '../../client', 'login.html'));
+});
+
+module.exports = router;
