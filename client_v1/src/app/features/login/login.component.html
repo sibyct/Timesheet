@@ -4,11 +4,7 @@
       <span> T </span>
     </div>
     <div class="title">Log in to your account</div>
-    <form
-      name="loginForm"
-      novalidate
-      ng-submit="$ctrl.loginBtnClick(loginForm)"
-    >
+    <form name="loginForm" novalidate ng-submit="$ctrl.submit(loginForm)">
       <md-input-container md-no-float class="md-dispaly-container">
         <input
           name="username"

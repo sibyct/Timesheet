@@ -1,0 +1,29 @@
+<div style="width: 200px; height: 100%" class="layout-column h-100">
+  <div style="background-color: #373c47; height: 65px"></div>
+  <div style="height: 3px; background-color: #20252d"></div>
+  <div class="flex" style="background-color: #2d323e">
+    <md-list flex>
+      <md-list-item
+        class="md-1-line"
+        ng-style="
+          selectedIndex == $index
+            ? { 'background-color': '#444852' }
+            : { 'background-color': '' }
+        "
+        ng-repeat="item in $ctrl.items track by $index"
+        ng-click="$ctrl.navClick(item,$index)"
+      >
+        <div class="layout-row">
+          <md-icon md-svg-src="../../../{{ item.imgUrl }}"></md-icon>
+          <div
+            style="padding-left: 5px; padding-top: 5px"
+            class="md-list-item-text admin-leftnav"
+            layout="column"
+          >
+            {{ item.name }}
+          </div>
+        </div>
+      </md-list-item>
+    </md-list>
+  </div>
+</div>

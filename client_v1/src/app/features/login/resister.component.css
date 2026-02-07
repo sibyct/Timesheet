@@ -1,0 +1,25 @@
+.left-potion {
+  width: 50%;
+  padding: 20px;
+  background-image: url("../../../images/timesheet.jpg");
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
+  -o-background-size: 100% 100%;
+  background-size: 100% 100%;
+}
+
+.registerForm {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.register-card {
+  width: 90%;
+}

@@ -7,4 +7,10 @@ import "angular-messages";
 
 import "./features/login/index";
 
-angular.module("app", ["ngRoute", "ngMaterial", "app.login", "ngMessages"]);
+angular.module("app", [
+  "ngRoute",
+  "ngMaterial",
+  "app.login",
+  "ngMessages",
+  "app.layout",
+]);
