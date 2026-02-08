@@ -13,13 +13,9 @@
         ng-repeat="item in $ctrl.items track by $index"
         ng-click="$ctrl.navClick(item,$index)"
       >
-        <div class="layout-row">
+        <div class="layout-row nav-list-item-container">
           <md-icon class="material-icons">{{ item.icon }}</md-icon>
-          <div
-            style="padding-left: 5px; padding-top: 5px"
-            class="md-list-item-text admin-leftnav"
-            layout="column"
-          >
+          <div class="md-list-item-text nav-list-item" layout="column">
             {{ item.name }}
           </div>
         </div>

@@ -9,27 +9,6 @@
     <md-card class="md-whiteframe-1dp register-card">
       <md-card-title class="text-center">Register</md-card-title>
       <md-card-content>
-        <!-- Username -->
-        <md-input-container class="md-block">
-          <label>Username</label>
-          <input
-            type="text"
-            name="username"
-            ng-model="$ctrl.user.username"
-            required
-            minlength="3"
-          />
-          <div
-            ng-messages="registerForm.username.$error"
-            ng-if="registerForm.username.$touched || registerForm.$submitted"
-          >
-            <div ng-message="required">Username is required</div>
-            <div ng-message="minlength">
-              Username must be at least 3 characters
-            </div>
-          </div>
-        </md-input-container>
-
         <!-- Email -->
         <md-input-container class="md-block">
           <label>Email</label>
@@ -69,19 +48,44 @@
           </div>
         </md-input-container>
 
+        <!-- Password -->
+        <md-input-container class="md-block">
+          <label>Re Enter Password</label>
+          <input
+            type="password"
+            name="reenterPassword"
+            ng-model="$ctrl.user.reenterPassword"
+            required
+            minlength="6"
+          />
+          <div
+            ng-messages="registerForm.reenterPassword.$error"
+            ng-if="
+              registerForm.reenterPassword.$touched || registerForm.$submitted
+            "
+          >
+            <div ng-message="required">Password is required</div>
+            <div ng-message="minlength">
+              Password must be at least 6 characters
+            </div>
+          </div>
+        </md-input-container>
+
         <!-- Error message -->
         <div ng-if="$ctrl.error" class="md-warn">
           {{ $ctrl.error }}
         </div>
 
         <!-- Submit -->
-        <md-button
-          type="submit"
-          class="md-raised md-primary"
-          ng-disabled="registerForm.$invalid"
-        >
-          Register
-        </md-button>
+        <mat-card-footer class="align-right">
+          <md-button
+            type="submit"
+            class="md-raised md-primary"
+            ng-disabled="registerForm.$invalid"
+          >
+            Register
+          </md-button>
+        </mat-card-footer>
       </md-card-content>
     </md-card>
   </form>

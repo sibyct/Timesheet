@@ -2,10 +2,7 @@
   width: 50%;
   padding: 20px;
   background-image: url("../../../images/timesheet.jpg");
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  -o-background-size: 100% 100%;
-  background-size: 100% 100%;
+  background-size: cover;
 }
 
 .registerForm {
@@ -22,4 +19,9 @@
 
 .register-card {
   width: 90%;
+}
+
+.align-right {
+  display: flex;
+  justify-content: flex-end;
 }

@@ -1,7 +1,16 @@
-import { Pool } from "pg";
+import mongoose from "mongoose";
 
-export const pool = new Pool({
-    connectionString: process.env.DB_URL,
-    max: 10,                        // max number of clients in the pool
-    idleTimeoutMillis: 30000,       // close idle clients after 30 seconds
-});
+const connectDB = async (): Promise<void> => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI as string);
+    console.log("MongoDB connected");
+  } catch (error) {
+    console.error("MongoDB connection error", error);
+    process.exit(1);
+  }
+};
+
+const disconnectDB = async (): Promise<void> => {
+  return mongoose.disconnect();
+};
+export { connectDB, disconnectDB };

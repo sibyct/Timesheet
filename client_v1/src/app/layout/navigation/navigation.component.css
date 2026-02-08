@@ -15,3 +15,17 @@
   height: 2px;
   background-color: #20252d;
 }
+
+.nav-list-item {
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+.nav-list-item-container {
+  color: white;
+  gap: 4px;
+}
+
+.nav-list-item-container md-icon {
+  color: white;
+}

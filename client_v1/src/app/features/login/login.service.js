@@ -10,6 +10,13 @@ class LoginService {
     });
   }
 
+  register(user) {
+    return this.http.post("/api/auth/register", {
+      emailAddress: user.email,
+      password: user.password,
+    });
+  }
+
   logout() {
     return this.http.post("/api/logout", {});
   }

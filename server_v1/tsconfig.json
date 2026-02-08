@@ -13,24 +13,12 @@
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {
-      "@configs/*": [
-        "configs/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@middleware/*": [
-        "middleware/*"
-      ],
-      "@modules/*": [
-        "modules/*"
-      ],
-      "@constants/*": [
-        "constants/*"
-      ]
+      "@configs/*": ["configs/*"],
+      "@utils/*": ["utils/*"],
+      "@middleware/*": ["middleware/*"],
+      "@modules/*": ["modules/*"],
+      "@constants/*": ["constants/*"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

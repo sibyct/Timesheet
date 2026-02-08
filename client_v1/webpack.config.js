@@ -13,6 +13,15 @@ module.exports = {
   devServer: {
     port: 4200,
     historyApiFallback: true,
+    proxy: [
+      {
+        context: ["/api"], // array of paths to proxy
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { "^/api": "/api" }, // optional
+      },
+    ],
   },
 
   module: {

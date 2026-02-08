@@ -2,15 +2,30 @@ import template from "./register.component.html";
 import "./resister.component.css";
 
 class RegisterController {
-  constructor() {
-    this.user = {};
-    this.error = "";
+  user = {
+    email: "",
+    password: "",
+    reenterPassword: "",
+  };
+  error = "";
+  constructor(loginService) {
+    this.loginService = loginService;
   }
-
-  submit(form) {
+  async submit(form) {
+    this.error = "";
+    if (this.user.password !== this.user.reenterPassword) {
+      this.error = "Passwords do not match";
+      return;
+    }
     // Stop if form is invalid
     if (form.$invalid) {
       return;
+    }
+
+    try {
+      await this.loginService.register(this.user);
+    } catch (error) {
+      this.error = "Registration failed. Please try again.";
     }
   }
 }
