@@ -21,8 +21,7 @@ class LoginController {
     try {
       const response = await this.loginService.submitLogin(this.login);
       this.loginService.saveToken(response.data.token);
-      this.$window.location.href =
-        this.$location.absUrl().split("/app")[0] + "/app/user";
+      this.$location.path("/dashboard");
     } catch (error) {
       form.password.$setValidity("wrongPassword", false);
     }

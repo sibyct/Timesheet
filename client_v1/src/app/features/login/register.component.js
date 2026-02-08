@@ -10,8 +10,9 @@ class RegisterController {
     lastName: "",
   };
   error = "";
-  constructor(loginService) {
+  constructor(loginService, $state) {
     this.loginService = loginService;
+    this.$state = $state;
   }
   async submit(form) {
     this.error = "";
@@ -26,6 +27,8 @@ class RegisterController {
 
     try {
       await this.loginService.register(this.user);
+      // Redirect to login page after successful registration
+      this.$state.go("login");
     } catch (error) {
       this.error = "Registration failed. Please try again.";
     }

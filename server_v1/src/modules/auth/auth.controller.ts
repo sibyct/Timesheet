@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { registerUser, loginUser } from "./auth.service";
-import { createError } from "../../middleware/error.middleware";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../constants/messages";
 import { STATUS_CODES } from "../../constants/statuscodes";
-
+import { AppError } from "../../errors/app.error";
 export const register = async (
   req: Request,
   res: Response,
@@ -31,7 +30,7 @@ export const login = async (
 
     if (!result) {
       return next(
-        createError(
+        new AppError(
           ERROR_MESSAGES.INVALID_CREDENTIALS,
           STATUS_CODES.UNAUTHORIZED,
         ),

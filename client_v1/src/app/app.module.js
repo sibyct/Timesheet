@@ -12,5 +12,6 @@ angular.module("app", [
   "ngMaterial",
   "app.login",
   "ngMessages",
+  "app.core",
   "app.layout",
 ]);
