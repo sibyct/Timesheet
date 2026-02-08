@@ -6,6 +6,8 @@ class RegisterController {
     email: "",
     password: "",
     reenterPassword: "",
+    firstName: "",
+    lastName: "",
   };
   error = "";
   constructor(loginService) {

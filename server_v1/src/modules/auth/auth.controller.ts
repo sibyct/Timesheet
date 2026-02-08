@@ -10,11 +10,11 @@ export const register = async (
   next: NextFunction,
 ) => {
   try {
-    const { emailAddress, password } = req.body;
-    const newUser = await registerUser(emailAddress, password);
+    const { emailAddress, password, firstName, lastName } = req.body;
+    await registerUser(emailAddress, password, firstName, lastName);
     res
       .status(STATUS_CODES.CREATED)
-      .json({ message: SUCCESS_MESSAGES.USER_CREATED, user: newUser });
+      .json({ message: SUCCESS_MESSAGES.USER_CREATED });
   } catch (err: any) {
     next(err);
   }

@@ -2,7 +2,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userSchema from "./auth.model";
 
-export const registerUser = async (emailAddress: string, password: string) => {
+export const registerUser = async (
+  emailAddress: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+) => {
   const existingUser = await userSchema
     .findOne({ emailAddress: emailAddress })
     .exec();
@@ -10,7 +15,12 @@ export const registerUser = async (emailAddress: string, password: string) => {
     throw new Error("Email already in use");
   }
   const hash = await bcrypt.hash(password, 10);
-  return userSchema.create({ emailAddress, password: hash });
+  return userSchema.create({
+    emailAddress,
+    password: hash,
+    firstName,
+    lastName,
+  });
 };
 
 export const loginUser = async (emailAddress: string, password: string) => {

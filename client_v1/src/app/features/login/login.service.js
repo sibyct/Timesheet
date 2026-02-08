@@ -14,6 +14,8 @@ class LoginService {
     return this.http.post("/api/auth/register", {
       emailAddress: user.email,
       password: user.password,
+      firstName: user.firstName,
+      lastName: user.lastName,
     });
   }
 
