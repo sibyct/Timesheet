@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userSchema from "./auth.model";
+import { AppError } from "../../errors/app.error";
+import { STATUS_CODES } from "../../constants/statuscodes";
 
 export const registerUser = async (
   emailAddress: string,
@@ -12,7 +14,7 @@ export const registerUser = async (
     .findOne({ emailAddress: emailAddress })
     .exec();
   if (existingUser) {
-    throw new Error("Email already in use");
+    throw new AppError("Email already in use", STATUS_CODES.CONFLICT);
   }
   const hash = await bcrypt.hash(password, 10);
   return userSchema.create({
