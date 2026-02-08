@@ -1,5 +1,5 @@
 import template from "./navigation.component.html";
-
+import "./navigation.component.css";
 class NavigationController {
   constructor($http, $window, $location) {}
   items = [

@@ -1,0 +1,17 @@
+.nav-container {
+  height: 100%;
+  width: 200px;
+}
+
+.nav-bg {
+  background-color: var(--nav-bg-color);
+}
+
+.nav-header-section {
+  height: 65px;
+}
+
+.nav-header-separator {
+  height: 2px;
+  background-color: #20252d;
+}
