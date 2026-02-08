@@ -5,11 +5,11 @@ class NavigationController {
   items = [
     {
       name: "User Management",
-      imgUrl: "images/userid.svg",
+      icon: "person",
     },
     {
       name: "Time Sheets",
-      imgUrl: "images/time.svg",
+      icon: "access_time",
     },
   ];
 }
