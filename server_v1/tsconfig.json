@@ -20,5 +20,5 @@
       "@constants/*": ["constants/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "types"]
 }

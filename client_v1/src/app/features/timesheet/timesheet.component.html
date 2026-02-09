@@ -1,12 +1,22 @@
 <div layout="column" layout-fill ng-clock>
-		<div class="md-whiteframe-8dp layout-row table-container" style="margin:10px;">
-			<div style="margin-top:25px;margin-left:20px;">Select Date</div>
-			<md-input-container style="margin:20px;">
-				<md-select ng-model="timesheet.startEndDate" ng-change = "timesheet.getDateInfoBetweenDates()" placeholder="Select Date">
-					<md-option ng-value="opt" ng-repeat="opt in timesheet.dates">{{ opt }}</md-option>
-				</md-select>
-			</md-input-container>
-		</div>
+  <div
+    class="md-whiteframe-8dp layout-row table-container"
+    style="margin: 10px"
+  >
+    <div style="margin-top: 25px; margin-left: 20px">Select Date</div>
+    <md-input-container style="margin: 20px">
+      <md-select
+        ng-model="timesheet.startEndDate"
+        ng-change="timesheet.getDateInfoBetweenDates()"
+        placeholder="Select Date"
+      >
+        <md-option ng-value="opt" ng-repeat="opt in timesheet.dates">{{
+          opt
+        }}</md-option>
+      </md-select>
+    </md-input-container>
+  </div>
+  <!--
 		<div class="md-whiteframe-13dp flex layout-column" style="margin:10px;">
 			<md-table-container>
 				<table md-table>
@@ -103,5 +113,5 @@
 					</md-button>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div> -->
+</div>

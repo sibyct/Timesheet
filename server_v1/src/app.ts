@@ -1,6 +1,7 @@
 import express from "express";
 import authRoutes from "./modules/auth/auth.routes";
 import { errorMiddleware } from "./middleware/error.middleware";
+import { requestIdMiddleware } from "./middleware/requestId.middleware";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import cors from "cors";
@@ -14,7 +15,11 @@ function initializeRoutes(app: express.Application) {
 }
 
 function initializeMiddleware(app: express.Application) {
-  app.use(express.json());
+  // Add request ID middleware
+  app.use(requestIdMiddleware);
+
+  // Parse JSON bodies with a size limit of 1mb
+  app.use(express.json({ limit: "1mb" }));
 
   app.use(helmet());
 
