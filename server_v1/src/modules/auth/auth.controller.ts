@@ -11,6 +11,7 @@ export const register = async (
   try {
     const { emailAddress, password, firstName, lastName } = req.body;
     await registerUser(emailAddress, password, firstName, lastName);
+
     res
       .status(STATUS_CODES.CREATED)
       .json({ message: SUCCESS_MESSAGES.USER_CREATED });

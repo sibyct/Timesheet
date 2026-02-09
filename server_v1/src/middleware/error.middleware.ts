@@ -39,6 +39,7 @@ export const errorMiddleware = (
       //userId: req.user?.id,
       err, // stack trace included automatically
     });
+
     return res
       .status(err.statusCode || STATUS_CODES.INTERNAL_SERVER_ERROR)
       .json(createAppError(err));
