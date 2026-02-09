@@ -1,0 +1,321 @@
+my-enterprise-app/
+├── .github/                      # GitHub specific files
+│   ├── workflows/                # CI/CD pipelines
+│   │   ├── ci.yml
+│   │   └── deploy.yml
+│   └── PULL_REQUEST_TEMPLATE.md
+│
+├── .husky/                       # Git hooks
+│   ├── pre-commit
+│   └── pre-push
+│
+├── public/                       # Static assets
+│   ├── favicon.ico
+│   ├── robots.txt
+│   └── manifest.json
+│
+├── src/
+│   │
+│   ├── core/                     # Core application logic
+│   │   ├── config/              # App configuration
+│   │   │   ├── app.config.ts
+│   │   │   ├── api.config.ts
+│   │   │   └── env.config.ts
+│   │   │
+│   │   ├── router/              # Routing configuration
+│   │   │   ├── index.tsx
+│   │   │   ├── routes.tsx
+│   │   │   ├── PrivateRoute.tsx
+│   │   │   ├── PublicRoute.tsx
+│   │   │   └── route.types.ts
+│   │   │
+│   │   ├── store/               # Global state management
+│   │   │   ├── index.ts
+│   │   │   ├── rootReducer.ts
+│   │   │   ├── store.types.ts
+│   │   │   └── hooks.ts         # useAppDispatch, useAppSelector
+│   │   │
+│   │   ├── providers/           # React context providers
+│   │   │   ├── AppProvider.tsx
+│   │   │   ├── ThemeProvider.tsx
+│   │   │   ├── AuthProvider.tsx
+│   │   │   └── QueryProvider.tsx
+│   │   │
+│   │   └── lib/                 # Third-party library setup
+│   │       ├── axios.ts
+│   │       ├── react-query.ts
+│   │       ├── i18n.ts
+│   │       └── analytics.ts
+│   │
+│   ├── modules/                  # Feature modules (domain-driven)
+│   │   │
+│   │   ├── auth/                # Authentication module
+│   │   │   ├── api/
+│   │   │   │   ├── auth.api.ts
+│   │   │   │   └── auth.endpoints.ts
+│   │   │   ├── components/
+│   │   │   │   ├── LoginForm/
+│   │   │   │   │   ├── LoginForm.tsx
+│   │   │   │   │   ├── LoginForm.styles.ts
+│   │   │   │   │   ├── LoginForm.test.tsx
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── RegisterForm/
+│   │   │   │   └── ForgotPassword/
+│   │   │   ├── hooks/
+│   │   │   │   ├── useAuth.ts
+│   │   │   │   ├── useLogin.ts
+│   │   │   │   └── useLogout.ts
+│   │   │   ├── pages/
+│   │   │   │   ├── LoginPage.tsx
+│   │   │   │   ├── RegisterPage.tsx
+│   │   │   │   └── ForgotPasswordPage.tsx
+│   │   │   ├── store/
+│   │   │   │   ├── auth.slice.ts
+│   │   │   │   ├── auth.selectors.ts
+│   │   │   │   └── auth.actions.ts
+│   │   │   ├── types/
+│   │   │   │   ├── auth.types.ts
+│   │   │   │   └── user.types.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── auth.utils.ts
+│   │   │   │   └── token.utils.ts
+│   │   │   ├── constants/
+│   │   │   │   └── auth.constants.ts
+│   │   │   └── index.ts         # Public API of the module
+│   │   │
+│   │   ├── dashboard/           # Dashboard module
+│   │   │   ├── api/
+│   │   │   ├── components/
+│   │   │   │   ├── DashboardHeader/
+│   │   │   │   ├── StatisticsCard/
+│   │   │   │   ├── RecentActivity/
+│   │   │   │   └── Charts/
+│   │   │   ├── hooks/
+│   │   │   ├── pages/
+│   │   │   │   └── DashboardPage.tsx
+│   │   │   ├── store/
+│   │   │   ├── types/
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── users/               # User management module
+│   │   │   ├── api/
+│   │   │   │   ├── users.api.ts
+│   │   │   │   └── users.endpoints.ts
+│   │   │   ├── components/
+│   │   │   │   ├── UserList/
+│   │   │   │   ├── UserCard/
+│   │   │   │   ├── UserForm/
+│   │   │   │   └── UserFilters/
+│   │   │   ├── hooks/
+│   │   │   │   ├── useUsers.ts
+│   │   │   │   ├── useUserById.ts
+│   │   │   │   ├── useCreateUser.ts
+│   │   │   │   ├── useUpdateUser.ts
+│   │   │   │   └── useDeleteUser.ts
+│   │   │   ├── pages/
+│   │   │   │   ├── UsersListPage.tsx
+│   │   │   │   ├── UserDetailsPage.tsx
+│   │   │   │   └── UserCreatePage.tsx
+│   │   │   ├── store/
+│   │   │   │   └── users.slice.ts
+│   │   │   ├── types/
+│   │   │   │   └── users.types.ts
+│   │   │   ├── utils/
+│   │   │   │   └── users.utils.ts
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── products/            # Products module
+│   │   ├── orders/              # Orders module
+│   │   ├── reports/             # Reports module
+│   │   ├── settings/            # Settings module
+│   │   └── notifications/       # Notifications module
+│   │
+│   ├── shared/                   # Shared resources
+│   │   │
+│   │   ├── components/          # Reusable components
+│   │   │   ├── ui/              # UI components (design system)
+│   │   │   │   ├── Button/
+│   │   │   │   │   ├── Button.tsx
+│   │   │   │   │   ├── Button.styles.ts
+│   │   │   │   │   ├── Button.test.tsx
+│   │   │   │   │   ├── Button.stories.tsx  # Storybook
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── Input/
+│   │   │   │   ├── Select/
+│   │   │   │   ├── Checkbox/
+│   │   │   │   ├── Radio/
+│   │   │   │   ├── Switch/
+│   │   │   │   ├── Modal/
+│   │   │   │   ├── Dialog/
+│   │   │   │   ├── Dropdown/
+│   │   │   │   ├── Tooltip/
+│   │   │   │   ├── Badge/
+│   │   │   │   ├── Card/
+│   │   │   │   ├── Tabs/
+│   │   │   │   ├── Accordion/
+│   │   │   │   ├── Alert/
+│   │   │   │   ├── Toast/
+│   │   │   │   ├── Spinner/
+│   │   │   │   ├── Skeleton/
+│   │   │   │   ├── Pagination/
+│   │   │   │   ├── Avatar/
+│   │   │   │   └── index.ts
+│   │   │   │
+│   │   │   ├── forms/           # Form components
+│   │   │   │   ├── FormField/
+│   │   │   │   ├── FormGroup/
+│   │   │   │   ├── FormError/
+│   │   │   │   ├── DatePicker/
+│   │   │   │   ├── TimePicker/
+│   │   │   │   ├── FileUpload/
+│   │   │   │   ├── RichTextEditor/
+│   │   │   │   └── index.ts
+│   │   │   │
+│   │   │   ├── layout/          # Layout components
+│   │   │   │   ├── AppLayout/
+│   │   │   │   │   ├── AppLayout.tsx
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── Header/
+│   │   │   │   ├── Sidebar/
+│   │   │   │   ├── Footer/
+│   │   │   │   ├── Container/
+│   │   │   │   ├── Grid/
+│   │   │   │   └── index.ts
+│   │   │   │
+│   │   │   ├── feedback/        # Feedback components
+│   │   │   │   ├── LoadingSpinner/
+│   │   │   │   ├── LoadingOverlay/
+│   │   │   │   ├── EmptyState/
+│   │   │   │   ├── ErrorBoundary/
+│   │   │   │   ├── ErrorFallback/
+│   │   │   │   └── index.ts
+│   │   │   │
+│   │   │   ├── data-display/    # Data display components
+│   │   │   │   ├── Table/
+│   │   │   │   ├── DataGrid/
+│   │   │   │   ├── List/
+│   │   │   │   ├── Timeline/
+│   │   │   │   ├── Tree/
+│   │   │   │   └── index.ts
+│   │   │   │
+│   │   │   └── navigation/      # Navigation components
+│   │   │       ├── Breadcrumbs/
+│   │   │       ├── Menu/
+│   │   │       ├── NavLink/
+│   │   │       ├── Stepper/
+│   │   │       └── index.ts
+│   │   │
+│   │   ├── hooks/               # Custom hooks
+│   │   │   ├── useDebounce.ts
+│   │   │   ├── useThrottle.ts
+│   │   │   ├── useLocalStorage.ts
+│   │   │   ├── useSessionStorage.ts
+│   │   │   ├── useMediaQuery.ts
+│   │   │   ├── useClickOutside.ts
+│   │   │   ├── useWindowSize.ts
+│   │   │   ├── useToggle.ts
+│   │   │   ├── useCopyToClipboard.ts
+│   │   │   ├── useEventListener.ts
+│   │   │   ├── usePrevious.ts
+│   │   │   ├── useInterval.ts
+│   │   │   ├── useTimeout.ts
+│   │   │   ├── useAsync.ts
+│   │   │   ├── useForm.ts
+│   │   │   ├── usePagination.ts
+│   │   │   ├── useInfiniteScroll.ts
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── utils/               # Utility functions
+│   │   │   ├── string/
+│   │   │   │   ├── capitalize.ts
+│   │   │   │   ├── truncate.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── number/
+│   │   │   │   ├── format.ts
+│   │   │   │   ├── currency.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── date/
+│   │   │   │   ├── format.ts
+│   │   │   │   ├── parse.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── array/
+│   │   │   │   ├── groupBy.ts
+│   │   │   │   ├── unique.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── object/
+│   │   │   │   ├── deepClone.ts
+│   │   │   │   ├── merge.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── validation/
+│   │   │   │   ├── email.ts
+│   │   │   │   ├── phone.ts
+│   │   │   │   ├── url.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── api/
+│   │   │   │   ├── request.ts
+│   │   │   │   ├── response.ts
+│   │   │   │   └── index.ts
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── constants/           # Application constants
+│   │   │   ├── api.constants.ts
+│   │   │   ├── app.constants.ts
+│   │   │   ├── route.constants.ts
+│   │   │   ├── validation.constants.ts
+│   │   │   ├── storage.constants.ts
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── types/               # Shared TypeScript types
+│   │   │   ├── api.types.ts
+│   │   │   ├── common.types.ts
+│   │   │   ├── entity.types.ts
+│   │   │   ├── form.types.ts
+│   │   │   ├── router.types.ts
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── schemas/             # Validation schemas
+│   │   │   ├── auth.schema.ts
+│   │   │   ├── user.schema.ts
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── styles/              # Global styles
+│   │   │   ├── theme/
+│   │   │   │   ├── colors.ts
+│   │   │   │   ├── typography.ts
+│   │   │   │   ├── spacing.ts
+│   │   │   │   ├── breakpoints.ts
+│   │   │   │   ├── shadows.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── global.css
+│   │   │   ├── reset.css
+│   │   │   └── variables.css
+│   │   │
+│   │   └── assets/              # Static assets
+│   │       ├── images/
+│   │       ├── icons/
+│   │       ├── fonts/
+│   │       └── animations/
+│   │
+│   ├── services/                # External services
+│   │   ├── api/
+│   │   │   ├── client.ts        # Axios instance
+│   │   │   ├── interceptors.ts
+│   │   │   └── endpoints.ts
+│   │   ├── storage/
+│   │   │   ├── localStorage.service.ts
+│   │   │   └── sessionStorage.service.ts
+│   │   ├── analytics/
+│   │   │   └── analytics.service.ts
+│   │   ├── notification/
+│   │   │   └── notification.service.ts
+│   │   ├── logger/
+│   │   │   └── logger.service.ts
+│   │   └── index.ts
+│   │
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── vite-env.d.ts
+│
+├── tests/                        # Test configuration
+│   ├── setup.ts
+│   ├── help
