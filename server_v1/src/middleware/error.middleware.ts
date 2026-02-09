@@ -22,6 +22,12 @@ export const errorMiddleware = (
   if (err instanceof ZodError) {
     // Format Zod errors
     const formattedErrors = ValidationErrorHandler(err);
+
+    logger.warn("Validation error", {
+      requestId: req.requestId,
+      errors: formattedErrors,
+      path: req.originalUrl,
+    });
     return res.status(STATUS_CODES.BAD_REQUEST).json(formattedErrors);
   }
 
@@ -37,6 +43,14 @@ export const errorMiddleware = (
       .status(err.statusCode || STATUS_CODES.INTERNAL_SERVER_ERROR)
       .json(createAppError(err));
   }
+
+  logger.error("Unhandled server error", {
+    requestId: req.requestId,
+    method: req.method,
+    path: req.originalUrl,
+    //userId: req.user?.id,
+    err, // stack trace included automatically
+  });
 
   // For non-AppError and non-ZodError, return a generic message
   const message = err instanceof Error ? err.message : "Internal Server Error";
