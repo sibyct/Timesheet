@@ -25,7 +25,7 @@ export const requestInterceptor = (
 
   // Log request in development
   if (import.meta.env.DEV) {
-    console.log("📤 API Request:", {
+    console.log("API Request:", {
       method: config.method?.toUpperCase(),
       url: config.url,
       data: config.data,
@@ -46,7 +46,7 @@ export const responseInterceptor = (response: AxiosResponse): AxiosResponse => {
 
   // Log response in development
   if (import.meta.env.DEV) {
-    console.log("✅ API Response:", {
+    console.log("API Response:", {
       method: response.config.method?.toUpperCase(),
       url: response.config.url,
       status: response.status,

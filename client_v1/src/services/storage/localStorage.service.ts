@@ -2,7 +2,7 @@
 
 class LocalStorageService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  set(key: string, value: any): void {
+  set<T>(key: string, value: T): void {
     try {
       const serializedValue = JSON.stringify(value);
       localStorage.setItem(key, serializedValue);
@@ -10,8 +10,7 @@ class LocalStorageService {
       console.error("Error setting item in localStorage", error);
     }
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get(key: string): any {
+  get<T = string>(key: string): T | null {
     try {
       const serializedValue = localStorage.getItem(key);
       if (serializedValue === null) {
@@ -39,6 +38,13 @@ class LocalStorageService {
       console.error("Error removing item from localStorage", error);
     }
   }
+  /**
+   * Check if key exists
+   */
+  has(key: string): boolean {
+    return localStorage.getItem(key) !== null;
+  }
 }
 
 export const storageService = new LocalStorageService();
+export default storageService;
