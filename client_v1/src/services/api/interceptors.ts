@@ -130,7 +130,7 @@ const handleUnauthorized = async (): Promise<void> => {
   storageService.remove(STORAGE_KEYS.REFRESH_TOKEN);
 
   // Redirect to login
-  window.location.href = "/login";
+  //window.location.href = "/login";
 
   // Optional: Try to refresh token
   // const refreshToken = storageService.get(STORAGE_KEYS.REFRESH_TOKEN)

@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
+import { UserDocument } from "./auth.types";
 export interface IUser extends Document {
   userId: string;
   firstName: string;

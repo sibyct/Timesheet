@@ -7,13 +7,10 @@ import {
   TextField,
   Button,
   Typography,
-  Checkbox,
-  FormControlLabel,
   Link,
   Alert,
   InputAdornment,
   IconButton,
-  FormHelperText,
 } from "@mui/material";
 import {
   Visibility,
@@ -27,7 +24,7 @@ import {
 } from "../../schemas/auth.schema";
 
 const RegisterForm: React.FC = () => {
-  const { register: registerUser, isLoading, error } = useRegister();
+  const { register: registerUser, isLoading, error, isError } = useRegister();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -38,11 +35,11 @@ const RegisterForm: React.FC = () => {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      firstName: "",
+      lastName: "",
+      emailAddress: "",
       password: "",
       confirmPassword: "",
-      acceptTerms: false,
     },
   });
 
@@ -53,7 +50,6 @@ const RegisterForm: React.FC = () => {
   return (
     <Box
       sx={{
-        width: "100%",
         maxWidth: 450,
         mx: "auto",
         p: 4,
@@ -85,36 +81,57 @@ const RegisterForm: React.FC = () => {
       </Box>
 
       {/* Error Alert */}
-      {error && (
+      {isError && (
         <Alert severity="error" sx={{ mb: 3 }}>
-          {error.toString()}
+          {error.response?.data?.message ||
+            error?.message ||
+            "An error occurred during registration. Please try again."}
         </Alert>
       )}
 
       {/* Form */}
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {/* Name Field */}
-        <Controller
-          name="name"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              fullWidth
-              label="Full Name"
-              type="text"
-              autoComplete="name"
-              autoFocus
-              error={!!errors.name}
-              helperText={errors.name?.message}
-              sx={{ mb: 2 }}
-            />
-          )}
-        />
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+          {/* Name Field */}
+          <Controller
+            name="firstName"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="First Name"
+                type="text"
+                autoComplete="given-name"
+                autoFocus
+                error={!!errors.firstName}
+                helperText={errors.firstName?.message}
+                sx={{ mb: 2 }}
+              />
+            )}
+          />
+          <Controller
+            name="lastName"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Last Name"
+                type="text"
+                autoComplete="family-name"
+                autoFocus
+                error={!!errors.lastName}
+                helperText={errors.lastName?.message}
+                sx={{ mb: 2 }}
+              />
+            )}
+          />
+        </Box>
 
         {/* Email Field */}
         <Controller
-          name="email"
+          name="emailAddress"
           control={control}
           render={({ field }) => (
             <TextField
@@ -123,8 +140,8 @@ const RegisterForm: React.FC = () => {
               label="Email Address"
               type="email"
               autoComplete="email"
-              error={!!errors.email}
-              helperText={errors.email?.message}
+              error={!!errors.emailAddress}
+              helperText={errors.emailAddress?.message}
               sx={{ mb: 2 }}
             />
           )}
@@ -191,44 +208,6 @@ const RegisterForm: React.FC = () => {
             />
           )}
         />
-
-        {/* Terms & Conditions */}
-        <Box sx={{ mb: 2 }}>
-          <Controller
-            name="acceptTerms"
-            control={control}
-            render={({ field }) => (
-              <>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      {...field}
-                      checked={field.value}
-                      color="primary"
-                    />
-                  }
-                  label={
-                    <Typography variant="body2">
-                      I accept the{" "}
-                      <Link
-                        component={RouterLink}
-                        to="/terms"
-                        underline="hover"
-                      >
-                        Terms and Conditions
-                      </Link>
-                    </Typography>
-                  }
-                />
-                {errors.acceptTerms && (
-                  <FormHelperText error>
-                    {errors.acceptTerms.message}
-                  </FormHelperText>
-                )}
-              </>
-            )}
-          />
-        </Box>
 
         {/* Submit Button */}
         <Button

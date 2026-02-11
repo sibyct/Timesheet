@@ -18,19 +18,19 @@ export const useLogin = () => {
     },
     onSuccess: (data) => {
       // Store tokens
-      storageService.set(STORAGE_KEYS.ACCESS_TOKEN, data.tokens.accessToken);
-      storageService.set(STORAGE_KEYS.REFRESH_TOKEN, data.tokens.refreshToken);
+      storageService.set(STORAGE_KEYS.ACCESS_TOKEN, data.accessToken);
+      // storageService.set(STORAGE_KEYS.REFRESH_TOKEN, data.tokens.refreshToken);
 
       // Update Redux state
       dispatch(loginSuccess(data.user));
 
       // Navigate to dashboard
-      navigate("/dashboard");
+      navigate("/register");
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       const errorMessage =
-        error.response?.data?.message || "Login failed. Please try again.";
+        error?.response?.data?.message || "Login failed. Please try again.";
       dispatch(loginFailure(errorMessage));
     },
   });

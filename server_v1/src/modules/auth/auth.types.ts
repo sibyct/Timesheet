@@ -1,3 +1,5 @@
+import { Schema, model, HydratedDocument } from "mongoose";
+
 export interface IUser {
   user_id: number;
   employee_id: number;
@@ -6,3 +8,5 @@ export interface IUser {
   role: string;
   is_active: boolean;
 }
+
+export type UserDocument = HydratedDocument<IUser>;

@@ -27,10 +27,14 @@ export const registerUser = async (
 
 export const loginUser = async (emailAddress: string, password: string) => {
   const user = await userSchema.findOne({ emailAddress: emailAddress }).exec();
-  if (!user) return null;
+  if (!user) {
+    throw new AppError("Invalid credentials", STATUS_CODES.UNAUTHORIZED);
+  }
 
   const match = await bcrypt.compare(password, user.password);
-  if (!match) return null;
+  if (!match) {
+    throw new AppError("Invalid credentials", STATUS_CODES.UNAUTHORIZED);
+  }
 
   const token = jwt.sign(
     { id: user.userId, role: user.role },

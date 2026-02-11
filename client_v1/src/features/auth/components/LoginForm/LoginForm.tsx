@@ -32,14 +32,16 @@ const LoginForm: React.FC = () => {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    mode: "onChange",
     defaultValues: {
-      email: "",
+      emailAddress: "",
       password: "",
       rememberMe: false,
     },
   });
 
   const onSubmit = (data: LoginFormData) => {
+    console.log("Form Data:", data);
     login(data);
   };
 
@@ -50,7 +52,6 @@ const LoginForm: React.FC = () => {
   return (
     <Box
       sx={{
-        width: "100%",
         maxWidth: 450,
         mx: "auto",
         p: 4,
@@ -92,7 +93,7 @@ const LoginForm: React.FC = () => {
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* Email Field */}
         <Controller
-          name="email"
+          name="emailAddress"
           control={control}
           render={({ field }) => (
             <TextField
@@ -102,8 +103,8 @@ const LoginForm: React.FC = () => {
               type="email"
               autoComplete="email"
               autoFocus
-              error={!!errors.email}
-              helperText={errors.email?.message}
+              error={!!errors.emailAddress}
+              helperText={errors.emailAddress?.message}
               sx={{ mb: 2 }}
             />
           )}
@@ -122,18 +123,20 @@ const LoginForm: React.FC = () => {
               autoComplete="current-password"
               error={!!errors.password}
               helperText={errors.password?.message}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleTogglePasswordVisibility}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{ mb: 2 }}
             />

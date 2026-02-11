@@ -3,6 +3,12 @@ import { registerUser, loginUser } from "./auth.service";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../constants/messages";
 import { STATUS_CODES } from "../../constants/statuscodes";
 import { AppError } from "../../errors/app.error";
+
+/**
+ * @desc    Register a new user
+ * @route   POST /api/auth/register
+ * @access  Public
+ */
 export const register = async (
   req: Request,
   res: Response,
@@ -20,27 +26,23 @@ export const register = async (
   }
 };
 
+/**
+ * @desc    Login user and return JWT token
+ * @route   POST /api/auth/login
+ * @access  Public
+ */
 export const login = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { username, password } = req.body;
-    const result = await loginUser(username, password);
-
-    if (!result) {
-      return next(
-        new AppError(
-          ERROR_MESSAGES.INVALID_CREDENTIALS,
-          STATUS_CODES.UNAUTHORIZED,
-        ),
-      );
-    }
+    const { emailAddress, password } = req.body;
+    const result = await loginUser(emailAddress, password);
 
     res
       .status(STATUS_CODES.OK)
-      .json({ message: SUCCESS_MESSAGES.LOGIN_SUCCESS, token: result.token });
+      .json({ user: result.user, token: result.token });
   } catch (err: any) {
     next(err);
   }

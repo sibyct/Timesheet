@@ -6,11 +6,11 @@ const LoginPage: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        height: "100%",
+        width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         py: 4,
       }}
     >

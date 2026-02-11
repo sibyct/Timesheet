@@ -16,17 +16,17 @@ export interface User {
 }
 
 export interface LoginCredentials {
-  email: string;
+  emailAddress: string;
   password: string;
   rememberMe?: boolean;
 }
 
 export interface RegisterData {
-  name: string;
-  email: string;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
   password: string;
   confirmPassword: string;
-  acceptTerms: boolean;
 }
 
 export interface AuthTokens {
@@ -36,7 +36,7 @@ export interface AuthTokens {
 
 export interface AuthResponse {
   user: User;
-  tokens: AuthTokens;
+  accessToken: string;
 }
 
 export interface AuthState {
