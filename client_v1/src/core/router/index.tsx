@@ -1,7 +1,20 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import LoginPage from "@/features/auth/pages/LoginPage";
-import RegisterPage from "@/features/auth/pages/RegisterPage";
 import { AppLayout } from "@/shared/layout/AppLayout/AppLayout";
+import { lazy,Suspense  } from "react";
+import { LoadingSpinner } from "@/shared/components/LoadingSpinner";
+
+const ProductsListPage = lazy(() => import('@/features/products/pages/ProductsListPage'))
+const ProductCreatePage = lazy(() => import('@/features/products/pages/ProductCreatePage'))
+const ProductDetailsPage = lazy(() => import('@/features/products/pages/ProductDetailsPage'))
+const ProductEditPage = lazy(() => import('@/features/products/pages/ProductEditPage'))
+const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'))
+const RegisterPage = lazy(() => import('@/features/auth/pages/RegisterPage'))
+
+const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<LoadingSpinner fullScreen />}>
+    {children}
+  </Suspense>
+)
 
 export const router = createBrowserRouter([
   {
@@ -11,39 +24,104 @@ export const router = createBrowserRouter([
 
   {
     path: "login",
-    element: <LoginPage />,
+    element: (
+    <SuspenseWrapper>
+      <LoginPage />
+      </SuspenseWrapper>
+    ),
   },
   {
     path: "register",
-    element: <RegisterPage />,
+    element:(
+    <SuspenseWrapper>
+      <RegisterPage />
+      </SuspenseWrapper>
+    ),
   },
   {
     path: "",
-    element: <AppLayout />,
+    element: (
+    <SuspenseWrapper>
+      <AppLayout />
+    </SuspenseWrapper>
+    ),
     children: [
       {
         path: "dashboard",
-        element: <div>Dashboard</div>,
+        element: (
+        <SuspenseWrapper>
+          <div>Dashboard</div>
+        </SuspenseWrapper>
+        ),
       },
       {
         path: "users",
-        element: <div>Users</div>,
+        element: (
+        <SuspenseWrapper>
+          <div>Users</div>
+        </SuspenseWrapper>
+        ),
       },
       {
-        path: "products",
-        element: <div>Products</div>,
+        path: '/products',
+        children: [
+          {
+            index: true,
+            element: (
+              <SuspenseWrapper>
+                <ProductsListPage />
+              </SuspenseWrapper>
+            ),
+          },
+          {
+            path: 'create',
+            element: (
+              <SuspenseWrapper>
+                <ProductCreatePage />
+              </SuspenseWrapper>
+            ),
+          },
+          {
+            path: ':id',
+            element: (
+              <SuspenseWrapper>
+                <ProductDetailsPage />
+              </SuspenseWrapper>
+            ),
+          },
+          {
+            path: ':id/edit',
+            element: (
+              <SuspenseWrapper>
+                <ProductEditPage />
+              </SuspenseWrapper>
+            ),
+          },
+        ],
       },
       {
-        path: "orders",
-        element: <div>Orders</div>,
+        path: "orders", 
+        element: (
+        <SuspenseWrapper>
+          <div>Orders</div>
+        </SuspenseWrapper>
+        ),
       },
       {
         path: "reports",
-        element: <div>Reports</div>,
+        element: (
+        <SuspenseWrapper>
+          <div>Reports</div>
+        </SuspenseWrapper>
+        ),
       },
       {
         path: "settings",
-        element: <div>Settings</div>,
+        element: (
+        <SuspenseWrapper>
+          <div>Settings</div>
+          </SuspenseWrapper>
+        ),
       },
     ],
   },

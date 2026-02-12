@@ -84,6 +84,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
       position="fixed"
       elevation={1}
       sx={{
+        borderRadius: 0,
         zIndex: (theme) => theme.zIndex.drawer + 1,
         ml: `${drawerWidth}px`,
         width: `calc(100% - ${drawerWidth}px)`,
