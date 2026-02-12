@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {
   Box,
   Typography,
@@ -12,7 +12,7 @@ import { useCreateProduct } from '../../hooks/useCreateProduct';
 import type { ProductFormData } from '../../schemas/product.schema';
 
 const ProductCreatePage: React.FC = () => {
-  const [snackbar, setSnackbar] = React.useState({
+  const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success' as 'success' | 'error',

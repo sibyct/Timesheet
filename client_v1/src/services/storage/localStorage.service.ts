@@ -1,7 +1,6 @@
 //storage service for localStorage management
 
 class LocalStorageService {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   set<T>(key: string, value: T): void {
     try {
       const serializedValue = JSON.stringify(value);

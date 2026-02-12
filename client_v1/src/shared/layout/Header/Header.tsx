@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -14,70 +14,71 @@ import {
   ListItemIcon,
   Tooltip,
   alpha,
-} from '@mui/material'
+} from "@mui/material";
 import {
   Menu as MenuIcon,
   Search as SearchIcon,
   Notifications as NotificationsIcon,
   Settings as SettingsIcon,
-  AccountCircle,
+  //AccountCircle,
   Logout,
   Person,
   Help,
   DarkMode,
   LightMode,
-} from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+} from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 //import { useAuth } from '@/features/auth/hooks/useAuth'
 
 interface HeaderProps {
-  onMenuClick: () => void
-  drawerWidth: number
+  onMenuClick: () => void;
+  drawerWidth: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   //const { user, logout } = useAuth()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [notificationAnchor, setNotificationAnchor] = useState<null | HTMLElement>(null)
-  const [darkMode, setDarkMode] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [notificationAnchor, setNotificationAnchor] =
+    useState<null | HTMLElement>(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleProfileMenuClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   const handleNotificationOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setNotificationAnchor(event.currentTarget)
-  }
+    setNotificationAnchor(event.currentTarget);
+  };
 
   const handleNotificationClose = () => {
-    setNotificationAnchor(null)
-  }
+    setNotificationAnchor(null);
+  };
 
   const handleLogout = () => {
-    handleProfileMenuClose()
+    handleProfileMenuClose();
     //  logout()
-    navigate('/login')
-  }
+    navigate("/login");
+  };
 
   const handleProfile = () => {
-    handleProfileMenuClose()
-    navigate('/profile')
-  }
+    handleProfileMenuClose();
+    navigate("/profile");
+  };
 
   const handleSettings = () => {
-    handleProfileMenuClose()
-    navigate('/settings')
-  }
+    handleProfileMenuClose();
+    navigate("/settings");
+  };
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
+    setDarkMode(!darkMode);
     // TODO: Implement theme toggle
-  }
+  };
 
   return (
     <AppBar
@@ -89,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
         ml: `${drawerWidth}px`,
         width: `calc(100% - ${drawerWidth}px)`,
         transition: (theme) =>
-          theme.transitions.create(['width', 'margin'], {
+          theme.transitions.create(["width", "margin"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),
@@ -112,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
           variant="h6"
           noWrap
           component="div"
-          sx={{ display: { xs: 'none', sm: 'block' } }}
+          sx={{ display: { xs: "none", sm: "block" } }}
         >
           Enterprise App
         </Typography>
@@ -120,28 +121,27 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
         {/* Search Bar */}
         <Box
           sx={{
-            position: 'relative',
+            position: "relative",
             borderRadius: 1,
-            backgroundColor: (theme) =>
-              alpha(theme.palette.common.white, 0.15),
-            '&:hover': {
+            backgroundColor: (theme) => alpha(theme.palette.common.white, 0.15),
+            "&:hover": {
               backgroundColor: (theme) =>
                 alpha(theme.palette.common.white, 0.25),
             },
             marginLeft: 3,
-            width: 'auto',
-            display: { xs: 'none', md: 'flex' },
+            width: "auto",
+            display: { xs: "none", md: "flex" },
           }}
         >
           <Box
             sx={{
               padding: (theme) => theme.spacing(0, 2),
-              height: '100%',
-              position: 'absolute',
-              pointerEvents: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              height: "100%",
+              position: "absolute",
+              pointerEvents: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <SearchIcon />
@@ -149,14 +149,14 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
           <InputBase
             placeholder="Search…"
             sx={{
-              color: 'inherit',
-              '& .MuiInputBase-input': {
+              color: "inherit",
+              "& .MuiInputBase-input": {
                 padding: (theme) => theme.spacing(1, 1, 1, 0),
                 paddingLeft: (theme) => `calc(1em + ${theme.spacing(4)})`,
-                transition: (theme) => theme.transitions.create('width'),
-                width: '20ch',
-                '&:focus': {
-                  width: '30ch',
+                transition: (theme) => theme.transitions.create("width"),
+                width: "20ch",
+                "&:focus": {
+                  width: "30ch",
                 },
               },
             }}
@@ -167,7 +167,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
         <Box sx={{ flexGrow: 1 }} />
 
         {/* Right Side Icons */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           {/* Dark Mode Toggle */}
           <Tooltip title="Toggle theme">
             <IconButton color="inherit" onClick={toggleDarkMode}>
@@ -205,12 +205,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
               size="small"
               sx={{ ml: 1 }}
             >
-              <Avatar
-                sx={{ width: 32, height: 32 }}
-                alt={'User'}
-                src={''}
-              >
-                {'U'}
+              <Avatar sx={{ width: 32, height: 32 }} alt={"User"} src={""}>
+                {"U"}
               </Avatar>
             </IconButton>
           </Tooltip>
@@ -223,14 +219,14 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
         open={Boolean(anchorEl)}
         onClose={handleProfileMenuClose}
         onClick={handleProfileMenuClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         PaperProps={{
           elevation: 3,
           sx: {
             mt: 1.5,
             minWidth: 200,
-            '& .MuiMenuItem-root': {
+            "& .MuiMenuItem-root": {
               px: 2,
               py: 1,
             },
@@ -239,10 +235,10 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
       >
         <Box sx={{ px: 2, py: 1.5 }}>
           <Typography variant="subtitle1" fontWeight={600}>
-            {'User Name'}
+            {"User Name"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {'user@example.com'}
+            {"user@example.com"}
           </Typography>
         </Box>
         <Divider />
@@ -272,8 +268,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
         anchorEl={notificationAnchor}
         open={Boolean(notificationAnchor)}
         onClose={handleNotificationClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         PaperProps={{
           elevation: 3,
           sx: {
@@ -297,10 +293,10 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, drawerWidth }) => {
           <Typography variant="body2">System update available</Typography>
         </MenuItem>
         <Divider />
-        <MenuItem sx={{ justifyContent: 'center', color: 'primary.main' }}>
+        <MenuItem sx={{ justifyContent: "center", color: "primary.main" }}>
           <Typography variant="body2">View all notifications</Typography>
         </MenuItem>
       </Menu>
     </AppBar>
-  )
-}
+  );
+};

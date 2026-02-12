@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   List,
   ListItemButton,
@@ -9,7 +9,7 @@ import {
   Box,
   Divider,
   Tooltip,
-} from '@mui/material'
+} from "@mui/material";
 import {
   Dashboard as DashboardIcon,
   People as PeopleIcon,
@@ -21,89 +21,89 @@ import {
   ExpandMore,
   Category,
   LocalShipping,
-} from '@mui/icons-material'
+} from "@mui/icons-material";
 
 interface MenuItem {
-  id: string
-  label: string
-  icon: React.ReactNode
-  path?: string
-  children?: MenuItem[]
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  path?: string;
+  children?: MenuItem[];
 }
 
 const menuItems: MenuItem[] = [
   {
-    id: 'dashboard',
-    label: 'Dashboard',
+    id: "dashboard",
+    label: "Dashboard",
     icon: <DashboardIcon />,
-    path: '/dashboard',
+    path: "/dashboard",
   },
   {
-    id: 'users',
-    label: 'Users',
+    id: "users",
+    label: "Users",
     icon: <PeopleIcon />,
-    path: '/users',
+    path: "/users",
   },
   {
-    id: 'products',
-    label: 'Products',
+    id: "products",
+    label: "Products",
     icon: <InventoryIcon />,
     children: [
       {
-        id: 'products-list',
-        label: 'All Products',
+        id: "products-list",
+        label: "All Products",
         icon: <InventoryIcon />,
-        path: '/products',
+        path: "/products",
       },
       {
-        id: 'products-categories',
-        label: 'Categories',
+        id: "products-categories",
+        label: "Categories",
         icon: <Category />,
-        path: '/products/categories',
+        path: "/products/categories",
       },
     ],
   },
   {
-    id: 'orders',
-    label: 'Orders',
+    id: "orders",
+    label: "Orders",
     icon: <ShoppingCartIcon />,
     children: [
       {
-        id: 'orders-list',
-        label: 'All Orders',
+        id: "orders-list",
+        label: "All Orders",
         icon: <ShoppingCartIcon />,
-        path: '/orders',
+        path: "/orders",
       },
       {
-        id: 'orders-shipping',
-        label: 'Shipping',
+        id: "orders-shipping",
+        label: "Shipping",
         icon: <LocalShipping />,
-        path: '/orders/shipping',
+        path: "/orders/shipping",
       },
     ],
   },
   {
-    id: 'reports',
-    label: 'Reports',
+    id: "reports",
+    label: "Reports",
     icon: <AssessmentIcon />,
-    path: '/reports',
+    path: "/reports",
   },
   {
-    id: 'settings',
-    label: 'Settings',
+    id: "settings",
+    label: "Settings",
     icon: <SettingsIcon />,
-    path: '/settings',
+    path: "/settings",
   },
-]
+];
 
 interface SidebarMenuProps {
-  collapsed: boolean
+  collapsed: boolean;
 }
 
 export const SidebarMenu: React.FC<SidebarMenuProps> = ({ collapsed }) => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [openItems, setOpenItems] = useState<string[]>([])
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [openItems, setOpenItems] = useState<string[]>([]);
 
   const handleItemClick = (item: MenuItem) => {
     if (item.children) {
@@ -111,23 +111,25 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ collapsed }) => {
       setOpenItems((prev) =>
         prev.includes(item.id)
           ? prev.filter((id) => id !== item.id)
-          : [...prev, item.id]
-      )
+          : [...prev, item.id],
+      );
     } else if (item.path) {
       // Navigate to path
-      navigate(item.path)
+      navigate(item.path);
     }
-  }
+  };
 
   const isActive = (path?: string) => {
-    if (!path) return false
-    return location.pathname === path || location.pathname.startsWith(`${path}/`)
-  }
+    if (!path) return false;
+    return (
+      location.pathname === path || location.pathname.startsWith(`${path}/`)
+    );
+  };
 
   const renderMenuItem = (item: MenuItem, level: number = 0) => {
-    const hasChildren = item.children && item.children.length > 0
-    const isOpen = openItems.includes(item.id)
-    const active = isActive(item.path)
+    const hasChildren = item.children && item.children.length > 0;
+    const isOpen = openItems.includes(item.id);
+    const active = isActive(item.path);
 
     const listItem = (
       <ListItemButton
@@ -136,16 +138,15 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ collapsed }) => {
         sx={{
           pl: 2 + level * 2,
           minHeight: 48,
-          justifyContent: collapsed ? 'center' : 'initial',
-          px: collapsed ? 2.5 : 2,
+          justifyContent: collapsed ? "center" : "initial",
         }}
       >
         <ListItemIcon
           sx={{
             minWidth: 0,
             mr: collapsed ? 0 : 3,
-            justifyContent: 'center',
-            color: active ? 'primary.main' : 'inherit',
+            justifyContent: "center",
+            color: active ? "primary.main" : "inherit",
           }}
         >
           {item.icon}
@@ -156,7 +157,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ collapsed }) => {
               primary={item.label}
               sx={{
                 opacity: 1,
-                '& .MuiListItemText-primary': {
+                "& .MuiListItemText-primary": {
                   fontWeight: active ? 600 : 400,
                 },
               }}
@@ -165,14 +166,14 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ collapsed }) => {
           </>
         )}
       </ListItemButton>
-    )
+    );
 
     if (collapsed && !hasChildren) {
       return (
         <Tooltip key={item.id} title={item.label} placement="right">
           {listItem}
         </Tooltip>
-      )
+      );
     }
 
     return (
@@ -186,18 +187,14 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ collapsed }) => {
           </Collapse>
         )}
       </React.Fragment>
-    )
-  }
+    );
+  };
 
   return (
     <Box sx={{ pt: 1 }}>
-      <List>
-        {menuItems.slice(0, 5).map((item) => renderMenuItem(item))}
-      </List>
+      <List>{menuItems.slice(0, 5).map((item) => renderMenuItem(item))}</List>
       <Divider sx={{ my: 1 }} />
-      <List>
-        {menuItems.slice(5).map((item) => renderMenuItem(item))}
-      </List>
+      <List>{menuItems.slice(5).map((item) => renderMenuItem(item))}</List>
     </Box>
-  )
-}
+  );
+};
