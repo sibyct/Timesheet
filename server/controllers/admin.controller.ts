@@ -23,7 +23,7 @@ export const AdminController = {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { lastUser, projects } = await AdminService.getLastUserId();
+      const { lastUser, projects } = await AdminService.getRegisterFormData();
       res.status(200).json({ data: [lastUser], projects });
     } catch (err) {
       next(err);
@@ -36,8 +36,8 @@ export const AdminController = {
     next: NextFunction,
   ): Promise<void> {
     try {
-      await AdminService.registerUser(req.body);
-      res.status(200).json({ data: req.body, status: "saved" });
+      const { password } = await AdminService.registerUser(req.body);
+      res.status(200).json({ data: req.body, status: "saved", tempPassword: password });
     } catch (err) {
       next(err);
     }
@@ -176,8 +176,8 @@ export const AdminController = {
     next: NextFunction,
   ): Promise<void> {
     try {
-      await AdminService.resetPassword(req.params.username);
-      res.status(200).json({ message: "Password reset successful" });
+      const { password } = await AdminService.resetPassword(req.params.username);
+      res.status(200).json({ message: "Password reset successful", tempPassword: password });
     } catch (err) {
       next(err);
     }

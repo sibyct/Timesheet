@@ -1,11 +1,11 @@
+import { randomBytes } from "crypto";
 import moment from "moment";
 import mongoose from "mongoose";
-import { SearchCriteria, ITimesheetEntry } from "../types/index";
+import { SearchCriteria, ITimesheetEntry, IUser } from "../types/index";
 import User from "../models/user.model";
 import Timesheet, { ITimesheetDocument } from "../models/timesheet.model";
 import Client from "../models/client.model";
 import { AppError } from "../utils/app-error";
-import { IUser } from "../types";
 
 export const AdminService = {
   buildQuery(reqData: SearchCriteria): Record<string, unknown>[] {
@@ -41,7 +41,7 @@ export const AdminService = {
     return User.find({ role: 1 }, { salt: 0, password: 0, __v: 0 });
   },
 
-  async getLastUserId() {
+  async getRegisterFormData() {
     const [lastUser, projects] = await Promise.all([
       User.findOne().sort({ userId: -1 }),
       Client.find(),
@@ -51,7 +51,7 @@ export const AdminService = {
 
   async registerUser(
     data: IUser & { projectList: string[]; clientsList: string[] },
-  ): Promise<void> {
+  ): Promise<{ password: string }> {
     // Check for existing username
     const existing = await User.findOne({ username: data.username });
     if (existing) {
@@ -61,67 +61,93 @@ export const AdminService = {
       );
     }
 
-    // Generate plain-text password — pre-save hook on User model hashes it
-    const plainPassword = Math.random().toString(36).slice(-8);
+    // Check for existing userId
+    const existingId = await User.findOne({ userId: data.userId });
+    if (existingId) {
+      throw new AppError(
+        "User ID already exists. Please choose a different user ID.",
+        409,
+      );
+    }
+
+    // Generate cryptographically secure plain-text password — pre-save hook hashes it
+    const plainPassword = randomBytes(6).toString("base64url");
+    const {
+      userId,
+      hourlyPay,
+      firstName,
+      lastName,
+      emailAddress,
+      phoneNo,
+      contractType,
+      address,
+      address2,
+    } = data;
 
     const newUser = new User({
       username: data.username,
       password: plainPassword,
-      userId: data.userId,
-      hourlyPay: data.hourlyPay,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      emailAddress: data.emailAddress,
-      phoneNo: data.phoneNo,
       role: 1,
-      contractType: data.contractType,
       projects: data.projectList,
       clients: data.clientsList,
-      address: data.address,
-      address2: data.address2,
+      userId,
+      hourlyPay,
+      firstName,
+      lastName,
+      emailAddress,
+      phoneNo,
+      contractType,
+      address,
+      address2,
     });
 
     await newUser.save();
+    return { password: plainPassword };
   },
 
   async deleteUser(userId: string) {
     await User.deleteOne({ userId });
-    return User.find({ role: 1 }, { _id: 0, password: 0, __v: 0 });
+    return User.find({ role: 1 }, { salt: 0, password: 0, __v: 0 });
   },
 
-  async updateUser(data: {
-    username: string;
-    firstName: string;
-    lastName: string;
-    emailAddress: string;
-    phoneNo: string;
-    contractType: string;
-    clients: unknown[];
-    projects: unknown[];
-    address: string;
-    address2: string;
-  }) {
-    await User.updateOne(
-      { username: data.username },
+  async updateUser({
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNo,
+    contractType,
+    clients,
+    projects,
+    address,
+    address2,
+    username,
+  }: IUser & { clients: string[]; projects: string[] }): Promise<IUser[]> {
+    const result = await User.updateOne(
+      { username },
       {
         $set: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          emailAddress: data.emailAddress,
-          phoneNo: data.phoneNo,
-          contractType: data.contractType,
-          clients: data.clients,
-          projects: data.projects,
-          address: data.address,
-          address2: data.address2,
+          firstName,
+          lastName,
+          emailAddress,
+          phoneNo,
+          contractType,
+          clients,
+          projects,
+          address,
+          address2,
         },
       },
     );
-    return User.find({ role: 1 });
+
+    if (result.matchedCount === 0) {
+      throw new AppError("User not found.", 404);
+    }
+
+    return User.find({ role: 1 }, { salt: 0, password: 0, __v: 0 });
   },
 
   async search(criteria: SearchCriteria): Promise<ITimesheetDocument[]> {
-    const query = AdminService.buildQuery(criteria);
+    const query = this.buildQuery(criteria);
     return Timesheet.find({ $and: query }).sort({ date: 1 });
   },
 
@@ -130,33 +156,33 @@ export const AdminService = {
     searchCriteria: SearchCriteria,
   ): Promise<ITimesheetDocument[]> {
     if (dataToUpdate && dataToUpdate.length > 0) {
-      const bulkOps = dataToUpdate.map((entry: ITimesheetEntry) => ({
-        updateOne: {
-          filter: {
-            $and: [
-              {
-                _id: { $eq: new mongoose.Types.ObjectId(entry._id as string) },
+      const bulkOps = dataToUpdate.map((entry: ITimesheetEntry) => {
+        const { _id, ...mutableFields } = entry;
+        return {
+          updateOne: {
+            filter: {
+              $and: [
+                { _id: { $eq: new mongoose.Types.ObjectId(_id as string) } },
+                { userId: { $eq: entry.userId } },
+              ],
+            },
+            update: {
+              $set: {
+                ...mutableFields,
+                date: new Date(entry.date),
               },
-              { userId: { $eq: entry.userId } },
-            ],
-          },
-          update: {
-            $set: {
-              ...entry,
-              _id: new mongoose.Types.ObjectId(entry._id as string),
-              date: new Date(entry.date),
             },
           },
-        },
-      }));
+        };
+      });
       await Timesheet.bulkWrite(bulkOps);
     }
-    return AdminService.search(searchCriteria);
+    return this.search(searchCriteria);
   },
 
   async exportCSV(criteria: SearchCriteria): Promise<string> {
     const timesheets = await Timesheet.find({
-      $and: AdminService.buildQuery(criteria),
+      $and: this.buildQuery(criteria),
     }).sort({ date: 1 });
 
     const escape = (val: unknown) => {
@@ -177,7 +203,7 @@ export const AdminService = {
     const rows = timesheets.map((t) => [
       moment(t.date).format("MM/DD/YYYY"),
       t.userId,
-      t.clients,
+      t.clients ?? "",
       t.project,
       t.projectType,
       t.hours,
@@ -187,7 +213,7 @@ export const AdminService = {
     return [header, ...rows].map((r) => r.map(escape).join(",")).join("\n");
   },
 
-  async resetPassword(username: string): Promise<void> {
+  async resetPassword(username: string): Promise<{ password: string }> {
     const user = await User.findOne({ username });
 
     if (!user)
@@ -196,7 +222,9 @@ export const AdminService = {
         404,
       );
 
-    user.password = Math.random().toString(36).slice(-8);
+    const plainPassword = randomBytes(6).toString("base64url");
+    user.password = plainPassword;
     await user.save();
+    return { password: plainPassword };
   },
 };

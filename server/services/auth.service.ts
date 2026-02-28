@@ -7,18 +7,23 @@ export interface LoginResult {
 }
 
 export const AuthService = {
-  async login(username: string, password: string): Promise<LoginResult> {
-    const user = await User.findOne({ username });
-    if (!user) throw new AppError("Invalid credentials", 401);
+  async login(userName: string, password: string): Promise<LoginResult> {
+    const user = await User.findOne({ username: userName });
+    if (!user) {
+      throw new AppError("Invalid credentials", 401);
+    }
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) throw new AppError("Invalid credentials", 401);
+    if (!isMatch) {
+      throw new AppError("Invalid credentials", 401);
+    }
 
+    const { userId, username, role, firstName } = user;
     const token = generateToken({
-      userId: user.userId,
-      username: user.username,
-      role: user.role,
-      firstName: user.firstName,
+      userId,
+      username,
+      role,
+      firstName,
     });
 
     return { token, role: user.role };

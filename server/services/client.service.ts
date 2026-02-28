@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import Client from '../models/client.model';
-import User from '../models/user.model';
-import { Project } from '../types/index';
+import mongoose from "mongoose";
+import Client from "../models/client.model";
+import User from "../models/user.model";
+import { Project } from "../types/index";
 
 export const ClientService = {
   async getClients() {
@@ -19,7 +19,9 @@ export const ClientService = {
       const bulkOps = updatedList.map((client) => ({
         updateOne: {
           filter: { _id: new mongoose.Types.ObjectId(client._id) },
-          update: { $set: { clientName: client.clientName, projects: client.projects } },
+          update: {
+            $set: { clientName: client.clientName, projects: client.projects },
+          },
         },
       }));
       await Client.bulkWrite(bulkOps);
@@ -32,7 +34,10 @@ export const ClientService = {
   },
 
   async getClientsAndUsers() {
-    const [clientsList, userList] = await Promise.all([Client.find({}), User.find({ role: 1 })]);
+    const [clientsList, userList] = await Promise.all([
+      Client.find({}),
+      User.find({ role: 1 }),
+    ]);
     return { clientsList, userList };
   },
 };
