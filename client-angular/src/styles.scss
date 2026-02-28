@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Mat-table row hover */
+.mat-mdc-row:hover { background: #f5f5f5; }
+
+/* Snackbar success styling */
+.mat-mdc-snack-bar-container { --mdc-snackbar-container-color: #323232; }

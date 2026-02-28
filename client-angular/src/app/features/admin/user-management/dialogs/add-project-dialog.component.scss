@@ -1,0 +1,37 @@
+.dialog-content {
+  min-width: 500px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.client-block {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.client-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .client-name-field { flex: 1; }
+}
+
+.projects-chips {
+  margin: 8px 0;
+}
+
+.add-project-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .project-input { flex: 1; }
+}
+
+.add-client-btn {
+  width: 100%;
+  margin-top: 8px;
+}

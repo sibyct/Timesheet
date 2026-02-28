@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Manage Clients & Projects</h2>
+
+<mat-dialog-content class="dialog-content">
+  @for (client of clients; track client; let i = $index) {
+    <div class="client-block">
+      <div class="client-header">
+        <mat-form-field appearance="outline" class="client-name-field">
+          <mat-label>Client Name</mat-label>
+          <input matInput [(ngModel)]="client.clientName" />
+        </mat-form-field>
+        <button mat-icon-button color="warn" (click)="removeClient(i, $any(client))" title="Remove client">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+      <!-- Projects chips -->
+      <div class="projects-chips">
+        <mat-chip-set>
+          @for (project of client.projects; track project; let pi = $index) {
+            <mat-chip (removed)="removeProject(i, pi)">
+              {{ project.projectName }}
+              <button matChipRemove><mat-icon>cancel</mat-icon></button>
+            </mat-chip>
+          }
+        </mat-chip-set>
+      </div>
+
+      <!-- Add project input -->
+      <div class="add-project-row">
+        <mat-form-field appearance="outline" class="project-input">
+          <mat-label>Add Project</mat-label>
+          <input matInput [(ngModel)]="newProjectNames[i]" (keyup.enter)="addProject(i)" />
+        </mat-form-field>
+        <button mat-icon-button color="primary" (click)="addProject(i)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+
+  <button mat-stroked-button (click)="addClient()" class="add-client-btn">
+    <mat-icon>add</mat-icon> Add Client
+  </button>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>

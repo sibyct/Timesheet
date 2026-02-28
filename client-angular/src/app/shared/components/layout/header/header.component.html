@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <span class="app-title">Timesheet</span>
+
+  @if (isAdmin) {
+    <a mat-button routerLink="/admin/users">Users</a>
+    <a mat-button routerLink="/admin/timesheet">Admin View</a>
+  } @else {
+    <a mat-button routerLink="/timesheet">My Timesheet</a>
+  }
+
+  <span class="spacer"></span>
+
+  <button mat-button [matMenuTriggerFor]="userMenu">
+    <mat-icon>account_circle</mat-icon>
+    {{ firstName }}
+  </button>
+  <mat-menu #userMenu="matMenu">
+    @if (!isAdmin) {
+      <button mat-menu-item (click)="goToProfile()">
+        <mat-icon>person</mat-icon> Profile
+      </button>
+    }
+    <button mat-menu-item (click)="openChangePassword()">
+      <mat-icon>lock</mat-icon> Change Password
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>exit_to_app</mat-icon> Logout
+    </button>
+  </mat-menu>
+</mat-toolbar>

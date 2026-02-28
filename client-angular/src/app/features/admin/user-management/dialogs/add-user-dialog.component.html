@@ -1,0 +1,90 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="userForm" class="user-form">
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" [readonly]="isEdit" />
+        @if (userForm.get('username')?.hasError('required') && userForm.get('username')?.touched) {
+          <mat-error>Required</mat-error>
+        }
+        @if (userForm.get('username')?.hasError('duplicate')) {
+          <mat-error>Username already exists</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contract Type</mat-label>
+        <mat-select formControlName="contractType">
+          @for (ct of contractTypes; track ct) {
+            <mat-option [value]="ct">{{ ct }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="emailAddress" type="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phoneNo" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Address</mat-label>
+      <input matInput formControlName="address" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Address 2</mat-label>
+      <input matInput formControlName="address2" />
+    </mat-form-field>
+
+    <!-- Client Selection -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Clients</mat-label>
+      <mat-select [value]="selectedClients" multiple (selectionChange)="onClientSelect($event.value)">
+        @for (c of data.clients; track c.clientName) {
+          <mat-option [value]="c">{{ c.clientName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Project Selection -->
+    @if (availableProjects.length > 0) {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Projects</mat-label>
+        <mat-select [(value)]="selectedProjects" multiple>
+          @for (p of availableProjects; track p.projectName) {
+            <mat-option [value]="p">{{ p.projectName }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="userForm.invalid">
+    {{ isEdit ? 'Update' : 'Add User' }}
+  </button>
+</mat-dialog-actions>

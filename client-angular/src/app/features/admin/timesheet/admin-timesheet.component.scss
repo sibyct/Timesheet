@@ -1,0 +1,42 @@
+.admin-timesheet-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-card .search-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+
+  mat-form-field {
+    min-width: 160px;
+    flex: 1;
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.search-table {
+  width: 100%;
+}
+
+.small-field {
+  width: 70px;
+}
+
+.medium-field {
+  width: 150px;
+}
+
+.table-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 12px;
+}

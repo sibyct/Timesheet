@@ -1,0 +1,123 @@
+<div class="timesheet-page">
+  <!-- Date Selector -->
+  <mat-card class="date-selector-card">
+    <mat-card-content>
+      <span class="label">Select Date Range</span>
+      <mat-form-field appearance="outline">
+        <mat-label>Date Range</mat-label>
+        <mat-select [(ngModel)]="selectedDate" (selectionChange)="onDateChange()">
+          @for (date of dates; track date) {
+            <mat-option [value]="date">{{ date }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Timesheet Table -->
+  <mat-card class="table-card">
+    <mat-card-content>
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="timedata" class="timesheet-table">
+
+          <!-- Date Column -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let row">{{ formatDate(row.date) }}</td>
+          </ng-container>
+
+          <!-- Clients Column -->
+          <ng-container matColumnDef="clients">
+            <th mat-header-cell *matHeaderCellDef>Client</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-select [(ngModel)]="row.clients" [disabled]="row.submitted === 1" placeholder="Select Client">
+                @for (c of clients; track c.clientName) {
+                  <mat-option [value]="c.clientName">{{ c.clientName }}</mat-option>
+                }
+              </mat-select>
+            </td>
+          </ng-container>
+
+          <!-- Project Column -->
+          <ng-container matColumnDef="project">
+            <th mat-header-cell *matHeaderCellDef>Project</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-select [(ngModel)]="row.project" [disabled]="row.submitted === 1" placeholder="Select Project">
+                @for (p of projects; track p.projectName) {
+                  <mat-option [value]="p.projectName">{{ p.projectName }}</mat-option>
+                }
+              </mat-select>
+            </td>
+          </ng-container>
+
+          <!-- Project Type Column -->
+          <ng-container matColumnDef="projectType">
+            <th mat-header-cell *matHeaderCellDef>Project Type</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-select [(ngModel)]="row.projectType" [disabled]="row.submitted === 1" placeholder="Select Type">
+                @for (pt of projectTypes; track pt) {
+                  <mat-option [value]="pt">{{ pt }}</mat-option>
+                }
+              </mat-select>
+            </td>
+          </ng-container>
+
+          <!-- Hours Column -->
+          <ng-container matColumnDef="hours">
+            <th mat-header-cell *matHeaderCellDef>Hours</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-form-field appearance="outline" class="hours-field">
+                <input matInput type="number" [(ngModel)]="row.hours"
+                  [max]="maxHours" [min]="0"
+                  [disabled]="row.submitted === 1"
+                  (ngModelChange)="calcTotal()" />
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- Comments Column -->
+          <ng-container matColumnDef="comments">
+            <th mat-header-cell *matHeaderCellDef>Comments</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-form-field appearance="outline" class="comments-field">
+                <input matInput [(ngModel)]="row.comments" [disabled]="row.submitted === 1" />
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              @if (canAdd(row)) {
+                <button mat-icon-button color="primary" (click)="addRow(row, i)" title="Add row">
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+              }
+              @if (canDelete(row)) {
+                <button mat-icon-button color="warn" (click)="deleteRow(i)" title="Delete row">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <!-- Total row -->
+      <div class="total-row">
+        <span class="total-label">Total Hours:</span>
+        <span class="total-value">{{ total }}</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions-row">
+        <button mat-raised-button color="primary" (click)="save()">Save</button>
+        <button mat-raised-button color="accent" (click)="submit()">Submit</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

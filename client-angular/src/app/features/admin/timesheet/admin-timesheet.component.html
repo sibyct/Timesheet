@@ -1,0 +1,165 @@
+<div class="admin-timesheet-page">
+  <!-- Search Panel -->
+  <mat-card class="search-card">
+    <mat-card-header>
+      <mat-card-title>Search Timesheets</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="search-row">
+        <mat-form-field appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput [matDatepicker]="fromPicker" [(ngModel)]="search.fromDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput [matDatepicker]="toPicker" [(ngModel)]="search.toDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>User</mat-label>
+          <mat-select [(ngModel)]="search.users">
+            @for (user of userList; track user.userId) {
+              <mat-option [value]="user">{{ user.firstName }} {{ user.lastName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Client</mat-label>
+          <mat-select [(ngModel)]="search.client">
+            @for (c of clientList; track c.clientName) {
+              <mat-option [value]="c.clientName">{{ c.clientName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Project</mat-label>
+          <mat-select [(ngModel)]="search.project">
+            @for (p of projectList; track p.projectName) {
+              <mat-option [value]="p.projectName">{{ p.projectName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Project Type</mat-label>
+          <mat-select [(ngModel)]="search.projectType">
+            @for (pt of projectTypes; track pt) {
+              <mat-option [value]="pt">{{ pt }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="searchClick()">Search</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Results Table -->
+  @if (timedata.length > 0) {
+    <mat-card>
+      <mat-card-content>
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="timedata" class="search-table">
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>Date</th>
+              <td mat-cell *matCellDef="let row">{{ formatDate(row.date) }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="userId">
+              <th mat-header-cell *matHeaderCellDef>User ID</th>
+              <td mat-cell *matCellDef="let row">{{ row.userId }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="clients">
+              <th mat-header-cell *matHeaderCellDef>Client</th>
+              <td mat-cell *matCellDef="let row">{{ row.clients }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="project">
+              <th mat-header-cell *matHeaderCellDef>Project</th>
+              <td mat-cell *matCellDef="let row">{{ row.project }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="projectType">
+              <th mat-header-cell *matHeaderCellDef>Type</th>
+              <td mat-cell *matCellDef="let row">{{ row.projectType }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="hours">
+              <th mat-header-cell *matHeaderCellDef>Hours</th>
+              <td mat-cell *matCellDef="let row">
+                <mat-form-field appearance="outline" class="small-field">
+                  <input matInput type="number" [(ngModel)]="row.hours" />
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="comments">
+              <th mat-header-cell *matHeaderCellDef>Comments</th>
+              <td mat-cell *matCellDef="let row">{{ row.comments }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="admincomments">
+              <th mat-header-cell *matHeaderCellDef>Admin Comments</th>
+              <td mat-cell *matCellDef="let row">
+                <mat-form-field appearance="outline" class="medium-field">
+                  <input matInput [(ngModel)]="row.admincomments" />
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="adminProject">
+              <th mat-header-cell *matHeaderCellDef>Admin Project</th>
+              <td mat-cell *matCellDef="let row">
+                <mat-select [(ngModel)]="row.adminProject" placeholder="Select">
+                  @for (p of projectList; track p.projectName) {
+                    <mat-option [value]="p.projectName">{{ p.projectName }}</mat-option>
+                  }
+                </mat-select>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="adminClient">
+              <th mat-header-cell *matHeaderCellDef>Admin Client</th>
+              <td mat-cell *matCellDef="let row">
+                <mat-select [(ngModel)]="row.adminClient" placeholder="Select">
+                  @for (c of clientList; track c.clientName) {
+                    <mat-option [value]="c.clientName">{{ c.clientName }}</mat-option>
+                  }
+                </mat-select>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="adminProjectType">
+              <th mat-header-cell *matHeaderCellDef>Admin Type</th>
+              <td mat-cell *matCellDef="let row">
+                <mat-select [(ngModel)]="row.adminProjectType" placeholder="Select">
+                  @for (pt of projectTypes; track pt) {
+                    <mat-option [value]="pt">{{ pt }}</mat-option>
+                  }
+                </mat-select>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <div class="table-actions">
+          <button mat-raised-button color="primary" (click)="save()">Save</button>
+          <button mat-raised-button (click)="exportToExcel()">
+            <mat-icon>download</mat-icon> Export CSV
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

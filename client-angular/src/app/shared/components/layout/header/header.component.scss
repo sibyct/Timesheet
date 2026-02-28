@@ -1,0 +1,15 @@
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.spacer {
+  flex: 1;
+}

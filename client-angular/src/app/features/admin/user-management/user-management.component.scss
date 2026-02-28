@@ -1,0 +1,17 @@
+.user-management-page { }
+
+mat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.users-table {
+  width: 100%;
+}
