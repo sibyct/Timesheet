@@ -5,11 +5,12 @@ export function notFound(req: Request, res: Response): void {
 }
 
 export function errorHandler(
-  err: Error,
+  err: Error & { status?: number },
   _req: Request,
   res: Response,
   _next: NextFunction,
 ): void {
-  console.error(err.stack);
-  res.status(500).json({ status: 'Internal Server Error', message: err.message });
+  const statusCode = err.status ?? 500;
+  if (statusCode >= 500) console.error(err.stack);
+  res.status(statusCode).json({ status: err.message });
 }
