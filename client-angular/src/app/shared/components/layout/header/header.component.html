@@ -1,12 +1,9 @@
 <mat-toolbar color="primary" class="app-toolbar">
-  <span class="app-title">Timesheet</span>
+  <button mat-icon-button (click)="menuToggle.emit()" aria-label="Toggle menu">
+    <mat-icon>menu</mat-icon>
+  </button>
 
-  @if (isAdmin) {
-    <a mat-button routerLink="/admin/users">Users</a>
-    <a mat-button routerLink="/admin/timesheet">Admin View</a>
-  } @else {
-    <a mat-button routerLink="/timesheet">My Timesheet</a>
-  }
+  <span class="app-title">Timesheet</span>
 
   <span class="spacer"></span>
 

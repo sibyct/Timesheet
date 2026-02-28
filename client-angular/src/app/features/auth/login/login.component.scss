@@ -3,11 +3,14 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f5f5f5;
+  background-image: url("/assets/images/timesheet.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .login-card {
-  width: 400px;
+  width: 500px;
   padding: 16px;
 
   mat-card-title {
@@ -29,6 +32,11 @@
 
 .submit-row {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 8px;
+  width: 100%;
+
+  button {
+    width: 100%;
+  }
 }

@@ -1,6 +1,6 @@
 {
-  "watch": ["."],
-  "ext": "ts",
-  "ignore": ["node_modules", "dist"],
-  "exec": "ts-node server.ts"
+  "watch": ["dist"],
+  "ext": "js",
+  "ignore": ["node_modules"],
+  "exec": "node dist/server.js"
 }

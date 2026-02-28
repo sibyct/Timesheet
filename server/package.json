@@ -5,8 +5,10 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",
+    "watch": "tsc --watch",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "seed": "ts-node seed.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

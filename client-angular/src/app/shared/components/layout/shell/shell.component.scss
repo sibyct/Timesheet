@@ -1,0 +1,25 @@
+.shell-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.sidenav-container {
+  flex: 1;
+}
+
+.app-sidenav {
+  width: 240px;
+  padding-top: 8px;
+}
+
+.page-content {
+  padding: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.active-link {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: var(--mat-sys-primary);
+}

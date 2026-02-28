@@ -1,0 +1,35 @@
+<div class="shell-wrapper">
+  <app-header (menuToggle)="sidenav.toggle()"></app-header>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="over" class="app-sidenav">
+      <mat-nav-list>
+        @if (isAdmin) {
+          <a mat-list-item routerLink="/admin/users" routerLinkActive="active-link" (click)="sidenav.close()">
+            <mat-icon matListItemIcon>people</mat-icon>
+            <span matListItemTitle>Users</span>
+          </a>
+          <a mat-list-item routerLink="/admin/timesheet" routerLinkActive="active-link" (click)="sidenav.close()">
+            <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
+            <span matListItemTitle>Admin View</span>
+          </a>
+        } @else {
+          <a mat-list-item routerLink="/timesheet" routerLinkActive="active-link" (click)="sidenav.close()">
+            <mat-icon matListItemIcon>schedule</mat-icon>
+            <span matListItemTitle>My Timesheet</span>
+          </a>
+          <a mat-list-item routerLink="/profile" routerLinkActive="active-link" (click)="sidenav.close()">
+            <mat-icon matListItemIcon>person</mat-icon>
+            <span matListItemTitle>Profile</span>
+          </a>
+        }
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <main class="page-content">
+        <router-outlet></router-outlet>
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

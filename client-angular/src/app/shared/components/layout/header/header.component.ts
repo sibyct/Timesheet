@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +15,6 @@ import { ChangePasswordDialogComponent } from '../change-password-dialog/change-
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -27,6 +26,8 @@ import { ChangePasswordDialogComponent } from '../change-password-dialog/change-
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
+  @Output() menuToggle = new EventEmitter<void>();
+
   firstName = '';
   isAdmin = false;
 
