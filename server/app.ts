@@ -21,10 +21,14 @@ if (!config.mongoUri || !config.jwtSecret || !config.port) {
 }
 
 // Connect to MongoDB
-mongoose
-  .connect(config.mongoUri)
-  .then(() => logger.info("MongoDB connected"))
-  .catch((err) => logger.error({ err }, "MongoDB connection error"));
+(async () => {
+  try {
+    await mongoose.connect(config.mongoUri!);
+    logger.info("MongoDB connected");
+  } catch (err) {
+    logger.error({ err }, "MongoDB connection error");
+  }
+})();
 
 // Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
