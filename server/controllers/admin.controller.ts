@@ -36,11 +36,7 @@ export const AdminController = {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const result = await AdminService.registerUser(req.body);
-      if (result === "duplicatesFound") {
-        res.status(200).json({ res: "duplicatesFound" });
-        return;
-      }
+      await AdminService.registerUser(req.body);
       res.status(200).json({ data: req.body, status: "saved" });
     } catch (err) {
       next(err);

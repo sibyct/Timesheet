@@ -4,29 +4,36 @@ import { SearchCriteria, ITimesheetEntry } from "../types/index";
 import User from "../models/user.model";
 import Timesheet, { ITimesheetDocument } from "../models/timesheet.model";
 import Client from "../models/client.model";
+import { AppError } from "../utils/app-error";
+import { IUser } from "../types";
 
 export const AdminService = {
   buildQuery(reqData: SearchCriteria): Record<string, unknown>[] {
-    const query: Record<string, unknown>[] = [];
-    const dateObj: Record<string, unknown> = {};
+    const query: Record<string, unknown>[] = [{ submitted: 1 }];
 
-    if (reqData.fromDate)
-      dateObj["date"] = { $gte: moment(reqData.fromDate).toDate() };
-    if (reqData.toDate) {
-      if (!dateObj["date"]) dateObj["date"] = {};
-      (dateObj["date"] as Record<string, unknown>)["$lte"] = moment(
-        reqData.toDate,
-      ).toDate();
+    const date: Record<string, Date> = {
+      ...(reqData.fromDate && { $gte: moment(reqData.fromDate).toDate() }),
+      ...(reqData.toDate && { $lte: moment(reqData.toDate).toDate() }),
+    };
+
+    if (Object.keys(date).length) query.push({ date });
+
+    if (reqData.project) {
+      query.push({ adminProject: reqData.project });
     }
-    query.push(dateObj);
 
-    if (reqData.project) query.push({ adminProject: { $eq: reqData.project } });
-    if (reqData.client) query.push({ adminClient: { $eq: reqData.client } });
-    if (reqData.projectType)
-      query.push({ adminProjectType: { $eq: reqData.projectType } });
-    if (reqData.users) query.push({ userId: { $eq: reqData.users.userId } });
+    if (reqData.client) {
+      query.push({ adminClient: reqData.client });
+    }
 
-    query.push({ submitted: { $eq: 1 } });
+    if (reqData.projectType) {
+      query.push({ adminProjectType: reqData.projectType });
+    }
+
+    if (reqData.users) {
+      query.push({ userId: reqData.users.userId });
+    }
+
     return query;
   },
 
@@ -35,27 +42,24 @@ export const AdminService = {
   },
 
   async getLastUserId() {
-    const [lastUser] = await User.find().sort({ userId: -1 }).limit(1);
-    const projects = await Client.find({});
+    const [lastUser, projects] = await Promise.all([
+      User.findOne().sort({ userId: -1 }),
+      Client.find(),
+    ]);
     return { lastUser, projects };
   },
 
-  async registerUser(data: {
-    username: string;
-    userId: number;
-    hourlyPay: number;
-    firstName: string;
-    lastName: string;
-    emailAddress: string;
-    phoneNo: string;
-    contractType: string;
-    projectList: unknown[];
-    clientsList: unknown[];
-    address: string;
-    address2: string;
-  }): Promise<"saved" | "duplicatesFound"> {
+  async registerUser(
+    data: IUser & { projectList: string[]; clientsList: string[] },
+  ): Promise<void> {
+    // Check for existing username
     const existing = await User.findOne({ username: data.username });
-    if (existing) return "duplicatesFound";
+    if (existing) {
+      throw new AppError(
+        "Username already exists. Please choose a different username.",
+        409,
+      );
+    }
 
     // Generate plain-text password — pre-save hook on User model hashes it
     const plainPassword = Math.random().toString(36).slice(-8);
@@ -76,8 +80,8 @@ export const AdminService = {
       address: data.address,
       address2: data.address2,
     });
+
     await newUser.save();
-    return "saved";
   },
 
   async deleteUser(userId: string) {
@@ -185,8 +189,13 @@ export const AdminService = {
 
   async resetPassword(username: string): Promise<void> {
     const user = await User.findOne({ username });
+
     if (!user)
-      throw Object.assign(new Error("User not found"), { status: 404 });
+      throw new AppError(
+        "User not found. Cannot reset password for non-existent user.",
+        404,
+      );
+
     user.password = Math.random().toString(36).slice(-8);
     await user.save();
   },
