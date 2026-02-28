@@ -1,25 +1,29 @@
-import moment from 'moment';
-import mongoose from 'mongoose';
-import { SearchCriteria, ITimesheetEntry } from '../types/index';
-import User from '../models/user.model';
-import Timesheet, { ITimesheetDocument } from '../models/timesheet.model';
-import Client from '../models/client.model';
+import moment from "moment";
+import mongoose from "mongoose";
+import { SearchCriteria, ITimesheetEntry } from "../types/index";
+import User from "../models/user.model";
+import Timesheet, { ITimesheetDocument } from "../models/timesheet.model";
+import Client from "../models/client.model";
 
 export const AdminService = {
   buildQuery(reqData: SearchCriteria): Record<string, unknown>[] {
     const query: Record<string, unknown>[] = [];
     const dateObj: Record<string, unknown> = {};
 
-    if (reqData.fromDate) dateObj['date'] = { $gte: moment(reqData.fromDate).toDate() };
+    if (reqData.fromDate)
+      dateObj["date"] = { $gte: moment(reqData.fromDate).toDate() };
     if (reqData.toDate) {
-      if (!dateObj['date']) dateObj['date'] = {};
-      (dateObj['date'] as Record<string, unknown>)['$lte'] = moment(reqData.toDate).toDate();
+      if (!dateObj["date"]) dateObj["date"] = {};
+      (dateObj["date"] as Record<string, unknown>)["$lte"] = moment(
+        reqData.toDate,
+      ).toDate();
     }
     query.push(dateObj);
 
     if (reqData.project) query.push({ adminProject: { $eq: reqData.project } });
     if (reqData.client) query.push({ adminClient: { $eq: reqData.client } });
-    if (reqData.projectType) query.push({ adminProjectType: { $eq: reqData.projectType } });
+    if (reqData.projectType)
+      query.push({ adminProjectType: { $eq: reqData.projectType } });
     if (reqData.users) query.push({ userId: { $eq: reqData.users.userId } });
 
     query.push({ submitted: { $eq: 1 } });
@@ -49,9 +53,9 @@ export const AdminService = {
     clientsList: unknown[];
     address: string;
     address2: string;
-  }): Promise<'saved' | 'duplicatesFound'> {
+  }): Promise<"saved" | "duplicatesFound"> {
     const existing = await User.findOne({ username: data.username });
-    if (existing) return 'duplicatesFound';
+    if (existing) return "duplicatesFound";
 
     // Generate plain-text password — pre-save hook on User model hashes it
     const plainPassword = Math.random().toString(36).slice(-8);
@@ -73,7 +77,7 @@ export const AdminService = {
       address2: data.address2,
     });
     await newUser.save();
-    return 'saved';
+    return "saved";
   },
 
   async deleteUser(userId: string) {
@@ -126,7 +130,9 @@ export const AdminService = {
         updateOne: {
           filter: {
             $and: [
-              { _id: { $eq: new mongoose.Types.ObjectId(entry._id as string) } },
+              {
+                _id: { $eq: new mongoose.Types.ObjectId(entry._id as string) },
+              },
               { userId: { $eq: entry.userId } },
             ],
           },
@@ -149,23 +155,38 @@ export const AdminService = {
       $and: AdminService.buildQuery(criteria),
     }).sort({ date: 1 });
 
-    const header = ['Date', 'User Id', 'Client', 'Project', 'Project Type', 'Hours Worked', 'Comments'];
+    const escape = (val: unknown) => {
+      const str = String(val ?? "");
+      return /[,"\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+    };
+
+    const header = [
+      "Date",
+      "User Id",
+      "Client",
+      "Project",
+      "Project Type",
+      "Hours Worked",
+      "Comments",
+    ];
+
     const rows = timesheets.map((t) => [
-      moment(t.date).format('MM/DD/YYYY'),
+      moment(t.date).format("MM/DD/YYYY"),
       t.userId,
-      t.clients || '',
-      t.project || '',
-      t.projectType || '',
-      t.hours || '',
-      t.comments || '',
+      t.clients,
+      t.project,
+      t.projectType,
+      t.hours,
+      t.comments,
     ]);
 
-    return [header, ...rows].map((r) => r.map(String).join(',')).join('\n');
+    return [header, ...rows].map((r) => r.map(escape).join(",")).join("\n");
   },
 
   async resetPassword(username: string): Promise<void> {
     const user = await User.findOne({ username });
-    if (!user) throw Object.assign(new Error('User not found'), { status: 404 });
+    if (!user)
+      throw Object.assign(new Error("User not found"), { status: 404 });
     user.password = Math.random().toString(36).slice(-8);
     await user.save();
   },
