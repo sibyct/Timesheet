@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  AbstractControl,
+} from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -31,14 +37,19 @@ function passwordMatchValidator(group: AbstractControl) {
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>New Password</mat-label>
           <input matInput type="password" formControlName="newPassword" />
-          @if (form.get('newPassword')?.hasError('required') && form.get('newPassword')?.touched) {
+          @if (
+            this.newPassword?.hasError('required') && this.newPassword?.touched
+          ) {
             <mat-error>This field is required</mat-error>
           }
         </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Confirm New Password</mat-label>
           <input matInput type="password" formControlName="confirmPassword" />
-          @if (form.hasError('mismatch') && form.get('confirmPassword')?.touched) {
+          @if (
+            this.confirmPassword?.hasError('required') &&
+            this.confirmPassword?.touched
+          ) {
             <mat-error>Passwords do not match</mat-error>
           }
         </mat-form-field>
@@ -46,7 +57,12 @@ function passwordMatchValidator(group: AbstractControl) {
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submit()"
+        [disabled]="form.invalid"
+      >
         Change Password
       </button>
     </mat-dialog-actions>
@@ -70,8 +86,18 @@ export class ChangePasswordDialogComponent {
     );
   }
 
+  get newPassword() {
+    return this.form.get('newPassword');
+  }
+
+  get confirmPassword() {
+    return this.form.get('confirmPassword');
+  }
+
   submit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      return;
+    }
     this.authService.changePassword(this.form.value.newPassword).subscribe({
       next: () => this.dialogRef.close(true),
     });
