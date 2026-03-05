@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProfileService } from '../../core/services/profile.service';
-
+import {} from '@angular/material/icon'
 @Component({
   selector: 'app-profile',
   standalone: true,
