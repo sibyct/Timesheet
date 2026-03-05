@@ -1,17 +1,52 @@
-.user-management-page { }
-
-mat-card-header {
+.user-management-page {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Page header ────────────────────────────────────────────────*/
+.page-header {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .page-title {
+    margin: 0;
+  }
 }
 
 .header-actions {
   display: flex;
   gap: 10px;
-  margin-left: auto;
+}
+
+/* ── Table card ─────────────────────────────────────────────────*/
+.card-content-flush {
+  padding: 0 !important;
 }
 
 .users-table {
   width: 100%;
+}
+
+.id-cell {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 12.5px;
+}
+
+.username-cell {
+  font-weight: 600;
+  color: #1a3a5c;
+}
+
+.email-cell {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.actions-cell {
+  white-space: nowrap;
 }

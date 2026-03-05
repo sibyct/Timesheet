@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminService } from '../../../core/services/admin.service';
 import { User, Client } from '../../../shared/models/user.model';
 import { AddUserDialogComponent } from './dialogs/add-user-dialog.component';
@@ -22,6 +23,7 @@ import { AddProjectDialogComponent } from './dialogs/add-project-dialog.componen
     MatIconModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatTooltipModule,
   ],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.scss'],

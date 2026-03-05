@@ -1,11 +1,25 @@
 <div class="profile-page">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>My Profile</mat-card-title>
-    </mat-card-header>
+  <h1 class="page-title">My Profile</h1>
 
+  <mat-card>
     <mat-card-content>
+
+      <!-- Avatar / name hero -->
+      <div class="profile-hero">
+        <div class="avatar-circle">
+          {{ profileForm.get('firstName')?.value?.charAt(0)?.toUpperCase() || 'U' }}
+        </div>
+        <div class="avatar-info">
+          <div class="avatar-name">
+            {{ profileForm.get('firstName')?.value }} {{ profileForm.get('lastName')?.value }}
+          </div>
+          <div class="avatar-email">{{ profileForm.get('emailAddress')?.value }}</div>
+        </div>
+      </div>
+
       <form [formGroup]="profileForm" class="profile-form">
+
+        <p class="section-title">Personal Info</p>
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>First Name</mat-label>
@@ -24,6 +38,7 @@
           </mat-form-field>
         </div>
 
+        <p class="section-title">Contact Details</p>
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
@@ -39,6 +54,7 @@
           </mat-form-field>
         </div>
 
+        <p class="section-title">Location</p>
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Address</mat-label>
           <input matInput formControlName="address" />
@@ -64,12 +80,17 @@
             </mat-select>
           </mat-form-field>
         </div>
+
       </form>
     </mat-card-content>
 
-    <mat-card-actions align="end">
-      <button mat-button (click)="goBack()">Back</button>
-      <button mat-raised-button color="primary" (click)="save()" [disabled]="profileForm.invalid">Save</button>
+    <mat-card-actions align="end" class="card-actions">
+      <button mat-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon> Back
+      </button>
+      <button mat-raised-button color="primary" (click)="save()" [disabled]="profileForm.invalid">
+        <mat-icon>save</mat-icon> Save Profile
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>

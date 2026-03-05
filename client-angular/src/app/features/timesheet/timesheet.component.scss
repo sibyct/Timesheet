@@ -4,23 +4,45 @@
   gap: 16px;
 }
 
+/* ── Date selector card ─────────────────────────────────────────*/
 .date-selector-card mat-card-content {
+  padding: 12px 4px !important;
+}
+
+.selector-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 8px 0;
+  gap: 12px;
 
-  .label {
-    white-space: nowrap;
-    font-weight: 500;
+  .selector-icon {
+    color: #64748b;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 
-  mat-form-field {
+  .label {
+    font-weight: 600;
+    font-size: 13.5px;
+    color: #64748b;
+    white-space: nowrap;
+  }
+
+  .week-select {
     width: 300px;
   }
 }
 
-.table-card .table-wrapper {
+/* ── Table card ─────────────────────────────────────────────────*/
+.table-card mat-card-content {
+  padding: 0 !important;
+}
+
+.table-card-content {
+  padding: 0 !important;
+}
+
+.table-wrapper {
   overflow-x: auto;
 }
 
@@ -28,8 +50,19 @@
   width: 100%;
 
   mat-select {
-    min-width: 140px;
+    min-width: 130px;
   }
+}
+
+.date-cell {
+  font-weight: 500;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.submitted-row {
+  opacity: 0.58;
+  background-color: #f8fafc;
 }
 
 .hours-field {
@@ -40,27 +73,44 @@
   width: 180px;
 }
 
+/* ── Total row ──────────────────────────────────────────────────*/
 .total-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 0;
-  font-size: 16px;
+  padding: 14px 16px 10px;
+  border-top: 1px solid #e2e8f0;
 
   .total-label {
+    font-size: 13px;
     font-weight: 600;
+    color: #64748b;
+  }
+
+  .total-divider {
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
   }
 
   .total-value {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
-    color: #3f51b5;
+    color: #1a3a5c;
+    line-height: 1;
+  }
+
+  .total-unit {
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
   }
 }
 
+/* ── Actions row ────────────────────────────────────────────────*/
 .actions-row {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  padding-top: 8px;
+  gap: 10px;
+  padding: 0 16px 16px;
 }

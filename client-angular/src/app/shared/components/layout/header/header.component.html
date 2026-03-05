@@ -3,15 +3,20 @@
     <mat-icon>menu</mat-icon>
   </button>
 
-  <span class="app-title">Timesheet</span>
+  <div class="app-brand">
+    <mat-icon class="brand-icon">schedule</mat-icon>
+    <span class="app-title">Timesheet</span>
+  </div>
 
   <span class="spacer"></span>
 
-  <button mat-button [matMenuTriggerFor]="userMenu">
-    <mat-icon>account_circle</mat-icon>
-    {{ firstName }}
+  <button mat-button [matMenuTriggerFor]="userMenu" class="user-btn">
+    <div class="user-avatar">{{ initials }}</div>
+    <span class="user-name">{{ firstName }}</span>
+    <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
   </button>
-  <mat-menu #userMenu="matMenu">
+
+  <mat-menu #userMenu="matMenu" class="user-menu">
     @if (!isAdmin) {
       <button mat-menu-item (click)="goToProfile()">
         <mat-icon>person</mat-icon> Profile
@@ -20,6 +25,7 @@
     <button mat-menu-item (click)="openChangePassword()">
       <mat-icon>lock</mat-icon> Change Password
     </button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="logout()">
       <mat-icon>exit_to_app</mat-icon> Logout
     </button>

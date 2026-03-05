@@ -3,19 +3,29 @@
 
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav mode="over" class="app-sidenav">
+
+      <!-- App branding inside sidenav -->
+      <div class="sidenav-brand">
+        <mat-icon>schedule</mat-icon>
+        <span>Timesheet</span>
+      </div>
+      <mat-divider></mat-divider>
+
+      <p class="nav-section-label">Navigation</p>
+
       <mat-nav-list>
         @if (isAdmin) {
           <a mat-list-item routerLink="/admin/users" routerLinkActive="active-link" (click)="sidenav.close()">
-            <mat-icon matListItemIcon>people</mat-icon>
+            <mat-icon matListItemIcon>group</mat-icon>
             <span matListItemTitle>Users</span>
           </a>
           <a mat-list-item routerLink="/admin/timesheet" routerLinkActive="active-link" (click)="sidenav.close()">
-            <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
+            <mat-icon matListItemIcon>table_chart</mat-icon>
             <span matListItemTitle>Admin View</span>
           </a>
         } @else {
           <a mat-list-item routerLink="/timesheet" routerLinkActive="active-link" (click)="sidenav.close()">
-            <mat-icon matListItemIcon>schedule</mat-icon>
+            <mat-icon matListItemIcon>calendar_today</mat-icon>
             <span matListItemTitle>My Timesheet</span>
           </a>
           <a mat-list-item routerLink="/profile" routerLinkActive="active-link" (click)="sidenav.close()">

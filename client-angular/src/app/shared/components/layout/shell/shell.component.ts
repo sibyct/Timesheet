@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 import { HeaderComponent } from '../header/header.component';
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -18,6 +19,7 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatSidenavModule,
     MatListModule,
     MatIconModule,
+    MatDividerModule,
     HeaderComponent,
   ],
   templateUrl: './shell.component.html',

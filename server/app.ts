@@ -23,7 +23,7 @@ if (!config.mongoUri || !config.jwtSecret || !config.port) {
 // Connect to MongoDB
 (async () => {
   try {
-    await mongoose.connect(config.mongoUri!);
+    await mongoose.connect(config.mongoUri);
     logger.info("MongoDB connected");
   } catch (err) {
     logger.error({ err }, "MongoDB connection error");

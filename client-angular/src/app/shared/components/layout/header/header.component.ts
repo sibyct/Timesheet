@@ -4,6 +4,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
@@ -19,6 +20,7 @@ import { ChangePasswordDialogComponent } from '../change-password-dialog/change-
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MatDividerModule,
     MatDialogModule,
     MatSnackBarModule,
   ],
@@ -29,6 +31,7 @@ export class HeaderComponent implements OnInit {
   @Output() menuToggle = new EventEmitter<void>();
 
   firstName = '';
+  get initials(): string { return this.firstName ? this.firstName.charAt(0).toUpperCase() : 'U'; }
   isAdmin = false;
 
   constructor(
