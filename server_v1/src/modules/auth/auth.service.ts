@@ -20,23 +20,23 @@
  *   making all existing refresh tokens invalid regardless of their expiry.
  */
 
-import crypto from 'crypto';
-import { ApiError } from '@utils/ApiError';
-import { env } from '@config/env';
+import crypto from "crypto";
+import { ApiError } from "@utils/ApiError";
+import { env } from "@config/env";
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyToken,
-} from '@middlewares/auth.middleware';
-import type { RefreshTokenPayload } from '@middlewares/auth.middleware';
-import * as userRepo from '@modules/user/user.repository';
-import type { LoginBody } from './auth.validator';
+} from "@middlewares/auth.middleware";
+import type { RefreshTokenPayload } from "@middlewares/auth.middleware";
+import * as userRepo from "@modules/user/user.repository";
+import type { LoginBody } from "./auth.validator";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /** SHA-256 hash of a refresh token for safe DB storage. */
 function hashToken(token: string): string {
-  return crypto.createHash('sha256').update(token).digest('hex');
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -45,11 +45,11 @@ export interface LoginResult {
   accessToken: string;
   refreshToken: string;
   user: {
-    id:        string;
-    email:     string;
+    id: string;
+    email: string;
     firstName: string;
-    lastName:  string;
-    role:      string;
+    lastName: string;
+    role: string;
   };
 }
 
@@ -70,14 +70,17 @@ export interface LoginResult {
  */
 export async function login(body: LoginBody): Promise<LoginResult> {
   // Load user WITH password (normally excluded by select: false)
-  const user = await userRepo.findByEmail(body.email, { withPassword: true });
+  const user = await userRepo.findByEmail(body.username, {
+    withPassword: true,
+  });
 
   // Deliberate: same error for "user not found" and "wrong password"
   // to prevent user enumeration attacks.
-  const INVALID_CREDS = 'Invalid email or password';
+  const INVALID_CREDS = "Invalid username or password";
 
   if (!user) throw ApiError.unauthorized(INVALID_CREDS);
-  if (!user.isActive) throw ApiError.unauthorized('Your account has been deactivated');
+  if (!user.isActive)
+    throw ApiError.unauthorized("Your account has been deactivated");
 
   // comparePassword requires the hydrated document (instance method)
   const doc = await userRepo.findDocumentById(String(user._id));
@@ -88,7 +91,11 @@ export async function login(body: LoginBody): Promise<LoginResult> {
 
   // Generate token pair
   const userId = String(user._id);
-  const accessToken  = generateAccessToken({ sub: userId, email: user.email, role: user.role });
+  const accessToken = generateAccessToken({
+    sub: userId,
+    email: user.email,
+    role: user.role,
+  });
   const refreshToken = generateRefreshToken({ sub: userId, ver: 1 });
 
   // Persist hashed refresh token + update last login
@@ -101,11 +108,11 @@ export async function login(body: LoginBody): Promise<LoginResult> {
     accessToken,
     refreshToken,
     user: {
-      id:        userId,
-      email:     user.email,
+      id: userId,
+      email: user.email,
       firstName: user.firstName,
-      lastName:  user.lastName,
-      role:      user.role,
+      lastName: user.lastName,
+      role: user.role,
     },
   };
 }
@@ -139,27 +146,38 @@ export async function logout(userId: string): Promise<void> {
  */
 export async function refreshTokens(cookieToken: string): Promise<LoginResult> {
   // Step 1: verify JWT signature + expiry
-  const payload = verifyToken<RefreshTokenPayload>(cookieToken, env.JWT_REFRESH_SECRET);
+  const payload = verifyToken<RefreshTokenPayload>(
+    cookieToken,
+    env.JWT_REFRESH_SECRET,
+  );
 
   // Step 2: load user WITH refreshToken selected (normally excluded)
   const user = await userRepo.findById(payload.sub, { withRefreshToken: true });
   if (!user || !user.isActive) {
-    throw ApiError.unauthorized('Invalid refresh token');
+    throw ApiError.unauthorized("Invalid refresh token");
   }
 
   // Step 3: compare hashes — if they differ the token was already rotated
   //         or was stolen and previously used to rotate
-  const storedHash = (user as typeof user & { refreshToken: string | null }).refreshToken;
+  const storedHash = (user as typeof user & { refreshToken: string | null })
+    .refreshToken;
   if (!storedHash || storedHash !== hashToken(cookieToken)) {
     // Potential token reuse attack — invalidate all sessions for this user
     await userRepo.updateRefreshToken(payload.sub, null);
-    throw ApiError.unauthorized('Refresh token has been revoked');
+    throw ApiError.unauthorized("Refresh token has been revoked");
   }
 
   // Step 4: issue new token pair
-  const userId      = String(user._id);
-  const accessToken  = generateAccessToken({ sub: userId, email: user.email, role: user.role });
-  const refreshToken = generateRefreshToken({ sub: userId, ver: (payload.ver ?? 0) + 1 });
+  const userId = String(user._id);
+  const accessToken = generateAccessToken({
+    sub: userId,
+    email: user.email,
+    role: user.role,
+  });
+  const refreshToken = generateRefreshToken({
+    sub: userId,
+    ver: (payload.ver ?? 0) + 1,
+  });
 
   // Step 5: rotate stored hash
   await userRepo.updateRefreshToken(userId, hashToken(refreshToken));
@@ -168,11 +186,11 @@ export async function refreshTokens(cookieToken: string): Promise<LoginResult> {
     accessToken,
     refreshToken,
     user: {
-      id:        userId,
-      email:     user.email,
+      id: userId,
+      email: user.email,
       firstName: user.firstName,
-      lastName:  user.lastName,
-      role:      user.role,
+      lastName: user.lastName,
+      role: user.role,
     },
   };
 }

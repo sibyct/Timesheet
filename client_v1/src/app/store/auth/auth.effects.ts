@@ -14,11 +14,13 @@ export const loginEffect = createEffect(
       ofType(AuthActions.login),
       exhaustMap(({ username, password }) =>
         authService.login(username, password).pipe(
-          map(({ token, user }) => AuthActions.loginSuccess({ token, user })),
+          map(({ accessToken, user }) => AuthActions.loginSuccess({ token: accessToken, user })),
           catchError((err) =>
-            of(AuthActions.loginFailure({
-              error: err?.error?.message ?? 'Invalid username or password.',
-            })),
+            of(
+              AuthActions.loginFailure({
+                error: err?.error?.message ?? 'Invalid username or password.',
+              }),
+            ),
           ),
         ),
       ),
@@ -31,8 +33,15 @@ export const loginSuccessEffect = createEffect(
     actions$.pipe(
       ofType(AuthActions.loginSuccess),
       tap(({ token, user }) => {
+        debugger;
         localStorage.setItem(TOKEN_KEY, token);
-        router.navigate([user.role === 'admin' ? '/admin/users' : '/timesheet']);
+        const destination =
+          user.role === 'admin'
+            ? '/admin/dashboard'
+            : user.role === 'manager'
+              ? '/admin/approvals'
+              : '/timesheet';
+        router.navigate([destination]);
       }),
     ),
   { functional: true, dispatch: false },

@@ -46,7 +46,7 @@ export async function exportUtilization(
   );
   const csv = service.utilizationToCsv(rows);
 
-  const filename = `utilization_${req.query["from"]}_${req.query["to"]}.csv`;
+  const filename = `utilization_${String(req.query["from"])}_${String(req.query["to"])}.csv`;
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
   res.status(200).send(csv);
@@ -62,7 +62,7 @@ export async function exportBilling(
   );
   const csv = service.billingToCsv(rows);
 
-  const filename = `billing_${req.query["from"]}_${req.query["to"]}.csv`;
+  const filename = `billing_${String(req.query["from"])}_${String(req.query["to"])}.csv`;
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
   res.status(200).send(csv);

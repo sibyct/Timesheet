@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { AuthUser } from '../../store/auth/auth.state';
 
 export interface LoginResponse {
-  token: string;
-  user:  AuthUser;
+  accessToken: string;
+  user: AuthUser;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -12,10 +12,10 @@ export class AuthService {
   private http = inject(HttpClient);
 
   login(username: string, password: string) {
-    return this.http.post<LoginResponse>('/user/login', { username, password });
+    return this.http.post<LoginResponse>('/api/v1/auth/login', { username, password });
   }
 
   changePassword(currentPassword: string, newPassword: string) {
-    return this.http.post('/user/change-password', { currentPassword, newPassword });
+    return this.http.post('/api/v1/users/me/change-password', { currentPassword, newPassword });
   }
 }

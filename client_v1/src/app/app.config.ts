@@ -8,9 +8,10 @@ import { provideRouterStore } from '@ngrx/router-store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 import { routes } from './app.routes';
-import { authInterceptor }    from './core/interceptors/auth.interceptor';
-import { errorInterceptor }   from './core/interceptors/error.interceptor';
-import { loggingInterceptor } from './core/interceptors/logging.interceptor';
+import { authInterceptor }        from './core/interceptors/auth.interceptor';
+import { errorInterceptor }       from './core/interceptors/error.interceptor';
+import { loggingInterceptor }     from './core/interceptors/logging.interceptor';
+import { apiResponseInterceptor } from './core/interceptors/api-response.interceptor';
 import { reducers, metaReducers } from './store';
 import * as authEffects      from './store/auth/auth.effects';
 import * as approvalEffects  from './store/approval/approval.effects';
@@ -25,9 +26,10 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([
-      loggingInterceptor, // 1st — measures total round-trip time
-      authInterceptor,    // 2nd — attaches Bearer token
-      errorInterceptor,   // 3rd — catches errors after response
+      loggingInterceptor,       // 1st — measures total round-trip time
+      authInterceptor,          // 2nd — attaches Bearer token
+      apiResponseInterceptor,   // 3rd — unwraps { success, message, data } envelope
+      errorInterceptor,         // 4th — catches errors after response
     ])),
     provideAnimationsAsync(),
 

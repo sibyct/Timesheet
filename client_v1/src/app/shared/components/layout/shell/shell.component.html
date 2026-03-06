@@ -1,8 +1,12 @@
-<mat-sidenav-container class="shell-container" (backdropClick)="onBackdropClick()">
-
-  <mat-sidenav class="shell-sidenav"
-               [mode]="sidenavMode()"
-               [opened]="sidenavOpen()">
+<mat-sidenav-container
+  class="shell-container"
+  (backdropClick)="onBackdropClick()"
+>
+  <mat-sidenav
+    class="shell-sidenav"
+    [mode]="sidenavMode()"
+    [opened]="sidenavOpen()"
+  >
     <app-sidebar />
   </mat-sidenav>
 
@@ -12,5 +16,4 @@
       <router-outlet />
     </main>
   </mat-sidenav-content>
-
 </mat-sidenav-container>

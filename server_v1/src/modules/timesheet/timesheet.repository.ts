@@ -127,6 +127,9 @@ export async function updateTimesheet(
       | "status"
       | "submittedAt"
       | "recalledAt"
+      | "managerId"
+      | "approvedAt"
+      | "rejectedAt"
     >
   >,
 ): Promise<(ITimesheet & { _id: Types.ObjectId }) | null> {

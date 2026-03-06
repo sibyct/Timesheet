@@ -57,7 +57,7 @@ export interface AuthenticatedUser {
 export function generateAccessToken(payload: AccessTokenPayload): string {
   return jwt.sign(payload, env.JWT_ACCESS_SECRET, {
     expiresIn: env.JWT_ACCESS_EXPIRES_IN as JwtExpiresIn,
-    subject: payload.sub,
+    // subject: payload.sub,
   });
 }
 
@@ -71,7 +71,6 @@ export function generateAccessToken(payload: AccessTokenPayload): string {
 export function generateRefreshToken(payload: RefreshTokenPayload): string {
   return jwt.sign(payload, env.JWT_REFRESH_SECRET, {
     expiresIn: env.JWT_REFRESH_EXPIRES_IN as JwtExpiresIn,
-    subject: payload.sub,
   });
 }
 

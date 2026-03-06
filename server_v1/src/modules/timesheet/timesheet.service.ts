@@ -22,7 +22,7 @@ import { ApiError } from "@utils/ApiError";
 import { buildSort } from "@utils/pagination";
 import type { PaginationMeta } from "@utils/ApiResponse";
 import type { ITimesheet } from "@models/index";
-import type { Types } from "mongoose";
+import { Types } from "mongoose";
 import * as repo from "./timesheet.repository";
 import type {
   CreateTimesheetBody,
@@ -171,7 +171,7 @@ export async function updateTimesheet(
   if (body.notes !== undefined) patch.notes = body.notes;
   if (body.entries !== undefined) {
     // Cast: validator ensures shape matches ITimesheetEntry
-    patch.entries = body.entries as ITimesheet["entries"];
+    patch.entries = body.entries as unknown as ITimesheet["entries"];
     patch.totalHours = sumHours(patch.entries);
   }
 
@@ -321,7 +321,7 @@ export async function approveTimesheet(
 
   const updated = await repo.updateTimesheet(id, {
     status: "approved",
-    managerId: approverId,
+    managerId: new Types.ObjectId(approverId),
     approvedAt: new Date(),
   });
   if (!updated) throw ApiError.notFound("Timesheet");
@@ -401,7 +401,7 @@ export async function bulkApproveTimesheets(
       }
       await repo.updateTimesheet(id, {
         status: "approved",
-        managerId: approverId,
+        managerId: new Types.ObjectId(approverId),
         approvedAt: new Date(),
       });
       approved.push(id);

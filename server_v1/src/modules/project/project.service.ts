@@ -8,43 +8,45 @@
  *   - Add / Remove member: manager or admin only.
  */
 
-import { ApiError } from '@utils/ApiError';
-import { buildSort } from '@utils/pagination';
-import type { PaginationMeta } from '@utils/ApiResponse';
-import * as repo from './project.repository';
-import type { ProjectLean } from './project.repository';
+import { ApiError } from "@utils/ApiError";
+import { buildSort } from "@utils/pagination";
+import type { PaginationMeta } from "@utils/ApiResponse";
+import * as repo from "./project.repository";
+import type { ProjectLean } from "./project.repository";
 import type {
   CreateProjectBody,
   UpdateProjectBody,
   ListProjectsQuery,
   MemberBody,
-} from './project.validator';
-import { Types } from 'mongoose';
+} from "./project.validator";
+import { Types } from "mongoose";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ListProjectsResult {
   projects: ProjectLean[];
-  meta:     PaginationMeta;
+  meta: PaginationMeta;
 }
 
 // ─── listProjects ─────────────────────────────────────────────────────────────
 
 export async function listProjects(
-  requesterId:   string,
+  requesterId: string,
   requesterRole: string,
-  query:         ListProjectsQuery,
+  query: ListProjectsQuery,
 ): Promise<ListProjectsResult> {
-  const isPrivileged = requesterRole === 'manager' || requesterRole === 'admin';
+  const isPrivileged = requesterRole === "manager" || requesterRole === "admin";
 
   const filter: repo.ListProjectsFilter = {
-    status:   query.status,
+    status: query.status,
     clientId: query.clientId ? new Types.ObjectId(query.clientId) : undefined,
     isActive: query.isActive,
-    search:   query.search,
+    search: query.search,
     // Employees only see projects they belong to
     memberId: isPrivileged
-      ? (query.memberId ? new Types.ObjectId(query.memberId) : undefined)
+      ? query.memberId
+        ? new Types.ObjectId(query.memberId)
+        : undefined
       : new Types.ObjectId(requesterId),
   };
 
@@ -56,8 +58,8 @@ export async function listProjects(
     projects,
     meta: {
       total,
-      page:       query.page,
-      limit:      query.limit,
+      page: query.page,
+      limit: query.limit,
       totalPages,
       hasNext: query.page < totalPages,
       hasPrev: query.page > 1,
@@ -68,18 +70,18 @@ export async function listProjects(
 // ─── getProjectById ───────────────────────────────────────────────────────────
 
 export async function getProjectById(
-  id:            string,
-  requesterId:   string,
+  id: string,
+  requesterId: string,
   requesterRole: string,
 ): Promise<ProjectLean> {
   const project = await repo.findById(id);
-  if (!project) throw ApiError.notFound('Project');
+  if (!project) throw ApiError.notFound("Project");
 
-  const isPrivileged = requesterRole === 'manager' || requesterRole === 'admin';
-  const isMember     = project.members.some((m) => String(m) === requesterId);
+  const isPrivileged = requesterRole === "manager" || requesterRole === "admin";
+  const isMember = project.members.some((m) => String(m) === requesterId);
 
   if (!isPrivileged && !isMember) {
-    throw ApiError.forbidden('You are not a member of this project');
+    throw ApiError.forbidden("You are not a member of this project");
   }
 
   return project;
@@ -88,11 +90,11 @@ export async function getProjectById(
 // ─── createProject ────────────────────────────────────────────────────────────
 
 export async function createProject(
-  body:          CreateProjectBody,
+  body: CreateProjectBody,
   requesterRole: string,
 ): Promise<ProjectLean> {
-  if (requesterRole !== 'manager' && requesterRole !== 'admin') {
-    throw ApiError.forbidden('Only managers or admins can create projects');
+  if (requesterRole !== "manager" && requesterRole !== "admin") {
+    throw ApiError.forbidden("Only managers or admins can create projects");
   }
 
   const existing = await repo.findByCode(body.code);
@@ -106,19 +108,19 @@ export async function createProject(
 // ─── updateProject ────────────────────────────────────────────────────────────
 
 export async function updateProject(
-  id:            string,
-  body:          UpdateProjectBody,
+  id: string,
+  body: UpdateProjectBody,
   requesterRole: string,
 ): Promise<ProjectLean> {
-  if (requesterRole !== 'manager' && requesterRole !== 'admin') {
-    throw ApiError.forbidden('Only managers or admins can update projects');
+  if (requesterRole !== "manager" && requesterRole !== "admin") {
+    throw ApiError.forbidden("Only managers or admins can update projects");
   }
 
   const project = await repo.findById(id);
-  if (!project) throw ApiError.notFound('Project');
+  if (!project) throw ApiError.notFound("Project");
 
   const updated = await repo.updateProject(id, body);
-  if (!updated) throw ApiError.notFound('Project');
+  if (!updated) throw ApiError.notFound("Project");
 
   return updated;
 }
@@ -126,15 +128,15 @@ export async function updateProject(
 // ─── deleteProject ────────────────────────────────────────────────────────────
 
 export async function deleteProject(
-  id:            string,
+  id: string,
   requesterRole: string,
 ): Promise<void> {
-  if (requesterRole !== 'admin') {
-    throw ApiError.forbidden('Only admins can delete projects');
+  if (requesterRole !== "admin") {
+    throw ApiError.forbidden("Only admins can delete projects");
   }
 
   const project = await repo.findById(id);
-  if (!project) throw ApiError.notFound('Project');
+  if (!project) throw ApiError.notFound("Project");
 
   await repo.removeProject(id);
 }
@@ -142,24 +144,26 @@ export async function deleteProject(
 // ─── addMember ────────────────────────────────────────────────────────────────
 
 export async function addMember(
-  projectId:     string,
-  body:          MemberBody,
+  projectId: string,
+  body: MemberBody,
   requesterRole: string,
 ): Promise<ProjectLean> {
-  if (requesterRole !== 'manager' && requesterRole !== 'admin') {
-    throw ApiError.forbidden('Only managers or admins can manage project members');
+  if (requesterRole !== "manager" && requesterRole !== "admin") {
+    throw ApiError.forbidden(
+      "Only managers or admins can manage project members",
+    );
   }
 
   const project = await repo.findById(projectId);
-  if (!project) throw ApiError.notFound('Project');
+  if (!project) throw ApiError.notFound("Project");
 
   const alreadyMember = project.members.some((m) => String(m) === body.userId);
   if (alreadyMember) {
-    throw ApiError.conflict('User is already a member of this project');
+    throw ApiError.conflict("User is already a member of this project");
   }
 
   const updated = await repo.addMember(projectId, body.userId);
-  if (!updated) throw ApiError.notFound('Project');
+  if (!updated) throw ApiError.notFound("Project");
 
   return updated;
 }
@@ -167,19 +171,21 @@ export async function addMember(
 // ─── removeMember ─────────────────────────────────────────────────────────────
 
 export async function removeMember(
-  projectId:     string,
-  body:          MemberBody,
+  projectId: string,
+  body: MemberBody,
   requesterRole: string,
 ): Promise<ProjectLean> {
-  if (requesterRole !== 'manager' && requesterRole !== 'admin') {
-    throw ApiError.forbidden('Only managers or admins can manage project members');
+  if (requesterRole !== "manager" && requesterRole !== "admin") {
+    throw ApiError.forbidden(
+      "Only managers or admins can manage project members",
+    );
   }
 
   const project = await repo.findById(projectId);
-  if (!project) throw ApiError.notFound('Project');
+  if (!project) throw ApiError.notFound("Project");
 
   const updated = await repo.removeMember(projectId, body.userId);
-  if (!updated) throw ApiError.notFound('Project');
+  if (!updated) throw ApiError.notFound("Project");
 
   return updated;
 }

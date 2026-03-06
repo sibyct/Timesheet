@@ -10,7 +10,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthActions } from '../../../store/auth/auth.actions';
-import { selectAuthLoading, selectAuthError } from '../../../store/auth/auth.selectors';
+import {
+  selectAuthLoading,
+  selectAuthError,
+} from '../../../store/auth/auth.selectors';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +32,7 @@ import { selectAuthLoading, selectAuthError } from '../../../store/auth/auth.sel
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnDestroy {
-  private fb    = inject(FormBuilder);
+  private fb = inject(FormBuilder);
   private store = inject(Store);
 
   form = this.fb.nonNullable.group({
@@ -40,8 +43,12 @@ export class LoginComponent implements OnDestroy {
   hidePassword = true;
 
   // Store-driven reactive state as signals
-  readonly loading = toSignal(this.store.select(selectAuthLoading), { initialValue: false });
-  readonly error   = toSignal(this.store.select(selectAuthError),   { initialValue: null });
+  readonly loading = toSignal(this.store.select(selectAuthLoading), {
+    initialValue: false,
+  });
+  readonly error = toSignal(this.store.select(selectAuthError), {
+    initialValue: null,
+  });
 
   submit(): void {
     if (this.form.invalid) return;

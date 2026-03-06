@@ -169,6 +169,25 @@ export function buildSortStage(
   return Object.keys(result).length > 0 ? result : defaultSort;
 }
 
+// ─── buildSort ────────────────────────────────────────────────────────────────
+
+/**
+ * Builds a Mongoose sort object from a plain field name + direction string.
+ * Used by services that receive `sortBy` / `order` as validated query params
+ * rather than a raw Request object.
+ *
+ * @param sortBy - Field name to sort by (e.g. "createdAt", "lastName")
+ * @param order  - "asc" | "desc"  (anything else treated as "desc")
+ *
+ * @example
+ * buildSort('lastName', 'asc')  // → { lastName: 1 }
+ * buildSort(undefined, 'desc')  // → { createdAt: -1 }
+ */
+export function buildSort(sortBy?: string, order?: string): SortObject {
+  if (!sortBy) return { createdAt: -1 };
+  return { [sortBy]: order?.toLowerCase() === 'asc' ? 1 : -1 };
+}
+
 // ─── applyPagination (convenience) ───────────────────────────────────────────
 
 /**

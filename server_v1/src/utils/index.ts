@@ -28,6 +28,7 @@ export {
   buildPaginationMeta,
   buildSkipTake,
   buildSortStage,
+  buildSort,
   applyPagination,
   PAGINATION_DEFAULTS,
 }                               from './pagination';
