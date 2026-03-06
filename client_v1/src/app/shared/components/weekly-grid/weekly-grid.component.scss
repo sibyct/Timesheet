@@ -1,0 +1,201 @@
+.grid-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+// ─── Table base ──────────────────────────────────────────────────────────────
+
+.weekly-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  background: white;
+
+  th,
+  td {
+    padding: 0;
+    border-bottom: 1px solid var(--ts-border);
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  thead th {
+    background: var(--ts-surface-alt);
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--ts-text-muted);
+    padding: 0.5rem 0.25rem;
+    white-space: nowrap;
+  }
+
+  tbody tr:hover td {
+    background: var(--ts-surface);
+  }
+}
+
+// ─── Column widths ────────────────────────────────────────────────────────────
+
+.col-task {
+  min-width: 160px;
+  text-align: left !important;
+}
+.col-day {
+  width: 72px;
+}
+.col-total {
+  width: 72px;
+  font-weight: 600;
+}
+.col-actions {
+  width: 40px;
+}
+
+// ─── Header day cell ─────────────────────────────────────────────────────────
+
+thead .col-day {
+  display: table-cell;
+
+  .day-name {
+    display: block;
+  }
+  .day-num {
+    display: block;
+    font-size: 1rem;
+    color: var(--ts-text);
+    font-weight: 700;
+  }
+}
+
+// ─── Task cell ───────────────────────────────────────────────────────────────
+
+.task-cell {
+  padding: 0.25rem 0.75rem;
+}
+
+.task-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--ts-text);
+  padding: 0.25rem 0;
+
+  &:focus {
+    border-bottom: 1px solid var(--ts-accent);
+  }
+}
+
+.task-label {
+  display: block;
+  padding: 0.375rem 0;
+}
+
+// ─── Hours cell ──────────────────────────────────────────────────────────────
+
+.hours-cell {
+  padding: 0.25rem;
+}
+
+.hours-input {
+  width: 56px;
+  border: 1px solid transparent;
+  border-radius: var(--ts-radius-sm);
+  background: transparent;
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--ts-text);
+  text-align: center;
+  padding: 0.25rem;
+  -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--ts-accent);
+    background: white;
+  }
+}
+
+.hours-display {
+  display: block;
+  padding: 0.375rem 0;
+  color: var(--ts-text-muted);
+}
+
+// ─── Totals ───────────────────────────────────────────────────────────────────
+
+.total-cell {
+  padding: 0.375rem 0.5rem;
+  color: var(--ts-primary);
+  font-weight: 600;
+}
+
+.totals-row td {
+  background: var(--ts-surface-alt);
+  border-top: 2px solid var(--ts-border);
+  border-bottom: none;
+  padding: 0.5rem 0.25rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.totals-label {
+  padding-left: 0.75rem;
+  text-align: left !important;
+  color: var(--ts-text-muted);
+}
+.totals-cell {
+  color: var(--ts-text-muted);
+}
+.totals-grand {
+  color: var(--ts-primary);
+}
+
+// ─── Empty row ────────────────────────────────────────────────────────────────
+
+.empty-row {
+  padding: 2.5rem 1rem !important;
+  text-align: center !important;
+  color: var(--ts-text-muted);
+  font-style: italic;
+}
+
+// ─── Remove button ────────────────────────────────────────────────────────────
+
+.remove-btn {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  color: var(--ts-text-muted);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: var(--ts-error);
+  }
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+
+.grid-footer {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-top: 1px dashed var(--ts-border);
+  margin-top: 0;
+
+  button mat-icon {
+    margin-right: 0.25rem;
+  }
+}

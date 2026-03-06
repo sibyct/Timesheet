@@ -1,0 +1,163 @@
+<!-- ─── Page header ─────────────────────────────────────────────────────── -->
+<div class="page-header">
+  <h1 class="page-title">Approval Queue</h1>
+
+  <button mat-icon-button
+          matTooltip="Refresh"
+          [disabled]="loading()"
+          (click)="ngOnInit()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
+
+<!-- ─── Stats bar ────────────────────────────────────────────────────────── -->
+@if (!loading() || queue().length > 0) {
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-value">{{ pendingCount() }}</span>
+      <span class="stat-label">Awaiting review</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value">{{ pendingHours() | number:'1.1-1' }}</span>
+      <span class="stat-label">Total hours</span>
+    </div>
+    @if (selectedCount() > 0) {
+      <div class="stat-divider"></div>
+      <div class="stat stat--selected">
+        <span class="stat-value">{{ selectedCount() }}</span>
+        <span class="stat-label">Selected</span>
+      </div>
+    }
+  </div>
+}
+
+<!-- ─── Bulk toolbar ─────────────────────────────────────────────────────── -->
+@if (selectedCount() > 0) {
+  <div class="bulk-toolbar">
+    <mat-icon class="bulk-icon">check_box</mat-icon>
+    <span class="bulk-label">{{ selectedCount() }} timesheet(s) selected</span>
+    <span class="bulk-spacer"></span>
+    <button mat-button (click)="toggleSelectAll()">Deselect all</button>
+    <button mat-flat-button color="primary" (click)="bulkApprove()">
+      <mat-icon>done_all</mat-icon>
+      Approve {{ selectedCount() }}
+    </button>
+  </div>
+}
+
+<!-- ─── Progress bar ─────────────────────────────────────────────────────── -->
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<!-- ─── Table ────────────────────────────────────────────────────────────── -->
+<div class="ts-card table-wrap">
+  <div class="table-container">
+    <table mat-table [dataSource]="queue()" class="approval-table">
+
+      <!-- Select column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef class="col-select">
+          <mat-checkbox
+            [checked]="allSelected()"
+            [indeterminate]="selectedCount() > 0 && !allSelected()"
+            (change)="toggleSelectAll()"
+            aria-label="Select all" />
+        </th>
+        <td mat-cell *matCellDef="let ts" class="col-select">
+          <mat-checkbox
+            [checked]="isSelected(ts._id)"
+            (change)="toggleSelect(ts._id)"
+            [aria-label]="'Select ' + employeeName(ts.userId)" />
+        </td>
+      </ng-container>
+
+      <!-- Employee column -->
+      <ng-container matColumnDef="employee">
+        <th mat-header-cell *matHeaderCellDef>Employee</th>
+        <td mat-cell *matCellDef="let ts">
+          <div class="employee-cell">
+            <span class="avatar-sm">{{ initials(ts.userId) }}</span>
+            <span class="employee-name">{{ employeeName(ts.userId) }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Period column -->
+      <ng-container matColumnDef="period">
+        <th mat-header-cell *matHeaderCellDef>Period</th>
+        <td mat-cell *matCellDef="let ts">{{ formatPeriod(ts) }}</td>
+      </ng-container>
+
+      <!-- Hours column -->
+      <ng-container matColumnDef="hours">
+        <th mat-header-cell *matHeaderCellDef>Hours</th>
+        <td mat-cell *matCellDef="let ts" class="col-hours">
+          <strong>{{ ts.totalHours | number:'1.1-1' }}</strong>
+        </td>
+      </ng-container>
+
+      <!-- Submitted date column -->
+      <ng-container matColumnDef="submitted">
+        <th mat-header-cell *matHeaderCellDef>Submitted</th>
+        <td mat-cell *matCellDef="let ts" class="col-date text-muted">
+          {{ formatDate(ts.submittedAt) }}
+        </td>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="col-actions"></th>
+        <td mat-cell *matCellDef="let ts" class="col-actions">
+          <div class="row-actions">
+            <button mat-stroked-button
+                    color="primary"
+                    class="action-btn"
+                    [disabled]="isActioning(ts._id)"
+                    (click)="approve(ts)"
+                    matTooltip="Approve">
+              <mat-icon>check_circle_outline</mat-icon>
+              Approve
+            </button>
+            <button mat-stroked-button
+                    color="warn"
+                    class="action-btn"
+                    [disabled]="isActioning(ts._id)"
+                    (click)="openReject(ts)"
+                    matTooltip="Reject with reason">
+              <mat-icon>cancel</mat-icon>
+              Reject
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns;"
+          [class.row-actioning]="isActioning(row._id)"
+          [class.row-selected]="isSelected(row._id)"></tr>
+
+    </table>
+  </div>
+
+  @if (!loading() && queue().length === 0) {
+    <app-empty-state
+      icon="task_alt"
+      title="Queue is empty"
+      message="All caught up — no timesheets are waiting for approval." />
+  }
+</div>
+
+<!-- ─── Paginator ─────────────────────────────────────────────────────────── -->
+@if (meta(); as m) {
+  @if (m.total > m.limit) {
+    <mat-paginator
+      [length]="m.total"
+      [pageSize]="m.limit"
+      [pageIndex]="m.page - 1"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPage($event)" />
+  }
+}

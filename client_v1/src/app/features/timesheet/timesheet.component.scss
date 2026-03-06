@@ -1,0 +1,136 @@
+// ─── Page header ─────────────────────────────────────────────────────────────
+
+.ts-page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+
+  .page-title { margin: 0; }
+}
+
+// ─── Week navigator ───────────────────────────────────────────────────────────
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: white;
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius-md);
+  padding: 0.125rem 0.5rem;
+}
+
+.week-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ts-text);
+  min-width: 160px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.today-btn {
+  font-size: 0.75rem;
+  height: 28px;
+  line-height: 28px;
+  padding: 0 0.5rem;
+  color: var(--ts-accent);
+}
+
+// ─── Header status ────────────────────────────────────────────────────────────
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+
+  .total-hours {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ts-primary);
+  }
+}
+
+// ─── Progress bar ─────────────────────────────────────────────────────────────
+
+.page-progress { margin-bottom: 1rem; }
+
+// ─── Status banners ───────────────────────────────────────────────────────────
+
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 1rem;
+  border-radius: var(--ts-radius-md);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
+  span { flex: 1; }
+  em { font-style: italic; color: inherit; opacity: 0.85; margin-left: 0.25rem; }
+
+  &.banner--info    { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  &.banner--success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  &.banner--error   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+}
+
+// ─── Grid card ────────────────────────────────────────────────────────────────
+
+.grid-card {
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+// ─── Create row ───────────────────────────────────────────────────────────────
+
+.create-row {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+// ─── Notes ───────────────────────────────────────────────────────────────────
+
+.notes-row {
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--ts-border);
+}
+
+.notes-field { width: 100%; }
+
+.notes-readonly {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--ts-border);
+
+  .notes-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ts-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--ts-text);
+    white-space: pre-wrap;
+  }
+}
+
+// ─── Action bar ───────────────────────────────────────────────────────────────
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  justify-content: flex-end;
+}

@@ -1,0 +1,81 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// ─── Brand ────────────────────────────────────────────────────────────────────
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: var(--ts-header-height);
+  padding: 0 1.25rem;
+  border-bottom: 1px solid var(--ts-border);
+  flex-shrink: 0;
+
+  .brand-icon {
+    color: var(--ts-accent);
+    font-size: 1.5rem;
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ts-primary);
+    letter-spacing: -0.01em;
+  }
+}
+
+// ─── Nav ──────────────────────────────────────────────────────────────────────
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+}
+
+.nav-section-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--ts-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem 0.25rem;
+  margin: 0;
+}
+
+.section-divider {
+  margin: 0.5rem 0 !important;
+}
+
+// ─── Nav items ────────────────────────────────────────────────────────────────
+
+a[mat-list-item] {
+  border-radius: 0 !important;
+  margin: 1px 0;
+  border-left: 3px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  color: var(--ts-text-muted);
+
+  mat-icon { transition: color 0.15s ease; }
+
+  &:hover {
+    background: var(--ts-surface-alt) !important;
+    color: var(--ts-text);
+  }
+
+  &.nav-active {
+    background: #f0f9ff !important;
+    border-left-color: var(--ts-accent);
+    color: var(--ts-primary);
+
+    mat-icon        { color: var(--ts-accent); }
+    [matListItemTitle] { font-weight: 600; }
+  }
+}

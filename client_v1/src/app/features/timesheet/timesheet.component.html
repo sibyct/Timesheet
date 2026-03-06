@@ -1,0 +1,134 @@
+<!-- ─── Page header ─────────────────────────────────────────────────────── -->
+<div class="ts-page-header">
+  <h1 class="page-title">My Timesheet</h1>
+
+  <!-- Week navigator -->
+  <div class="week-nav">
+    <button mat-icon-button (click)="prevWeek()" matTooltip="Previous week" [disabled]="anyBusy()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <span class="week-label">{{ weekLabel() }}</span>
+
+    <button mat-icon-button (click)="nextWeek()" matTooltip="Next week" [disabled]="anyBusy()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+
+    @if (!isCurrentWeek()) {
+      <button mat-button class="today-btn" (click)="goToCurrentWeek()" [disabled]="anyBusy()">
+        Today
+      </button>
+    }
+  </div>
+
+  <!-- Status badge (when a timesheet exists) -->
+  @if (active()) {
+    <div class="header-status">
+      <app-status-badge [status]="active()!.status" />
+      <span class="total-hours">{{ active()!.totalHours | number:'1.1-1' }} hrs</span>
+    </div>
+  }
+</div>
+
+<!-- ─── Progress bar ─────────────────────────────────────────────────────── -->
+@if (loading() || saving() || submitting() || recalling()) {
+  <mat-progress-bar mode="indeterminate" class="page-progress" />
+}
+
+<!-- ─── Status banner (submitted / approved / rejected) ─────────────────── -->
+@if (active(); as ts) {
+  @if (ts.status === 'submitted') {
+    <div class="status-banner banner--info">
+      <mat-icon>hourglass_top</mat-icon>
+      <span>Submitted on {{ formatDate(ts.submittedAt) }} — awaiting approval.</span>
+      <button mat-button (click)="recall()" [disabled]="recalling()">
+        <mat-icon>undo</mat-icon> Recall
+      </button>
+    </div>
+  }
+  @if (ts.status === 'approved') {
+    <div class="status-banner banner--success">
+      <mat-icon>check_circle</mat-icon>
+      <span>Approved on {{ formatDate(ts.approvedAt) }}.</span>
+    </div>
+  }
+  @if (ts.status === 'rejected') {
+    <div class="status-banner banner--error">
+      <mat-icon>cancel</mat-icon>
+      <span>Rejected on {{ formatDate(ts.rejectedAt) }}.
+        @if (ts.notes) { <em>Reason: {{ ts.notes }}</em> }
+      </span>
+    </div>
+  }
+}
+
+<!-- ─── Main card ─────────────────────────────────────────────────────────── -->
+<div class="ts-card grid-card">
+
+  @if (loading()) {
+    <!-- Loading skeleton -->
+    <app-loading-spinner message="Loading timesheet…" />
+
+  } @else if (!active()) {
+    <!-- No timesheet for this week -->
+    <app-empty-state
+      icon="edit_calendar"
+      title="No timesheet for this week"
+      message="Create one to start logging your hours." />
+
+    <div class="create-row">
+      <button mat-flat-button color="primary" (click)="createTimesheet()" [disabled]="saving()">
+        <mat-icon>add</mat-icon>
+        Create timesheet
+      </button>
+    </div>
+
+  } @else {
+    <!-- Weekly grid -->
+    <app-weekly-grid
+      [entries]="active()!.entries"
+      [periodStart]="weekStart()"
+      [readonly]="!isEditable()"
+      (entriesChange)="onEntriesChange($event)" />
+
+    <!-- Notes field (editable only when draft / rejected) -->
+    @if (isEditable()) {
+      <div class="notes-row">
+        <mat-form-field appearance="outline" class="notes-field">
+          <mat-label>Notes</mat-label>
+          <textarea matInput
+                    rows="3"
+                    [ngModel]="notes()"
+                    (ngModelChange)="notes.set($event)"
+                    placeholder="Add any notes for your manager…"></textarea>
+        </mat-form-field>
+      </div>
+    } @else if (active()!.notes) {
+      <div class="notes-readonly">
+        <span class="notes-label">Notes</span>
+        <p>{{ active()!.notes }}</p>
+      </div>
+    }
+  }
+
+</div>
+
+<!-- ─── Action bar (draft / rejected only) ───────────────────────────────── -->
+@if (isEditable() && active()) {
+  <div class="action-bar">
+    <button mat-stroked-button
+            (click)="saveEntries()"
+            [disabled]="!dirty() || saving()">
+      <mat-icon>save</mat-icon>
+      {{ saving() ? 'Saving…' : 'Save' }}
+    </button>
+
+    <button mat-flat-button
+            color="primary"
+            (click)="submit()"
+            [disabled]="submitting() || saving()">
+      <mat-icon>send</mat-icon>
+      {{ submitting() ? 'Submitting…' : 'Submit for approval' }}
+    </button>
+  </div>
+}

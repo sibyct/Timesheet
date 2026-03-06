@@ -1,0 +1,29 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+
+  .title-icon {
+    color: var(--ts-error);
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.dialog-subtitle {
+  font-size: 0.875rem;
+  color: var(--ts-text-muted);
+  margin: 0 0 1rem;
+}
+
+.reason-field {
+  width: 100%;
+}
+
+mat-dialog-actions {
+  padding: 0.75rem 1.5rem 1.25rem;
+  gap: 0.5rem;
+}

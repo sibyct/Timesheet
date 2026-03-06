@@ -1,0 +1,33 @@
+<div class="sidebar-brand">
+  <mat-icon class="brand-icon">schedule</mat-icon>
+  <span class="brand-name">Timesheet</span>
+</div>
+
+<mat-nav-list class="sidebar-nav">
+  <p class="nav-section-label">Main</p>
+
+  @for (item of navItems; track item.route) {
+    <a mat-list-item
+       [routerLink]="item.route"
+       routerLinkActive="nav-active"
+       [routerLinkActiveOptions]="{ exact: false }">
+      <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+      <span matListItemTitle>{{ item.label }}</span>
+    </a>
+  }
+
+  @if (isAdmin()) {
+    <mat-divider class="section-divider" />
+    <p class="nav-section-label">Admin</p>
+
+    @for (item of adminNavItems; track item.route) {
+      <a mat-list-item
+         [routerLink]="item.route"
+         routerLinkActive="nav-active"
+         [routerLinkActiveOptions]="{ exact: false }">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+    }
+  }
+</mat-nav-list>

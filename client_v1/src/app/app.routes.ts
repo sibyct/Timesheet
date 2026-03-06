@@ -41,6 +41,14 @@ export const routes: Routes = [
             (m) => m.AdminTimesheetComponent
           ),
       },
+      {
+        path: 'admin/approvals',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/admin/approval/approval.component').then(
+            (m) => m.ApprovalComponent
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: 'timesheet' },

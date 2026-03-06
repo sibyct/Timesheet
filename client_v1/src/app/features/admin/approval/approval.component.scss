@@ -1,0 +1,147 @@
+// ─── Page header ─────────────────────────────────────────────────────────────
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+
+  .page-title { margin: 0; flex: 1; }
+}
+
+// ─── Stats bar ────────────────────────────────────────────────────────────────
+
+.stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.875rem 1.25rem;
+  background: white;
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius-md);
+  margin-bottom: 1rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &--selected .stat-value { color: var(--ts-accent); }
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ts-primary);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--ts-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 2rem;
+  background: var(--ts-border);
+}
+
+// ─── Bulk toolbar ─────────────────────────────────────────────────────────────
+
+.bulk-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  margin-bottom: 0.75rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--ts-radius-md);
+
+  .bulk-icon  { color: var(--ts-accent); font-size: 20px; width: 20px; height: 20px; }
+  .bulk-label { font-size: 0.875rem; font-weight: 500; color: var(--ts-primary); }
+  .bulk-spacer { flex: 1; }
+}
+
+// ─── Table card ──────────────────────────────────────────────────────────────
+
+.table-wrap {
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.approval-table { width: 100%; }
+
+// ─── Row states ──────────────────────────────────────────────────────────────
+
+.row-actioning { opacity: 0.45; pointer-events: none; }
+.row-selected  { background: #f0f9ff !important; }
+
+// ─── Column widths ────────────────────────────────────────────────────────────
+
+.col-select  { width: 48px; padding-left: 1rem !important; }
+.col-hours   { width: 80px; text-align: right !important; }
+.col-date    { width: 140px; }
+.col-actions { width: 220px; text-align: right !important; }
+
+// ─── Employee cell ────────────────────────────────────────────────────────────
+
+.employee-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.avatar-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ts-primary);
+  color: white;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.employee-name {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+// ─── Misc ─────────────────────────────────────────────────────────────────────
+
+.text-muted { color: var(--ts-text-muted); font-size: 0.8125rem; }
+
+// ─── Row actions ─────────────────────────────────────────────────────────────
+
+.row-actions {
+  display: flex;
+  gap: 0.375rem;
+  justify-content: flex-end;
+  padding: 0.25rem 0.5rem 0.25rem 0;
+}
+
+.action-btn {
+  font-size: 0.75rem;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 0.625rem;
+
+  mat-icon { font-size: 15px; width: 15px; height: 15px; margin-right: 3px; }
+}
+
+// ─── Paginator ───────────────────────────────────────────────────────────────
+
+mat-paginator {
+  border-top: 1px solid var(--ts-border);
+  background: transparent;
+}

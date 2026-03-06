@@ -1,0 +1,33 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon class="title-icon">cancel</mat-icon>
+  Reject Timesheet
+</h2>
+
+<mat-dialog-content>
+  <p class="dialog-subtitle">
+    <strong>{{ data.employeeName }}</strong> — {{ data.period }}
+  </p>
+
+  <mat-form-field appearance="outline" class="reason-field">
+    <mat-label>Rejection reason</mat-label>
+    <textarea matInput
+              [(ngModel)]="reason"
+              rows="4"
+              placeholder="Explain why this timesheet is being rejected…"
+              (keydown.meta.enter)="confirm()"
+              (keydown.control.enter)="confirm()"
+              required></textarea>
+    <mat-hint>This message will be visible to the employee.</mat-hint>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button
+          color="warn"
+          [disabled]="!reason.trim()"
+          (click)="confirm()">
+    <mat-icon>cancel</mat-icon>
+    Reject
+  </button>
+</mat-dialog-actions>

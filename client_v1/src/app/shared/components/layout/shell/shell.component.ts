@@ -1,46 +1,71 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { RouterModule } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
-import { AuthService } from '../../../../core/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { filter, map, distinctUntilChanged, tap } from 'rxjs/operators';
+import { UiActions } from '../../../../store/ui/ui.actions';
+import { selectSidenavOpen, selectNotification } from '../../../../store/ui/ui.selectors';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    MatDividerModule,
+    SidebarComponent,
     HeaderComponent,
   ],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss',
 })
-export class ShellComponent {
-  auth = inject(AuthService);
+export class ShellComponent implements OnInit {
+  private store    = inject(Store);
+  private snackBar = inject(MatSnackBar);
+  private bp       = inject(BreakpointObserver);
 
-  get isAdmin(): boolean {
-    return this.auth.role === 0;
+  readonly sidenavOpen = toSignal(
+    this.store.select(selectSidenavOpen),
+    { initialValue: true },
+  );
+
+  /** 'side' on desktop, 'over' on mobile */
+  readonly sidenavMode = toSignal(
+    this.bp.observe(Breakpoints.Handset).pipe(
+      map((r) => (r.matches ? 'over' : 'side') as 'side' | 'over'),
+    ),
+    { initialValue: 'side' as 'side' | 'over' },
+  );
+
+  ngOnInit(): void {
+    // On mobile, collapse sidenav when breakpoint becomes handset
+    this.bp.observe(Breakpoints.Handset).pipe(
+      filter((r) => r.matches),
+    ).subscribe(() => {
+      this.store.dispatch(UiActions.setSidenavOpen({ open: false }));
+    });
+
+    // Show Material snackbar whenever a notification appears in the store
+    this.store.select(selectNotification).pipe(
+      filter(Boolean),
+      distinctUntilChanged((a, b) => a.message === b.message && a.kind === b.kind),
+      tap((n) => {
+        this.snackBar.open(n.message, 'Dismiss', {
+          duration:           4000,
+          horizontalPosition: 'end',
+          verticalPosition:   'bottom',
+          panelClass:         [`snack--${n.kind}`],
+        });
+        setTimeout(() => this.store.dispatch(UiActions.clearNotification()), 4100);
+      }),
+    ).subscribe();
   }
 
-  navItems = [
-    { label: 'Timesheet', icon: 'schedule', route: '/timesheet' },
-    { label: 'Profile', icon: 'person_outline', route: '/profile' },
-  ];
-
-  adminNavItems = [
-    { label: 'Users', icon: 'manage_accounts', route: '/admin/users' },
-    {
-      label: 'Admin Timesheet',
-      icon: 'admin_panel_settings',
-      route: '/admin/timesheet',
-    },
-  ];
+  onBackdropClick(): void {
+    this.store.dispatch(UiActions.setSidenavOpen({ open: false }));
+  }
 }

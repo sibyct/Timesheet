@@ -4,60 +4,28 @@
 
 .shell-sidenav {
   width: var(--ts-sidenav-width);
-  background: white;
   border-right: 1px solid var(--ts-border);
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  height: var(--ts-header-height);
-  padding: 0 1.25rem;
-  border-bottom: 1px solid var(--ts-border);
-
-  .brand-icon {
-    color: var(--ts-accent);
-    font-size: 1.5rem;
-  }
-
-  .brand-name {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--ts-primary);
-    letter-spacing: -0.01em;
-  }
-}
-
-mat-nav-list {
-  padding-top: 0.5rem;
-}
-
-a[mat-list-item] {
-  border-radius: 0 !important;
-  margin: 1px 0;
-  border-left: 3px solid transparent;
-  transition: background 0.15s, border-color 0.15s;
-
-  &.nav-active {
-    background: #f0f9ff !important;
-    border-left-color: var(--ts-accent);
-
-    mat-icon { color: var(--ts-accent); }
-    [matListItemTitle] { color: var(--ts-primary); font-weight: 600; }
-  }
+  background: white;
 }
 
 .shell-content {
   display: flex;
   flex-direction: column;
+  height: 100%;
   background: var(--ts-surface);
 }
 
 .page-content {
   flex: 1;
-  padding: 1.5rem 2rem;
   overflow-y: auto;
+  padding: 1.5rem 2rem;
+}
+
+// ─── Snackbar theme overrides ─────────────────────────────────────────────────
+
+::ng-deep {
+  .snack--success .mdc-snackbar__surface { background: #16a34a; }
+  .snack--error   .mdc-snackbar__surface { background: #dc2626; }
+  .snack--warning .mdc-snackbar__surface { background: #d97706; }
+  .snack--info    .mdc-snackbar__surface { background: #0ea5e9; }
 }

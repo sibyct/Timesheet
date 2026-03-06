@@ -10,11 +10,11 @@
  * - All Mongoose events are logged via the shared logger
  */
 
-import mongoose from 'mongoose';
-import { env } from './env';
-import { createLogger } from './logger';
+import mongoose from "mongoose";
+import { env } from "./env";
+import { createLogger } from "./logger";
 
-const log = createLogger('db');
+const log = createLogger("db");
 
 // ─── Connection Options ───────────────────────────────────────────────────────
 
@@ -37,24 +37,24 @@ const MONGOOSE_OPTIONS: mongoose.ConnectOptions = {
 function attachMongooseEventListeners(): void {
   const conn = mongoose.connection;
 
-  conn.on('connected', () => {
-    log.info({ uri: sanitiseUri(env.MONGO_URI) }, 'MongoDB connected');
+  conn.on("connected", () => {
+    log.info({ uri: sanitiseUri(env.MONGO_URI) }, "MongoDB connected");
   });
 
-  conn.on('disconnected', () => {
-    log.warn('MongoDB disconnected — driver will attempt reconnect');
+  conn.on("disconnected", () => {
+    log.warn("MongoDB disconnected — driver will attempt reconnect");
   });
 
-  conn.on('reconnected', () => {
-    log.info('MongoDB reconnected');
+  conn.on("reconnected", () => {
+    log.info("MongoDB reconnected");
   });
 
-  conn.on('error', (err: Error) => {
-    log.error({ err }, 'MongoDB connection error');
+  conn.on("error", (err: Error) => {
+    log.error({ err }, "MongoDB connection error");
   });
 
-  conn.on('close', () => {
-    log.info('MongoDB connection closed');
+  conn.on("close", () => {
+    log.info("MongoDB connection closed");
   });
 }
 
@@ -67,11 +67,11 @@ function attachMongooseEventListeners(): void {
 function sanitiseUri(uri: string): string {
   try {
     const url = new URL(uri);
-    if (url.password) url.password = '***';
-    if (url.username) url.username = '***';
+    if (url.password) url.password = "***";
+    if (url.username) url.username = "***";
     return url.toString();
   } catch {
-    return '<invalid-uri>';
+    return "<invalid-uri>";
   }
 }
 
@@ -91,7 +91,7 @@ export async function connectDB(): Promise<void> {
 
   attachMongooseEventListeners();
 
-  log.info({ uri: sanitiseUri(env.MONGO_URI) }, 'Connecting to MongoDB…');
+  log.info({ uri: sanitiseUri(env.MONGO_URI) }, "Connecting to MongoDB…");
 
   await mongoose.connect(env.MONGO_URI, MONGOOSE_OPTIONS);
 
@@ -107,22 +107,28 @@ export async function connectDB(): Promise<void> {
 export async function disconnectDB(): Promise<void> {
   if (!_connected) return;
 
-  log.info('Closing MongoDB connection…');
+  log.info("Closing MongoDB connection…");
   await mongoose.connection.close();
   _connected = false;
-  log.info('MongoDB connection closed gracefully');
+  log.info("MongoDB connection closed gracefully");
 }
+
+export type DbStatus =
+  | "connected"
+  | "disconnected"
+  | "connecting"
+  | "disconnecting";
 
 /**
  * Returns the current Mongoose connection state as a human-readable string.
  * Useful for health-check endpoints.
  */
-export function getDbStatus(): 'connected' | 'disconnected' | 'connecting' | 'disconnecting' {
-  const states: Record<number, 'connected' | 'disconnected' | 'connecting' | 'disconnecting'> = {
-    0: 'disconnected',
-    1: 'connected',
-    2: 'connecting',
-    3: 'disconnecting',
+export function getDbStatus(): DbStatus {
+  const states: Record<number, DbStatus> = {
+    0: "disconnected",
+    1: "connected",
+    2: "connecting",
+    3: "disconnecting",
   };
-  return states[mongoose.connection.readyState] ?? 'disconnected';
+  return states[mongoose.connection.readyState] ?? "disconnected";
 }

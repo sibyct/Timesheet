@@ -21,18 +21,20 @@
                  autocomplete="current-password" />
           <mat-icon matPrefix>lock_outline</mat-icon>
           <button mat-icon-button matSuffix type="button"
-                  (click)="hidePassword = !hidePassword">
+                  (click)="hidePassword = !hidePassword"
+                  [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'">
             <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </mat-form-field>
 
-        @if (error) {
-          <p class="login-error">{{ error }}</p>
+        @if (error()) {
+          <p class="login-error" role="alert">{{ error() }}</p>
         }
 
         <button mat-flat-button color="primary" type="submit"
-                class="full-width submit-btn" [disabled]="loading">
-          @if (loading) {
+                class="full-width submit-btn"
+                [disabled]="loading() || form.invalid">
+          @if (loading()) {
             <mat-spinner diameter="20" />
           } @else {
             Sign in

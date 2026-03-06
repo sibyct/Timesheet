@@ -1,0 +1,108 @@
+<div class="grid-wrapper table-container">
+  <table class="weekly-grid">
+    <!-- ─── Header row ─── -->
+    <thead>
+      <tr>
+        <th class="col-task">Task / Project</th>
+        @for (col of dayLabels(); track col.iso) {
+          <th class="col-day">
+            <span class="day-name">{{ col.short }}</span>
+            <span class="day-num">{{ col.dayNum }}</span>
+          </th>
+        }
+        <th class="col-total">Total</th>
+        @if (!readonly()) {
+          <th class="col-actions"></th>
+        }
+      </tr>
+    </thead>
+
+    <!-- ─── Data rows ─── -->
+    <tbody>
+      @for (row of editRows(); track row.projectId + row.taskId; let i = $index) {
+        <tr>
+          <td class="col-task task-cell">
+            @if (!readonly()) {
+              <input class="task-input"
+                     [(ngModel)]="row.label"
+                     [placeholder]="'Row ' + (i + 1)"
+                     aria-label="Task label" />
+            } @else {
+              <span class="task-label">{{ row.label }}</span>
+            }
+          </td>
+
+          @for (col of dayLabels(); track col.iso) {
+            <td class="col-day hours-cell">
+              @if (!readonly()) {
+                <input class="hours-input"
+                       type="number"
+                       min="0"
+                       max="24"
+                       step="0.5"
+                       [value]="row.hours[col.iso] ?? ''"
+                       (change)="onHoursChange(i, col.iso, $any($event.target).value)"
+                       aria-label="Hours for {{ col.short }}" />
+              } @else {
+                <span class="hours-display">
+                  {{ (row.hours[col.iso] ?? 0) > 0 ? (row.hours[col.iso] | number:'1.1-1') : '–' }}
+                </span>
+              }
+            </td>
+          }
+
+          <td class="col-total total-cell">
+            {{ rowTotal(row) | number:'1.1-1' }}
+          </td>
+
+          @if (!readonly()) {
+            <td class="col-actions">
+              <button mat-icon-button
+                      class="remove-btn"
+                      (click)="removeRow(i)"
+                      [matTooltip]="'Remove row'"
+                      aria-label="Remove row">
+                <mat-icon>close</mat-icon>
+              </button>
+            </td>
+          }
+        </tr>
+      }
+
+      @if (editRows().length === 0) {
+        <tr>
+          <td [colSpan]="readonly() ? 9 : 10" class="empty-row">
+            No entries for this week.
+          </td>
+        </tr>
+      }
+    </tbody>
+
+    <!-- ─── Footer totals ─── -->
+    <tfoot>
+      <tr class="totals-row">
+        <td class="col-task totals-label">Daily total</td>
+        @for (col of dayLabels(); track col.iso) {
+          <td class="col-day totals-cell">
+            {{ dayTotal(col.iso) > 0 ? (dayTotal(col.iso) | number:'1.1-1') : '–' }}
+          </td>
+        }
+        <td class="col-total totals-grand">
+          {{ grandTotal() | number:'1.1-1' }}
+        </td>
+        @if (!readonly()) {
+          <td class="col-actions"></td>
+        }
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+@if (!readonly()) {
+  <div class="grid-footer">
+    <button mat-button (click)="addRow()">
+      <mat-icon>add</mat-icon>
+      Add row
+    </button>
+  </div>
+}

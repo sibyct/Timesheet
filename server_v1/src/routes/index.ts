@@ -12,7 +12,7 @@ import { Router, type IRouter, type Request, type Response } from 'express';
 // ─── Feature routers (uncomment as implemented) ───────────────────────────────
 import { authRouter }      from '@modules/auth/auth.routes';
 import { usersRouter }     from '@modules/user/user.routes';
-// import { timesheetRouter } from '@modules/timesheet/timesheet.routes';
+import { timesheetRouter } from '@modules/timesheet/timesheet.routes';
 // import { approvalRouter }  from '@modules/approval/approval.routes';
 // import { projectsRouter }  from '@modules/project/project.routes';
 // import { reportsRouter }   from '@modules/reports/reports.routes';
@@ -27,7 +27,7 @@ rootRouter.get('/ping', (_req: Request, res: Response) => {
 // ── Feature mounts ────────────────────────────────────────────────────────────
 rootRouter.use('/auth',      authRouter);
 rootRouter.use('/users',     usersRouter);
-// rootRouter.use('/timesheets', timesheetRouter);
+rootRouter.use('/timesheets', timesheetRouter);
 // rootRouter.use('/approvals', approvalRouter);
 // rootRouter.use('/projects',  projectsRouter);
 // rootRouter.use('/reports',   reportsRouter);

@@ -122,7 +122,7 @@ export function createApp(): Application {
             id: req.id,
             method: req.method,
             url: req.url,
-            // Never log request body here — may contain passwords
+            //headers: req.headers,
           };
         },
       },
@@ -135,22 +135,25 @@ export function createApp(): Application {
   }
 
   // ── 11. Health check — publicly accessible, no auth ───────────────────────
-  app.get("/health", catchAsync(async (_req: Request, res: Response) => {
-    const redisOk = await isRedisHealthy();
+  app.get(
+    "/health",
+    catchAsync(async (_req: Request, res: Response) => {
+      const redisOk = await isRedisHealthy();
 
-    const status = {
-      status: "ok",
-      env: env.NODE_ENV,
-      uptime: process.uptime(),
-      db: getDbStatus(),
-      redis: redisOk ? "ok" : "error",
-      version: process.env["npm_package_version"] ?? "1.0.0",
-    };
+      const status = {
+        status: "ok",
+        env: env.NODE_ENV,
+        uptime: process.uptime(),
+        db: getDbStatus(),
+        redis: redisOk ? "ok" : "error",
+        version: process.env["npm_package_version"] ?? "1.0.0",
+      };
 
-    const httpStatus = status.db === "connected" && redisOk ? 200 : 503;
+      const httpStatus = status.db === "connected" && redisOk ? 200 : 503;
 
-    res.status(httpStatus).json(status);
-  }));
+      res.status(httpStatus).json(status);
+    }),
+  );
 
   // ── 12. API routes ────────────────────────────────────────────────────────
   app.use(`${env.API_PREFIX}/${env.API_VERSION}`, rootRouter);

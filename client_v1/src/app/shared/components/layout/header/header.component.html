@@ -1,17 +1,39 @@
-<mat-toolbar class="header-toolbar">
+<mat-toolbar class="topbar">
+  <!-- Hamburger — toggles sidenav (visible always, collapses on mobile) -->
+  <button mat-icon-button
+          class="menu-btn"
+          (click)="toggleSidenav()"
+          aria-label="Toggle navigation">
+    <mat-icon>menu</mat-icon>
+  </button>
+
   <span class="spacer"></span>
 
-  <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar-btn">
-    <span class="avatar">{{ initials }}</span>
+  <!-- User avatar + dropdown menu -->
+  <button mat-icon-button
+          class="avatar-btn"
+          [matMenuTriggerFor]="userMenu"
+          [matTooltip]="fullName()"
+          aria-label="Open user menu">
+    <span class="avatar">{{ initials() }}</span>
   </button>
 
   <mat-menu #userMenu="matMenu" xPosition="before">
+    <div class="menu-user-info">
+      <span class="menu-full-name">{{ fullName() }}</span>
+      <span class="menu-email">{{ user()?.email }}</span>
+    </div>
+
+    <mat-divider />
+
     <button mat-menu-item routerLink="/profile">
       <mat-icon>person_outline</mat-icon>
-      <span>Profile</span>
+      <span>My Profile</span>
     </button>
+
     <mat-divider />
-    <button mat-menu-item (click)="logout()">
+
+    <button mat-menu-item class="logout-item" (click)="logout()">
       <mat-icon>logout</mat-icon>
       <span>Sign out</span>
     </button>
