@@ -7,10 +7,10 @@
  *   GET /reports/billing/export      → CSV download
  */
 
-import type { Request, Response } from 'express';
-import { ApiResponse } from '@utils/ApiResponse';
-import * as service from './report.service';
-import type { ReportQuery } from './report.validator';
+import type { Request, Response } from "express";
+import { ApiResponse } from "@utils/ApiResponse";
+import * as service from "./report.service";
+import type { ReportQuery } from "./report.validator";
 
 function queryFromReq(req: Request): ReportQuery {
   return req.query as unknown as ReportQuery;
@@ -19,33 +19,51 @@ function queryFromReq(req: Request): ReportQuery {
 // ── JSON endpoints ────────────────────────────────────────────────────────────
 
 export async function utilization(req: Request, res: Response): Promise<void> {
-  const rows = await service.getUtilizationReport(queryFromReq(req), req.user!.role);
-  ApiResponse.ok(res, rows, 'Utilization report retrieved');
+  const rows = await service.getUtilizationReport(
+    queryFromReq(req),
+    req.user!.role,
+  );
+  ApiResponse.ok(res, rows, "Utilization report retrieved");
 }
 
 export async function billing(req: Request, res: Response): Promise<void> {
-  const rows = await service.getBillingReport(queryFromReq(req), req.user!.role);
-  ApiResponse.ok(res, rows, 'Billing report retrieved');
+  const rows = await service.getBillingReport(
+    queryFromReq(req),
+    req.user!.role,
+  );
+  ApiResponse.ok(res, rows, "Billing report retrieved");
 }
 
 // ── CSV export endpoints ──────────────────────────────────────────────────────
 
-export async function exportUtilization(req: Request, res: Response): Promise<void> {
-  const rows = await service.getUtilizationReport(queryFromReq(req), req.user!.role);
-  const csv  = service.utilizationToCsv(rows);
+export async function exportUtilization(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const rows = await service.getUtilizationReport(
+    queryFromReq(req),
+    req.user!.role,
+  );
+  const csv = service.utilizationToCsv(rows);
 
-  const filename = `utilization_${req.query['from']}_${req.query['to']}.csv`;
-  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  const filename = `utilization_${req.query["from"]}_${req.query["to"]}.csv`;
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
   res.status(200).send(csv);
 }
 
-export async function exportBilling(req: Request, res: Response): Promise<void> {
-  const rows = await service.getBillingReport(queryFromReq(req), req.user!.role);
-  const csv  = service.billingToCsv(rows);
+export async function exportBilling(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const rows = await service.getBillingReport(
+    queryFromReq(req),
+    req.user!.role,
+  );
+  const csv = service.billingToCsv(rows);
 
-  const filename = `billing_${req.query['from']}_${req.query['to']}.csv`;
-  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  const filename = `billing_${req.query["from"]}_${req.query["to"]}.csv`;
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
   res.status(200).send(csv);
 }

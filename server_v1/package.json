@@ -10,6 +10,7 @@
     "lint": "eslint 'src/**/*.ts' --fix",
     "test": "jest --runInBand --forceExit",
     "test:coverage": "jest --runInBand --forceExit --coverage",
+    "seed": "ts-node -r tsconfig-paths/register --transpile-only src/scripts/seed.ts",
     "migrate:up": "migrate-mongo up",
     "migrate:down": "migrate-mongo down",
     "migrate:status": "migrate-mongo status"

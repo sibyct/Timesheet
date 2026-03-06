@@ -18,19 +18,19 @@
  *   - A draft timesheet can be deleted (hard delete).
  */
 
-import { ApiError } from '@utils/ApiError';
-import { buildSort } from '@utils/pagination';
-import type { PaginationMeta } from '@utils/ApiResponse';
-import type { ITimesheet } from '@models/index';
-import type { Types } from 'mongoose';
-import * as repo from './timesheet.repository';
+import { ApiError } from "@utils/ApiError";
+import { buildSort } from "@utils/pagination";
+import type { PaginationMeta } from "@utils/ApiResponse";
+import type { ITimesheet } from "@models/index";
+import type { Types } from "mongoose";
+import * as repo from "./timesheet.repository";
 import type {
   CreateTimesheetBody,
   UpdateTimesheetBody,
   ListTimesheetsQuery,
   RejectTimesheetBody,
   BulkApproveBody,
-} from './timesheet.validator';
+} from "./timesheet.validator";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -44,7 +44,7 @@ export interface ListTimesheetsResult {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /** Sums hours from embedded entry summaries. */
-function sumHours(entries: ITimesheet['entries']): number {
+function sumHours(entries: ITimesheet["entries"]): number {
   return entries.reduce((acc, e) => acc + e.hours, 0);
 }
 
@@ -65,7 +65,7 @@ export async function createTimesheet(
   const existing = await repo.findByUserAndPeriod(userId, periodStart);
   if (existing) {
     throw ApiError.conflict(
-      'A timesheet for this period already exists. Use PATCH to update it.',
+      "A timesheet for this period already exists. Use PATCH to update it.",
     );
   }
 
@@ -85,7 +85,7 @@ export async function listTimesheets(
   requesterRole: string,
   query: ListTimesheetsQuery,
 ): Promise<ListTimesheetsResult> {
-  const isPrivileged = requesterRole === 'manager' || requesterRole === 'admin';
+  const isPrivileged = requesterRole === "manager" || requesterRole === "admin";
 
   const filter: repo.ListTimesheetsFilter = {
     // Employees always scoped to themselves; managers/admins can filter
@@ -102,11 +102,11 @@ export async function listTimesheets(
     timesheets,
     meta: {
       total,
-      page:       query.page,
-      limit:      query.limit,
+      page: query.page,
+      limit: query.limit,
       totalPages,
-      hasNext:    query.page < totalPages,
-      hasPrev:    query.page > 1,
+      hasNext: query.page < totalPages,
+      hasPrev: query.page > 1,
     },
   };
 }
@@ -125,13 +125,13 @@ export async function getTimesheetById(
   requesterRole: string,
 ): Promise<TimesheetDoc> {
   const ts = await repo.findById(id);
-  if (!ts) throw ApiError.notFound('Timesheet');
+  if (!ts) throw ApiError.notFound("Timesheet");
 
-  const isOwner      = String(ts.userId) === requesterId;
-  const isPrivileged = requesterRole === 'manager' || requesterRole === 'admin';
+  const isOwner = String(ts.userId) === requesterId;
+  const isPrivileged = requesterRole === "manager" || requesterRole === "admin";
 
   if (!isOwner && !isPrivileged) {
-    throw ApiError.forbidden('You can only view your own timesheets');
+    throw ApiError.forbidden("You can only view your own timesheets");
   }
 
   return ts;
@@ -157,11 +157,11 @@ export async function updateTimesheet(
   body: UpdateTimesheetBody,
 ): Promise<TimesheetDoc> {
   const ts = await repo.findById(id);
-  if (!ts) throw ApiError.notFound('Timesheet');
+  if (!ts) throw ApiError.notFound("Timesheet");
   if (String(ts.userId) !== requesterId) {
-    throw ApiError.forbidden('You can only edit your own timesheets');
+    throw ApiError.forbidden("You can only edit your own timesheets");
   }
-  if (ts.status !== 'draft' && ts.status !== 'rejected') {
+  if (ts.status !== "draft" && ts.status !== "rejected") {
     throw ApiError.badRequest(
       `Timesheet cannot be edited in '${ts.status}' status. Only draft or rejected timesheets are editable.`,
     );
@@ -171,12 +171,12 @@ export async function updateTimesheet(
   if (body.notes !== undefined) patch.notes = body.notes;
   if (body.entries !== undefined) {
     // Cast: validator ensures shape matches ITimesheetEntry
-    patch.entries    = body.entries as ITimesheet['entries'];
+    patch.entries = body.entries as ITimesheet["entries"];
     patch.totalHours = sumHours(patch.entries);
   }
 
   const updated = await repo.updateTimesheet(id, patch);
-  if (!updated) throw ApiError.notFound('Timesheet');
+  if (!updated) throw ApiError.notFound("Timesheet");
 
   return updated;
 }
@@ -195,11 +195,11 @@ export async function deleteTimesheet(
   requesterId: string,
 ): Promise<void> {
   const ts = await repo.findById(id);
-  if (!ts) throw ApiError.notFound('Timesheet');
+  if (!ts) throw ApiError.notFound("Timesheet");
   if (String(ts.userId) !== requesterId) {
-    throw ApiError.forbidden('You can only delete your own timesheets');
+    throw ApiError.forbidden("You can only delete your own timesheets");
   }
-  if (ts.status !== 'draft') {
+  if (ts.status !== "draft") {
     throw ApiError.badRequest(
       `Only draft timesheets can be deleted. Current status: '${ts.status}'.`,
     );
@@ -227,24 +227,26 @@ export async function submitTimesheet(
   requesterId: string,
 ): Promise<TimesheetDoc> {
   const ts = await repo.findById(id);
-  if (!ts) throw ApiError.notFound('Timesheet');
+  if (!ts) throw ApiError.notFound("Timesheet");
   if (String(ts.userId) !== requesterId) {
-    throw ApiError.forbidden('You can only submit your own timesheets');
+    throw ApiError.forbidden("You can only submit your own timesheets");
   }
-  if (ts.status !== 'draft' && ts.status !== 'rejected') {
+  if (ts.status !== "draft" && ts.status !== "rejected") {
     throw ApiError.badRequest(
       `Timesheet cannot be submitted from '${ts.status}' status.`,
     );
   }
   if (ts.entries.length === 0) {
-    throw ApiError.badRequest('Cannot submit an empty timesheet. Add at least one entry first.');
+    throw ApiError.badRequest(
+      "Cannot submit an empty timesheet. Add at least one entry first.",
+    );
   }
 
   const updated = await repo.updateTimesheet(id, {
-    status:      'submitted',
+    status: "submitted",
     submittedAt: new Date(),
   });
-  if (!updated) throw ApiError.notFound('Timesheet');
+  if (!updated) throw ApiError.notFound("Timesheet");
 
   return updated;
 }
@@ -267,21 +269,21 @@ export async function recallTimesheet(
   requesterId: string,
 ): Promise<TimesheetDoc> {
   const ts = await repo.findById(id);
-  if (!ts) throw ApiError.notFound('Timesheet');
+  if (!ts) throw ApiError.notFound("Timesheet");
   if (String(ts.userId) !== requesterId) {
-    throw ApiError.forbidden('You can only recall your own timesheets');
+    throw ApiError.forbidden("You can only recall your own timesheets");
   }
-  if (ts.status !== 'submitted') {
+  if (ts.status !== "submitted") {
     throw ApiError.badRequest(
       `Only submitted timesheets can be recalled. Current status: '${ts.status}'.`,
     );
   }
 
   const updated = await repo.updateTimesheet(id, {
-    status:     'draft',
+    status: "draft",
     recalledAt: new Date(),
   });
-  if (!updated) throw ApiError.notFound('Timesheet');
+  if (!updated) throw ApiError.notFound("Timesheet");
 
   return updated;
 }
@@ -304,25 +306,25 @@ export async function approveTimesheet(
   approverId: string,
   approverRole: string,
 ): Promise<TimesheetDoc> {
-  if (approverRole !== 'manager' && approverRole !== 'admin') {
-    throw ApiError.forbidden('Only managers or admins can approve timesheets');
+  if (approverRole !== "manager" && approverRole !== "admin") {
+    throw ApiError.forbidden("Only managers or admins can approve timesheets");
   }
 
   const ts = await repo.findById(id);
-  if (!ts) throw ApiError.notFound('Timesheet');
+  if (!ts) throw ApiError.notFound("Timesheet");
 
-  if (ts.status !== 'submitted') {
+  if (ts.status !== "submitted") {
     throw ApiError.badRequest(
       `Only submitted timesheets can be approved. Current status: '${ts.status}'.`,
     );
   }
 
   const updated = await repo.updateTimesheet(id, {
-    status:     'approved',
-    managerId:  approverId,
+    status: "approved",
+    managerId: approverId,
     approvedAt: new Date(),
   });
-  if (!updated) throw ApiError.notFound('Timesheet');
+  if (!updated) throw ApiError.notFound("Timesheet");
 
   return updated;
 }
@@ -345,25 +347,25 @@ export async function rejectTimesheet(
   rejectorRole: string,
   body: RejectTimesheetBody,
 ): Promise<TimesheetDoc> {
-  if (rejectorRole !== 'manager' && rejectorRole !== 'admin') {
-    throw ApiError.forbidden('Only managers or admins can reject timesheets');
+  if (rejectorRole !== "manager" && rejectorRole !== "admin") {
+    throw ApiError.forbidden("Only managers or admins can reject timesheets");
   }
 
   const ts = await repo.findById(id);
-  if (!ts) throw ApiError.notFound('Timesheet');
+  if (!ts) throw ApiError.notFound("Timesheet");
 
-  if (ts.status !== 'submitted') {
+  if (ts.status !== "submitted") {
     throw ApiError.badRequest(
       `Only submitted timesheets can be rejected. Current status: '${ts.status}'.`,
     );
   }
 
   const updated = await repo.updateTimesheet(id, {
-    status:     'rejected',
-    notes:      body.reason,
+    status: "rejected",
+    notes: body.reason,
     rejectedAt: new Date(),
   });
-  if (!updated) throw ApiError.notFound('Timesheet');
+  if (!updated) throw ApiError.notFound("Timesheet");
 
   return updated;
 }
@@ -383,23 +385,23 @@ export async function bulkApproveTimesheets(
   approverId: string,
   approverRole: string,
 ): Promise<{ approved: string[]; skipped: string[] }> {
-  if (approverRole !== 'manager' && approverRole !== 'admin') {
-    throw ApiError.forbidden('Only managers or admins can approve timesheets');
+  if (approverRole !== "manager" && approverRole !== "admin") {
+    throw ApiError.forbidden("Only managers or admins can approve timesheets");
   }
 
   const approved: string[] = [];
-  const skipped:  string[] = [];
+  const skipped: string[] = [];
 
   await Promise.all(
     body.ids.map(async (id) => {
       const ts = await repo.findById(id);
-      if (!ts || ts.status !== 'submitted') {
+      if (!ts || ts.status !== "submitted") {
         skipped.push(id);
         return;
       }
       await repo.updateTimesheet(id, {
-        status:     'approved',
-        managerId:  approverId,
+        status: "approved",
+        managerId: approverId,
         approvedAt: new Date(),
       });
       approved.push(id);

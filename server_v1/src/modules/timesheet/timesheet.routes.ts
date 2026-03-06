@@ -19,11 +19,11 @@
  *   POST   /timesheets/:id/reject       manager/admin (svc check) — submitted → rejected
  */
 
-import { Router, type IRouter } from 'express';
-import { authenticate } from '@middlewares/auth.middleware';
-import { validate } from '@middlewares/validate.middleware';
-import { catchAsync } from '@utils/catchAsync';
-import * as ctrl from './timesheet.controller';
+import { Router, type IRouter } from "express";
+import { authenticate } from "@middlewares/auth.middleware";
+import { validate } from "@middlewares/validate.middleware";
+import { catchAsync } from "@utils/catchAsync";
+import * as ctrl from "./timesheet.controller";
 import {
   createTimesheetSchema,
   updateTimesheetSchema,
@@ -31,7 +31,7 @@ import {
   timesheetParamsSchema,
   rejectTimesheetSchema,
   bulkApproveSchema,
-} from './timesheet.validator';
+} from "./timesheet.validator";
 
 export const timesheetRouter: IRouter = Router();
 
@@ -40,49 +40,49 @@ timesheetRouter.use(authenticate);
 
 // POST /timesheets — create a new draft timesheet
 timesheetRouter.post(
-  '/',
+  "/",
   validate({ body: createTimesheetSchema }),
   catchAsync(ctrl.create),
 );
 
 // GET /timesheets — list timesheets (scoped by role)
 timesheetRouter.get(
-  '/',
+  "/",
   validate({ query: listTimesheetsQuerySchema }),
   catchAsync(ctrl.list),
 );
 
 // GET /timesheets/:id — get a single timesheet
 timesheetRouter.get(
-  '/:id',
+  "/:id",
   validate({ params: timesheetParamsSchema }),
   catchAsync(ctrl.getById),
 );
 
 // PATCH /timesheets/:id — update notes and/or entries (editable statuses only)
 timesheetRouter.patch(
-  '/:id',
+  "/:id",
   validate({ params: timesheetParamsSchema, body: updateTimesheetSchema }),
   catchAsync(ctrl.update),
 );
 
 // DELETE /timesheets/:id — hard-delete a draft timesheet
 timesheetRouter.delete(
-  '/:id',
+  "/:id",
   validate({ params: timesheetParamsSchema }),
   catchAsync(ctrl.remove),
 );
 
 // POST /timesheets/:id/submit — draft → submitted
 timesheetRouter.post(
-  '/:id/submit',
+  "/:id/submit",
   validate({ params: timesheetParamsSchema }),
   catchAsync(ctrl.submit),
 );
 
 // POST /timesheets/:id/recall — submitted → draft
 timesheetRouter.post(
-  '/:id/recall',
+  "/:id/recall",
   validate({ params: timesheetParamsSchema }),
   catchAsync(ctrl.recall),
 );
@@ -90,21 +90,21 @@ timesheetRouter.post(
 // POST /timesheets/bulk-approve — approve multiple submitted timesheets (manager/admin)
 // NOTE: registered before /:id/* routes so 'bulk-approve' is not parsed as :id
 timesheetRouter.post(
-  '/bulk-approve',
+  "/bulk-approve",
   validate({ body: bulkApproveSchema }),
   catchAsync(ctrl.bulkApprove),
 );
 
 // POST /timesheets/:id/approve — submitted → approved (manager/admin)
 timesheetRouter.post(
-  '/:id/approve',
+  "/:id/approve",
   validate({ params: timesheetParamsSchema }),
   catchAsync(ctrl.approve),
 );
 
 // POST /timesheets/:id/reject — submitted → rejected (manager/admin)
 timesheetRouter.post(
-  '/:id/reject',
+  "/:id/reject",
   validate({ params: timesheetParamsSchema, body: rejectTimesheetSchema }),
   catchAsync(ctrl.reject),
 );

@@ -11,11 +11,14 @@
  *   create / update / remove — write operations
  */
 
-import { Types } from 'mongoose';
-import { Timesheet } from '@models/index';
-import type { ITimesheet, TimesheetDocument } from '@models/index';
-import type { SortObject } from '@utils/pagination';
-import type { CreateTimesheetBody, ListTimesheetsQuery } from './timesheet.validator';
+import { Types } from "mongoose";
+import { Timesheet } from "@models/index";
+import type { ITimesheet, TimesheetDocument } from "@models/index";
+import type { SortObject } from "@utils/pagination";
+import type {
+  CreateTimesheetBody,
+  ListTimesheetsQuery,
+} from "./timesheet.validator";
 
 // ─── Read ──────────────────────────────────────────────────────────────────────
 
@@ -33,7 +36,9 @@ export async function findById(
  * Returns the hydrated Mongoose document for operations that need instance
  * methods or virtuals.
  */
-export async function findDocumentById(id: string): Promise<TimesheetDocument | null> {
+export async function findDocumentById(
+  id: string,
+): Promise<TimesheetDocument | null> {
   return Timesheet.findById(id) as Promise<TimesheetDocument | null>;
 }
 
@@ -54,8 +59,8 @@ export async function findByUserAndPeriod(
 // ─── List ──────────────────────────────────────────────────────────────────────
 
 export interface ListTimesheetsFilter {
-  userId?: string;   // if omitted + admin → all users
-  status?: ITimesheet['status'];
+  userId?: string; // if omitted + admin → all users
+  status?: ITimesheet["status"];
 }
 
 export interface ListTimesheetsResult {
@@ -74,8 +79,8 @@ export async function listTimesheets(
 ): Promise<ListTimesheetsResult> {
   const mongoFilter: Record<string, unknown> = {};
 
-  if (filter.userId) mongoFilter['userId'] = new Types.ObjectId(filter.userId);
-  if (filter.status) mongoFilter['status'] = filter.status;
+  if (filter.userId) mongoFilter["userId"] = new Types.ObjectId(filter.userId);
+  if (filter.status) mongoFilter["status"] = filter.status;
 
   const skip = (query.page - 1) * query.limit;
 
@@ -98,11 +103,11 @@ export async function createTimesheet(
   data: CreateTimesheetBody,
 ): Promise<ITimesheet & { _id: Types.ObjectId }> {
   const doc = await Timesheet.create({
-    userId:      new Types.ObjectId(userId),
+    userId: new Types.ObjectId(userId),
     periodStart: new Date(data.periodStart),
-    periodEnd:   new Date(data.periodEnd),
-    notes:       data.notes ?? '',
-    status:      'draft',
+    periodEnd: new Date(data.periodEnd),
+    notes: data.notes ?? "",
+    status: "draft",
   });
   return doc.toObject();
 }
@@ -113,7 +118,17 @@ export async function createTimesheet(
  */
 export async function updateTimesheet(
   id: string,
-  patch: Partial<Pick<ITimesheet, 'notes' | 'entries' | 'totalHours' | 'status' | 'submittedAt' | 'recalledAt'>>,
+  patch: Partial<
+    Pick<
+      ITimesheet,
+      | "notes"
+      | "entries"
+      | "totalHours"
+      | "status"
+      | "submittedAt"
+      | "recalledAt"
+    >
+  >,
 ): Promise<(ITimesheet & { _id: Types.ObjectId }) | null> {
   return Timesheet.findByIdAndUpdate(
     id,
