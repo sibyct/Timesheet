@@ -1,0 +1,146 @@
+<!-- ─── Header ───────────────────────────────────────────────────────────────── -->
+<div class="page-header">
+  <h1 class="page-title">Users</h1>
+  <button mat-flat-button color="primary" (click)="openCreate()">
+    <mat-icon>person_add</mat-icon>
+    New user
+  </button>
+</div>
+
+<!-- ─── Filter bar ───────────────────────────────────────────────────────── -->
+<div class="filter-bar">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-icon matPrefix>search</mat-icon>
+    <mat-label>Search</mat-label>
+    <input matInput
+           [ngModel]="searchValue()"
+           (ngModelChange)="onSearchChange($event)"
+           placeholder="Name or email…" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="role-field">
+    <mat-label>Role</mat-label>
+    <mat-select [ngModel]="roleFilter()"
+                (ngModelChange)="roleFilter.set($event); onRoleChange()">
+      <mat-option value="">All roles</mat-option>
+      @for (r of roles; track r) {
+        <mat-option [value]="r">{{ r | titlecase }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!-- ─── Progress bar ─────────────────────────────────────────────────────── -->
+@if (loading() || saving()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<!-- ─── Table ────────────────────────────────────────────────────────────── -->
+<div class="ts-card table-wrap">
+  <div class="table-container">
+    <table mat-table [dataSource]="users()" class="users-table">
+
+      <!-- Avatar -->
+      <ng-container matColumnDef="avatar">
+        <th mat-header-cell *matHeaderCellDef class="col-avatar"></th>
+        <td mat-cell *matCellDef="let u" class="col-avatar">
+          <span class="avatar" [class.inactive]="!u.isActive">{{ initials(u) }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Name -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let u">
+          <span class="user-name">{{ u.firstName }} {{ u.lastName }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Email -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let u" class="text-muted">{{ u.email }}</td>
+      </ng-container>
+
+      <!-- Role -->
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Role</th>
+        <td mat-cell *matCellDef="let u">
+          <span class="badge" [ngClass]="'badge--' + (u.role === 'admin' ? 'error' : u.role === 'manager' ? 'info' : 'neutral')">
+            {{ formatRole(u.role) }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Department -->
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef>Department</th>
+        <td mat-cell *matCellDef="let u" class="text-muted">{{ u.department || '—' }}</td>
+      </ng-container>
+
+      <!-- Rate -->
+      <ng-container matColumnDef="rate">
+        <th mat-header-cell *matHeaderCellDef>Rate</th>
+        <td mat-cell *matCellDef="let u" class="text-muted col-rate">{{ formatRate(u.hourlyRate) }}</td>
+      </ng-container>
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let u">
+          <span class="badge" [ngClass]="u.isActive ? 'badge--success' : 'badge--neutral'">
+            {{ u.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Last login -->
+      <ng-container matColumnDef="lastLogin">
+        <th mat-header-cell *matHeaderCellDef>Last login</th>
+        <td mat-cell *matCellDef="let u" class="text-muted">{{ formatDate(u.lastLoginAt) }}</td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="col-actions"></th>
+        <td mat-cell *matCellDef="let u" class="col-actions">
+          <button mat-icon-button matTooltip="Edit" (click)="openEdit(u)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          @if (u.isActive) {
+            <button mat-icon-button
+                    matTooltip="Deactivate"
+                    class="deactivate-btn"
+                    (click)="confirmDeactivate(u)">
+              <mat-icon>person_off</mat-icon>
+            </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+          [class.row-inactive]="!row.isActive"></tr>
+
+    </table>
+  </div>
+
+  @if (!loading() && users().length === 0) {
+    <app-empty-state
+      icon="people"
+      title="No users found"
+      message="Create your first user or adjust the filters." />
+  }
+</div>
+
+<!-- ─── Paginator ─────────────────────────────────────────────────────────── -->
+@if (meta(); as m) {
+  @if (m.total > m.limit) {
+    <mat-paginator
+      [length]="m.total"
+      [pageSize]="m.limit"
+      [pageIndex]="m.page - 1"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPage($event)" />
+  }
+}

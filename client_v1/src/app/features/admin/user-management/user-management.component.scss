@@ -1,0 +1,75 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  .search-field { flex: 1; min-width: 220px; }
+  .role-field   { width: 180px; }
+}
+
+.table-wrap {
+  overflow: hidden;
+  padding: 0;
+}
+
+.table-container { overflow-x: auto; }
+
+.users-table {
+  width: 100%;
+  min-width: 760px;
+}
+
+// ── Columns ───────────────────────────────────────────────────────────────────
+
+.col-avatar {
+  width: 52px;
+  padding-left: 1rem !important;
+}
+
+.col-rate    { min-width: 80px; }
+.col-actions { width: 96px; text-align: right; padding-right: 0.5rem !important; }
+
+// ── Avatar chip ───────────────────────────────────────────────────────────────
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ts-primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+
+  &.inactive {
+    background: var(--ts-surface-alt);
+    color: var(--ts-text-muted);
+    border: 1px solid var(--ts-border);
+  }
+}
+
+// ── Row states ────────────────────────────────────────────────────────────────
+
+.row-inactive td { opacity: 0.55; }
+
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.text-muted { color: var(--ts-text-muted); font-size: 0.8125rem; }
+
+// ── Action buttons ────────────────────────────────────────────────────────────
+
+.deactivate-btn { color: var(--ts-error); }

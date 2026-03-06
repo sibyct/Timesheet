@@ -1,0 +1,145 @@
+<!-- ─── Header ───────────────────────────────────────────────────────────── -->
+<div class="page-header">
+  <h1 class="page-title">Projects</h1>
+  <button mat-flat-button color="primary" (click)="openCreate()">
+    <mat-icon>add</mat-icon>
+    New project
+  </button>
+</div>
+
+<!-- ─── Filter bar ───────────────────────────────────────────────────────── -->
+<div class="filter-bar">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-icon matPrefix>search</mat-icon>
+    <mat-label>Search</mat-label>
+    <input matInput
+           [ngModel]="searchValue()"
+           (ngModelChange)="onSearchChange($event)"
+           placeholder="Name, code or description…" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="status-field">
+    <mat-label>Status</mat-label>
+    <mat-select [ngModel]="statusFilter()"
+                (ngModelChange)="statusFilter.set($event); onStatusChange()">
+      <mat-option value="">All statuses</mat-option>
+      @for (s of statuses; track s) {
+        <mat-option [value]="s">{{ s | titlecase }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!-- ─── Progress bar ─────────────────────────────────────────────────────── -->
+@if (loading() || saving()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<!-- ─── Table ────────────────────────────────────────────────────────────── -->
+<div class="ts-card table-wrap">
+  <div class="table-container">
+    <table mat-table [dataSource]="projects()" class="projects-table">
+
+      <!-- Code -->
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef>Code</th>
+        <td mat-cell *matCellDef="let p">
+          <span class="project-code">{{ p.code }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Name -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let p">
+          <span class="project-name">{{ p.name }}</span>
+          @if (p.description) {
+            <span class="project-desc">{{ p.description }}</span>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let p">
+          <app-status-badge [status]="p.status" />
+        </td>
+      </ng-container>
+
+      <!-- Members -->
+      <ng-container matColumnDef="members">
+        <th mat-header-cell *matHeaderCellDef>Members</th>
+        <td mat-cell *matCellDef="let p" class="col-center">
+          <button mat-button class="members-btn"
+                  (click)="openMembers(p)"
+                  matTooltip="Manage members">
+            <mat-icon>group</mat-icon>
+            {{ p.members.length }}
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Budget -->
+      <ng-container matColumnDef="budget">
+        <th mat-header-cell *matHeaderCellDef>Budget</th>
+        <td mat-cell *matCellDef="let p" class="col-budget">
+          <span class="budget-spent">{{ formatBudget(p.spentBudget) }}</span>
+          <span class="budget-total text-muted">/ {{ formatBudget(p.budget) }}</span>
+          @if (p.budget > 0 && p.spentBudget > p.budget) {
+            <mat-icon class="over-budget-icon" matTooltip="Over budget">warning</mat-icon>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Dates -->
+      <ng-container matColumnDef="dates">
+        <th mat-header-cell *matHeaderCellDef>Dates</th>
+        <td mat-cell *matCellDef="let p" class="text-muted col-dates">
+          {{ formatDate(p.startDate) }} – {{ formatDate(p.endDate) }}
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="col-actions"></th>
+        <td mat-cell *matCellDef="let p" class="col-actions">
+          <button mat-icon-button
+                  matTooltip="Edit"
+                  (click)="openEdit(p)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button
+                  matTooltip="Delete"
+                  class="delete-btn"
+                  (click)="confirmDelete(p)">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+  </div>
+
+  @if (!loading() && projects().length === 0) {
+    <app-empty-state
+      icon="folder_open"
+      title="No projects yet"
+      message="Create your first project to get started." />
+  }
+</div>
+
+<!-- ─── Paginator ─────────────────────────────────────────────────────────── -->
+@if (meta(); as m) {
+  @if (m.total > m.limit) {
+    <mat-paginator
+      [length]="m.total"
+      [pageSize]="m.limit"
+      [pageIndex]="m.page - 1"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPage($event)" />
+  }
+}

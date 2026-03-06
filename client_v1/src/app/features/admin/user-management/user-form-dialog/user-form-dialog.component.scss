@@ -1,0 +1,26 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+
+  mat-icon { color: var(--ts-primary); }
+}
+
+.form-content {
+  min-width: 480px;
+  padding-top: 0.5rem;
+}
+
+.full-width { width: 100%; }
+
+.row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+.rate-field { width: 180px; }
+
+mat-dialog-actions { padding: 0.75rem 1.5rem 1.25rem; }

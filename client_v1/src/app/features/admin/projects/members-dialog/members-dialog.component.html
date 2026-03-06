@@ -1,0 +1,53 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>group</mat-icon>
+  Members — {{ project()?.name }}
+  <span class="member-count">{{ memberIds().size }}</span>
+</h2>
+
+<mat-dialog-content class="members-content">
+
+  <!-- Search -->
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search users</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput
+           [ngModel]="searchQuery()"
+           (ngModelChange)="searchQuery.set($event)"
+           placeholder="Name or email…" />
+  </mat-form-field>
+
+  <!-- User list -->
+  @if (loadingUsers()) {
+    <div class="spinner-row">
+      <mat-spinner diameter="32" />
+    </div>
+  } @else {
+    <ul class="user-list">
+      @for (user of filteredUsers(); track user._id) {
+        <li class="user-row" [class.is-member]="isMember(user._id)">
+          <span class="avatar">{{ initials(user) }}</span>
+          <span class="user-info">
+            <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+            <span class="user-email">{{ user.email }}</span>
+          </span>
+          <button mat-icon-button
+                  class="toggle-btn"
+                  [class.btn-remove]="isMember(user._id)"
+                  [disabled]="saving()"
+                  (click)="toggleMember(user)"
+                  [matTooltip]="isMember(user._id) ? 'Remove from project' : 'Add to project'">
+            <mat-icon>{{ isMember(user._id) ? 'person_remove' : 'person_add' }}</mat-icon>
+          </button>
+        </li>
+      }
+      @if (filteredUsers().length === 0) {
+        <li class="empty-row">No users match your search.</li>
+      }
+    </ul>
+  }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Done</button>
+</mat-dialog-actions>

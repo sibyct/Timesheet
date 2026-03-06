@@ -1,0 +1,92 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>{{ isEdit ? 'edit' : 'person_add' }}</mat-icon>
+  {{ isEdit ? 'Edit User' : 'New User' }}
+</h2>
+
+<mat-dialog-content class="form-content">
+  <form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
+
+    <!-- Name row -->
+    <div class="row-2col">
+      <mat-form-field appearance="outline">
+        <mat-label>First name</mat-label>
+        <input matInput formControlName="firstName" />
+        @if (f['firstName'].errors?.['required']) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last name</mat-label>
+        <input matInput formControlName="lastName" />
+        @if (f['lastName'].errors?.['required']) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <mat-icon matPrefix>email</mat-icon>
+      <input matInput formControlName="email" autocomplete="off" />
+      @if (f['email'].errors?.['required']) {
+        <mat-error>Required</mat-error>
+      } @else if (f['email'].errors?.['email']) {
+        <mat-error>Invalid email address</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Password (create only) -->
+    @if (!isEdit) {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input matInput formControlName="password" type="password" autocomplete="new-password" />
+        @if (f['password'].errors?.['required']) {
+          <mat-error>Required</mat-error>
+        } @else if (f['password'].errors?.['minlength']) {
+          <mat-error>Minimum 8 characters</mat-error>
+        }
+      </mat-form-field>
+    }
+
+    <!-- Role + Department -->
+    <div class="row-2col">
+      <mat-form-field appearance="outline">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+          @for (r of roles; track r.value) {
+            <mat-option [value]="r.value">{{ r.label }}</mat-option>
+          }
+        </mat-select>
+        @if (f['role'].errors?.['required']) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Department</mat-label>
+        <input matInput formControlName="department" />
+      </mat-form-field>
+    </div>
+
+    <!-- Hourly rate -->
+    <mat-form-field appearance="outline" class="rate-field">
+      <mat-label>Hourly rate</mat-label>
+      <span matPrefix>$&nbsp;</span>
+      <input matInput formControlName="hourlyRate" type="number" min="0" step="0.01" />
+      @if (f['hourlyRate'].errors?.['min']) {
+        <mat-error>Must be 0 or more</mat-error>
+      }
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()">
+    {{ isEdit ? 'Save changes' : 'Create user' }}
+  </button>
+</mat-dialog-actions>

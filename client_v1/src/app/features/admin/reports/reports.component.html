@@ -1,0 +1,233 @@
+<!-- ─── Header ───────────────────────────────────────────────────────────────── -->
+<div class="page-header">
+  <h1 class="page-title">Reports</h1>
+</div>
+
+<!-- ─── Filter bar ───────────────────────────────────────────────────────── -->
+<div class="ts-card filter-card">
+  <div class="filter-row">
+
+    <mat-form-field appearance="outline" class="date-field">
+      <mat-label>From</mat-label>
+      <mat-icon matPrefix>event</mat-icon>
+      <input matInput type="date" [(ngModel)]="from" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="date-field">
+      <mat-label>To</mat-label>
+      <mat-icon matPrefix>event</mat-icon>
+      <input matInput type="date" [(ngModel)]="to" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-field">
+      <mat-label>Include</mat-label>
+      <mat-select [(ngModel)]="status">
+        @for (s of statuses; track s.value) {
+          <mat-option [value]="s.value">{{ s.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="runReport()" class="run-btn">
+      <mat-icon>play_arrow</mat-icon>
+      Run report
+    </button>
+
+  </div>
+</div>
+
+<!-- ─── Progress bar ─────────────────────────────────────────────────────── -->
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<!-- ─── Tabs ─────────────────────────────────────────────────────────────── -->
+<mat-tab-group animationDuration="150ms" class="report-tabs">
+
+  <!-- ══ Utilization tab ══════════════════════════════════════════════════════ -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">schedule</mat-icon>
+      Utilization
+    </ng-template>
+
+    <!-- Summary chips -->
+    @if (utilization().length > 0) {
+      <div class="summary-bar">
+        <div class="summary-chip">
+          <span class="chip-value">{{ fmtHours(utilizationTotals().totalHours) }}</span>
+          <span class="chip-label">Total hours</span>
+        </div>
+        <div class="summary-chip accent">
+          <span class="chip-value">{{ fmtHours(utilizationTotals().billableHours) }}</span>
+          <span class="chip-label">Billable</span>
+        </div>
+        <div class="summary-chip muted">
+          <span class="chip-value">{{ fmtHours(utilizationTotals().nonBillableHours) }}</span>
+          <span class="chip-label">Non-billable</span>
+        </div>
+        <div class="export-actions">
+          <button mat-stroked-button (click)="exportUtilization()" matTooltip="Download CSV">
+            <mat-icon>download</mat-icon>
+            Export CSV
+          </button>
+        </div>
+      </div>
+    }
+
+    <div class="ts-card table-wrap">
+      <div class="table-container">
+        <table mat-table [dataSource]="utilization()" class="report-table">
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Employee</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="row-name">{{ r.firstName }} {{ r.lastName }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let r" class="text-muted">{{ r.email }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalHours">
+            <th mat-header-cell *matHeaderCellDef class="col-num">Total hrs</th>
+            <td mat-cell *matCellDef="let r" class="col-num">
+              <strong>{{ fmtHours(r.totalHours) }}</strong>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="billableHours">
+            <th mat-header-cell *matHeaderCellDef class="col-num">Billable</th>
+            <td mat-cell *matCellDef="let r" class="col-num accent-text">
+              {{ fmtHours(r.billableHours) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="nonBillableHours">
+            <th mat-header-cell *matHeaderCellDef class="col-num">Non-billable</th>
+            <td mat-cell *matCellDef="let r" class="col-num text-muted">
+              {{ fmtHours(r.nonBillableHours) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="timesheetCount">
+            <th mat-header-cell *matHeaderCellDef class="col-num">Sheets</th>
+            <td mat-cell *matCellDef="let r" class="col-num text-muted">{{ r.timesheetCount }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="utilColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: utilColumns;"></tr>
+
+          <!-- Totals footer -->
+          @if (utilization().length > 0) {
+            <tr class="totals-row">
+              <td colspan="2" class="totals-label">Totals</td>
+              <td class="col-num"><strong>{{ fmtHours(utilizationTotals().totalHours) }}</strong></td>
+              <td class="col-num accent-text">{{ fmtHours(utilizationTotals().billableHours) }}</td>
+              <td class="col-num text-muted">{{ fmtHours(utilizationTotals().nonBillableHours) }}</td>
+              <td class="col-num"></td>
+            </tr>
+          }
+        </table>
+      </div>
+
+      @if (!loading() && utilization().length === 0) {
+        <app-empty-state
+          icon="schedule"
+          title="No data for this period"
+          message="Adjust the date range or status filter, then run the report." />
+      }
+    </div>
+  </mat-tab>
+
+  <!-- ══ Billing tab ══════════════════════════════════════════════════════════ -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">attach_money</mat-icon>
+      Billing
+    </ng-template>
+
+    <!-- Summary chips -->
+    @if (billing().length > 0) {
+      <div class="summary-bar">
+        <div class="summary-chip accent">
+          <span class="chip-value">{{ fmtHours(billingTotals().billableHours) }}</span>
+          <span class="chip-label">Billable hours</span>
+        </div>
+        <div class="summary-chip success">
+          <span class="chip-value">{{ fmtAmount(billingTotals().totalAmount) }}</span>
+          <span class="chip-label">Total revenue</span>
+        </div>
+        <div class="export-actions">
+          <button mat-stroked-button (click)="exportBilling()" matTooltip="Download CSV">
+            <mat-icon>download</mat-icon>
+            Export CSV
+          </button>
+        </div>
+      </div>
+    }
+
+    <div class="ts-card table-wrap">
+      <div class="table-container">
+        <table mat-table [dataSource]="billing()" class="report-table">
+
+          <ng-container matColumnDef="projectCode">
+            <th mat-header-cell *matHeaderCellDef>Code</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="project-code">{{ r.projectCode }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="projectName">
+            <th mat-header-cell *matHeaderCellDef>Project</th>
+            <td mat-cell *matCellDef="let r">
+              <span class="row-name">{{ r.projectName }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="billableHours">
+            <th mat-header-cell *matHeaderCellDef class="col-num">Billable hrs</th>
+            <td mat-cell *matCellDef="let r" class="col-num accent-text">
+              {{ fmtHours(r.billableHours) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalAmount">
+            <th mat-header-cell *matHeaderCellDef class="col-num">Revenue</th>
+            <td mat-cell *matCellDef="let r" class="col-num">
+              <strong>{{ fmtAmount(r.totalAmount) }}</strong>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="timesheetCount">
+            <th mat-header-cell *matHeaderCellDef class="col-num">Sheets</th>
+            <td mat-cell *matCellDef="let r" class="col-num text-muted">{{ r.timesheetCount }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="billColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: billColumns;"></tr>
+
+          <!-- Totals footer -->
+          @if (billing().length > 0) {
+            <tr class="totals-row">
+              <td colspan="2" class="totals-label">Totals</td>
+              <td class="col-num accent-text">{{ fmtHours(billingTotals().billableHours) }}</td>
+              <td class="col-num"><strong>{{ fmtAmount(billingTotals().totalAmount) }}</strong></td>
+              <td class="col-num"></td>
+            </tr>
+          }
+        </table>
+      </div>
+
+      @if (!loading() && billing().length === 0) {
+        <app-empty-state
+          icon="attach_money"
+          title="No billable data for this period"
+          message="Adjust the date range or status filter, then run the report." />
+      }
+    </div>
+  </mat-tab>
+
+</mat-tab-group>

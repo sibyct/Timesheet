@@ -31,8 +31,11 @@ export class SidebarComponent {
   ];
 
   readonly adminNavItems: NavItem[] = [
-    { label: 'Users',           icon: 'manage_accounts',      route: '/admin/users'     },
-    { label: 'Approvals',       icon: 'pending_actions',       route: '/admin/approvals' },
-    { label: 'Admin Timesheet', icon: 'admin_panel_settings',  route: '/admin/timesheet' },
+    { label: 'Dashboard',       icon: 'dashboard',             route: '/admin/dashboard'  },
+    { label: 'Users',           icon: 'manage_accounts',      route: '/admin/users'      },
+    { label: 'Projects',        icon: 'folder_open',           route: '/admin/projects'   },
+    { label: 'Approvals',       icon: 'pending_actions',       route: '/admin/approvals'  },
+    { label: 'Admin Timesheet', icon: 'admin_panel_settings',  route: '/admin/timesheet'  },
+    { label: 'Reports',         icon: 'bar_chart',             route: '/admin/reports'    },
   ];
 }

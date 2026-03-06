@@ -1,0 +1,89 @@
+// ─── Header ───────────────────────────────────────────────────────────────────
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+
+  .page-title { margin: 0; flex: 1; }
+}
+
+// ─── Filter bar ───────────────────────────────────────────────────────────────
+
+.filter-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.search-field { flex: 1; min-width: 200px; }
+.status-field { width: 160px; }
+
+// ─── Table card ───────────────────────────────────────────────────────────────
+
+.table-wrap { padding: 0; overflow: hidden; }
+.projects-table { width: 100%; }
+
+// ─── Cells ────────────────────────────────────────────────────────────────────
+
+.col-center  { text-align: center !important; }
+.col-actions { width: 100px; text-align: right !important; }
+.col-budget  { white-space: nowrap; }
+.col-dates   { white-space: nowrap; font-size: 0.8125rem; }
+
+.project-code {
+  font-family: monospace;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: var(--ts-surface-alt);
+  padding: 2px 6px;
+  border-radius: var(--ts-radius-sm);
+  color: var(--ts-primary);
+}
+
+.project-name {
+  display: block;
+  font-weight: 500;
+}
+
+.project-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--ts-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.members-btn {
+  font-size: 0.8125rem;
+  gap: 0.25rem;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+}
+
+// ─── Budget ───────────────────────────────────────────────────────────────────
+
+.budget-spent { font-weight: 600; font-size: 0.8125rem; }
+.budget-total { font-size: 0.8125rem; margin-left: 0.25rem; }
+
+.over-budget-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--ts-warning);
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+// ─── Misc ─────────────────────────────────────────────────────────────────────
+
+.text-muted { color: var(--ts-text-muted); }
+.delete-btn { color: var(--ts-text-muted); &:hover { color: var(--ts-error); } }
+
+mat-paginator {
+  border-top: 1px solid var(--ts-border);
+  background: transparent;
+}

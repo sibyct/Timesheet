@@ -26,6 +26,14 @@ export const routes: Routes = [
           import('./features/profile/profile.component').then((m) => m.ProfileComponent),
       },
       {
+        path: 'admin/dashboard',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/admin/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ),
+      },
+      {
         path: 'admin/users',
         canActivate: [adminGuard],
         loadComponent: () =>
@@ -47,6 +55,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/approval/approval.component').then(
             (m) => m.ApprovalComponent
+          ),
+      },
+      {
+        path: 'admin/projects',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/admin/projects/projects.component').then(
+            (m) => m.ProjectsComponent
+          ),
+      },
+      {
+        path: 'admin/reports',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/admin/reports/reports.component').then(
+            (m) => m.ReportsComponent
           ),
       },
     ],

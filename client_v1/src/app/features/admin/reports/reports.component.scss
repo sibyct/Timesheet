@@ -1,0 +1,125 @@
+.page-header {
+  margin-bottom: 1.25rem;
+}
+
+// ── Filter card ───────────────────────────────────────────────────────────────
+
+.filter-card {
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .date-field   { width: 180px; }
+  .status-field { width: 180px; }
+  .run-btn      { height: 56px; margin-top: -4px; }
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+
+.report-tabs {
+  margin-top: 0.5rem;
+}
+
+.tab-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+// ── Summary bar ───────────────────────────────────────────────────────────────
+
+.summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0 0.75rem;
+  flex-wrap: wrap;
+}
+
+.summary-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--ts-surface-alt);
+  border: 1px solid var(--ts-border);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  min-width: 110px;
+
+  &.accent  { border-color: var(--ts-accent);  background: #f0f9ff; }
+  &.success { border-color: #16a34a; background: #f0fdf4; }
+  &.muted   { opacity: 0.85; }
+
+  .chip-value {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--ts-primary);
+  }
+
+  &.accent  .chip-value { color: var(--ts-accent); }
+  &.success .chip-value { color: #16a34a; }
+
+  .chip-label {
+    font-size: 0.75rem;
+    color: var(--ts-text-muted);
+    margin-top: 2px;
+  }
+}
+
+.export-actions { margin-left: auto; }
+
+// ── Table ─────────────────────────────────────────────────────────────────────
+
+.table-wrap {
+  overflow: hidden;
+  padding: 0;
+}
+
+.table-container { overflow-x: auto; }
+
+.report-table { width: 100%; min-width: 520px; }
+
+.col-num {
+  text-align: right !important;
+  padding-right: 1.25rem !important;
+  min-width: 90px;
+}
+
+.row-name    { font-weight: 500; font-size: 0.875rem; }
+.text-muted  { color: var(--ts-text-muted); font-size: 0.8125rem; }
+.accent-text { color: var(--ts-accent); font-weight: 500; }
+
+.project-code {
+  font-family: monospace;
+  font-size: 0.8rem;
+  background: var(--ts-surface-alt);
+  border: 1px solid var(--ts-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--ts-primary);
+}
+
+// ── Totals footer row ─────────────────────────────────────────────────────────
+
+.totals-row {
+  td {
+    border-top: 2px solid var(--ts-border);
+    background: var(--ts-surface-alt);
+    font-size: 0.875rem;
+    padding: 0.625rem 0.75rem;
+  }
+
+  .totals-label {
+    font-weight: 600;
+    color: var(--ts-primary);
+    padding-left: 1.25rem;
+  }
+}

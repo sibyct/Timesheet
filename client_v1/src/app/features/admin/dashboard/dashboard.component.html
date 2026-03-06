@@ -1,0 +1,183 @@
+<!-- ─── Header ───────────────────────────────────────────────────────────────── -->
+<div class="page-header">
+  <h1 class="page-title">Dashboard</h1>
+  <button mat-icon-button matTooltip="Refresh" (click)="refresh()" [disabled]="loading()">
+    <mat-icon [class.spin]="loading()">refresh</mat-icon>
+  </button>
+</div>
+
+@if (loading() && !stats()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (stats(); as s) {
+
+  <!-- ─── Stat cards ──────────────────────────────────────────────────────── -->
+  <div class="stat-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon blue"><mat-icon>people</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-value">{{ s.users.active }}</span>
+        <span class="stat-label">Active users</span>
+        <span class="stat-sub">{{ s.users.total }} total</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon teal"><mat-icon>folder_open</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-value">{{ s.projects.active }}</span>
+        <span class="stat-label">Active projects</span>
+        @if (s.projects.overBudget > 0) {
+          <span class="stat-sub warn">{{ s.projects.overBudget }} over budget</span>
+        } @else {
+          <span class="stat-sub">All within budget</span>
+        }
+      </div>
+    </div>
+
+    <div class="stat-card" [class.card-alert]="s.approvals.pending > 0">
+      <div class="stat-icon" [class.orange]="s.approvals.pending > 0" [class.green]="s.approvals.pending === 0">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
+      <div class="stat-body">
+        <span class="stat-value">{{ s.approvals.pending }}</span>
+        <span class="stat-label">Pending approvals</span>
+        <span class="stat-sub">
+          {{ s.approvals.approvedThisMonth }} approved · {{ s.approvals.rejectedThisMonth }} rejected this month
+        </span>
+      </div>
+      @if (s.approvals.pending > 0) {
+        <a mat-icon-button routerLink="/admin/approvals" matTooltip="Go to approvals" class="card-link">
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      }
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon purple"><mat-icon>schedule</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-value">{{ fmtHours(s.hours.totalThisMonth) }}</span>
+        <span class="stat-label">Hours this month</span>
+        <span class="stat-sub">{{ fmtHours(s.hours.billableThisMonth) }} billable</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green"><mat-icon>attach_money</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-value">{{ fmtCurrency(s.revenue.thisMonth) }}</span>
+        <span class="stat-label">Revenue this month</span>
+        <span class="stat-sub">Approved billable × rate</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── Hours utilization bar ──────────────────────────────────────────── -->
+  @if (s.hours.totalThisMonth > 0) {
+    <div class="ts-card utilization-card">
+      <div class="util-header">
+        <span class="util-title">
+          <mat-icon>bar_chart</mat-icon>
+          Billable utilization — this month
+        </span>
+        <span class="util-pct">{{ billableRatio() }}%</span>
+      </div>
+      <div class="util-track">
+        <div class="util-fill" [style.width.%]="billableRatio()"></div>
+      </div>
+      <div class="util-labels">
+        <span>{{ fmtHours(s.hours.billableThisMonth) }} billable</span>
+        <span class="text-muted">{{ fmtHours(s.hours.totalThisMonth - s.hours.billableThisMonth) }} non-billable</span>
+      </div>
+    </div>
+  }
+
+  <!-- ─── Detail panels ──────────────────────────────────────────────────── -->
+  <div class="detail-grid">
+
+    <!-- Pending approvals panel -->
+    <div class="ts-card detail-panel">
+      <div class="panel-header">
+        <span class="panel-title">
+          <mat-icon>pending_actions</mat-icon>
+          Pending Approvals
+        </span>
+        <a mat-button routerLink="/admin/approvals" class="view-all-link">
+          View all <mat-icon>chevron_right</mat-icon>
+        </a>
+      </div>
+
+      @if (s.recentPending.length === 0) {
+        <div class="panel-empty">
+          <mat-icon>check_circle</mat-icon>
+          <span>All caught up! No pending approvals.</span>
+        </div>
+      } @else {
+        <ul class="item-list">
+          @for (item of s.recentPending; track item.timesheetId) {
+            <li class="item-row">
+              <span class="item-avatar">{{ item.userName.charAt(0) }}</span>
+              <span class="item-body">
+                <span class="item-name">{{ item.userName }}</span>
+                <span class="item-sub">{{ fmtPeriod(item.periodStart, item.periodEnd) }}</span>
+              </span>
+              <span class="item-right">
+                <span class="item-hours">{{ fmtHours(item.totalHours) }}</span>
+                <span class="item-date text-muted">{{ fmtDate(item.submittedAt) }}</span>
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Over-budget projects panel -->
+    <div class="ts-card detail-panel">
+      <div class="panel-header">
+        <span class="panel-title">
+          <mat-icon>warning</mat-icon>
+          Over Budget
+        </span>
+        <a mat-button routerLink="/admin/projects" class="view-all-link">
+          View all <mat-icon>chevron_right</mat-icon>
+        </a>
+      </div>
+
+      @if (s.overBudgetProjects.length === 0) {
+        <div class="panel-empty">
+          <mat-icon>verified</mat-icon>
+          <span>All projects are within budget.</span>
+        </div>
+      } @else {
+        <ul class="item-list">
+          @for (proj of s.overBudgetProjects; track proj.projectId) {
+            <li class="item-row">
+              <span class="project-code">{{ proj.projectCode }}</span>
+              <span class="item-body">
+                <span class="item-name">{{ proj.projectName }}</span>
+                <div class="budget-track">
+                  <div class="budget-fill" [style.width.%]="budgetPct(proj.budget, proj.spentBudget)"></div>
+                </div>
+                <span class="item-sub warn">
+                  {{ fmtCurrency(proj.spentBudget) }} / {{ fmtCurrency(proj.budget) }}
+                  (+{{ fmtCurrency(overBy(proj.budget, proj.spentBudget)) }})
+                </span>
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+  </div>
+
+} @else if (!loading()) {
+  <div class="load-error">
+    <mat-icon>error_outline</mat-icon>
+    <p>Could not load dashboard data.</p>
+    <button mat-stroked-button (click)="refresh()">Retry</button>
+  </div>
+}

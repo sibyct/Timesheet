@@ -15,6 +15,10 @@ import { reducers, metaReducers } from './store';
 import * as authEffects      from './store/auth/auth.effects';
 import * as approvalEffects  from './store/approval/approval.effects';
 import * as timesheetEffects from './store/timesheet/timesheet.effects';
+import * as projectEffects   from './store/project/project.effects';
+import * as userEffects      from './store/user/user.effects';
+import * as reportEffects     from './store/report/report.effects';
+import * as dashboardEffects  from './store/dashboard/dashboard.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,7 +33,7 @@ export const appConfig: ApplicationConfig = {
 
     // NgRx
     provideStore(reducers, { metaReducers }),
-    provideEffects(authEffects, approvalEffects, timesheetEffects),
+    provideEffects(authEffects, approvalEffects, timesheetEffects, projectEffects, userEffects, reportEffects, dashboardEffects),
     provideRouterStore(),
     provideStoreDevtools({
       maxAge: 25,

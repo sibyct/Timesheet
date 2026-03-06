@@ -13,9 +13,10 @@ import { Router, type IRouter, type Request, type Response } from 'express';
 import { authRouter }      from '@modules/auth/auth.routes';
 import { usersRouter }     from '@modules/user/user.routes';
 import { timesheetRouter } from '@modules/timesheet/timesheet.routes';
+import { projectsRouter }  from '@modules/project/project.routes';
+import { reportsRouter }   from '@modules/report/report.routes';
+import { dashboardRouter } from '@modules/dashboard/dashboard.routes';
 // import { approvalRouter }  from '@modules/approval/approval.routes';
-// import { projectsRouter }  from '@modules/project/project.routes';
-// import { reportsRouter }   from '@modules/reports/reports.routes';
 
 export const rootRouter: IRouter = Router();
 
@@ -28,6 +29,7 @@ rootRouter.get('/ping', (_req: Request, res: Response) => {
 rootRouter.use('/auth',      authRouter);
 rootRouter.use('/users',     usersRouter);
 rootRouter.use('/timesheets', timesheetRouter);
+rootRouter.use('/projects',  projectsRouter);
+rootRouter.use('/reports',   reportsRouter);
+rootRouter.use('/dashboard', dashboardRouter);
 // rootRouter.use('/approvals', approvalRouter);
-// rootRouter.use('/projects',  projectsRouter);
-// rootRouter.use('/reports',   reportsRouter);
