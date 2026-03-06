@@ -1,0 +1,33 @@
+.header-toolbar {
+  height: var(--ts-header-height);
+  background: white;
+  border-bottom: 1px solid var(--ts-border);
+  box-shadow: none;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.spacer { flex: 1; }
+
+.avatar-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ts-primary);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}

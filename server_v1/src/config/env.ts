@@ -6,14 +6,16 @@
  * Fails fast at startup if any required variable is missing or malformed.
  */
 
-import { z } from 'zod';
-import path from 'path';
+import { z } from "zod";
+import path from "path";
 
 // Load .env file only in non-production environments.
 // In production, environment variables are injected by the platform/runtime.
-if (process.env['NODE_ENV'] !== 'production') {
+if (process.env["NODE_ENV"] !== "production") {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  require('dotenv').config({ path: path.resolve(process.cwd(), '.env') });
+  (require("dotenv") as { config: (options: { path: string }) => void }).config(
+    { path: path.resolve(process.cwd(), ".env") },
+  );
 }
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
@@ -21,19 +23,19 @@ if (process.env['NODE_ENV'] !== 'production') {
 const envSchema = z.object({
   // Application
   NODE_ENV: z
-    .enum(['development', 'staging', 'test', 'production'])
-    .default('development'),
+    .enum(["development", "staging", "test", "production"])
+    .default("development"),
   PORT: z.coerce.number().int().positive().default(4001),
-  API_VERSION: z.string().default('v1'),
-  API_PREFIX: z.string().default('/api'),
+  API_VERSION: z.string().default("v1"),
+  API_PREFIX: z.string().default("/api"),
 
   // MongoDB
-  MONGO_URI: z.string().url('MONGO_URI must be a valid URI'),
+  MONGO_URI: z.string().url("MONGO_URI must be a valid URI"),
   MONGO_POOL_MAX: z.coerce.number().int().positive().default(50),
   MONGO_POOL_MIN: z.coerce.number().int().nonnegative().default(10),
 
   // Redis
-  REDIS_HOST: z.string().default('127.0.0.1'),
+  REDIS_HOST: z.string().default("127.0.0.1"),
   REDIS_PORT: z.coerce.number().int().positive().default(6379),
   REDIS_PASSWORD: z.string().optional(),
   REDIS_DB: z.coerce.number().int().nonnegative().default(0),
@@ -42,15 +44,15 @@ const envSchema = z.object({
   // JWT
   JWT_ACCESS_SECRET: z
     .string()
-    .min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),
+    .min(32, "JWT_ACCESS_SECRET must be at least 32 characters"),
   JWT_REFRESH_SECRET: z
     .string()
-    .min(32, 'JWT_REFRESH_SECRET must be at least 32 characters'),
-  JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
-  JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
+    .min(32, "JWT_REFRESH_SECRET must be at least 32 characters"),
+  JWT_ACCESS_EXPIRES_IN: z.string().default("15m"),
+  JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
 
   // CORS
-  CORS_ORIGINS: z.string().default('http://localhost:4200'),
+  CORS_ORIGINS: z.string().default("http://localhost:4200"),
 
   // Rate Limiting
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900_000),
@@ -62,8 +64,8 @@ const envSchema = z.object({
 
   // Logging
   LOG_LEVEL: z
-    .enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal'])
-    .default('info'),
+    .enum(["trace", "debug", "info", "warn", "error", "fatal"])
+    .default("info"),
 });
 
 // ─── Parse & Export ───────────────────────────────────────────────────────────
@@ -72,8 +74,8 @@ const _parsed = envSchema.safeParse(process.env);
 
 if (!_parsed.success) {
   const formatted = _parsed.error.issues
-    .map((i) => `  • ${i.path.join('.')}: ${i.message}`)
-    .join('\n');
+    .map((i) => `  • ${i.path.join(".")}: ${i.message}`)
+    .join("\n");
 
   // Use process.stderr directly — logger is not yet initialised at this point.
   process.stderr.write(
@@ -86,15 +88,15 @@ if (!_parsed.success) {
 export const env = _parsed.data;
 
 /** Derived helpers */
-export const isDev = env.NODE_ENV === 'development';
-export const isProd = env.NODE_ENV === 'production';
-export const isTest = env.NODE_ENV === 'test';
+export const isDev = env.NODE_ENV === "development";
+export const isProd = env.NODE_ENV === "production";
+export const isTest = env.NODE_ENV === "test";
 
 /**
  * Parses the CORS_ORIGINS env variable into an array of allowed origins.
  * Supports wildcard `*` as a single value.
  */
-export const corsOrigins: string[] = env.CORS_ORIGINS.split(',').map((o) =>
+export const corsOrigins: string[] = env.CORS_ORIGINS.split(",").map((o) =>
   o.trim(),
 );
 

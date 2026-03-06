@@ -10,7 +10,7 @@
  * - Separate Redis client for Bull/BullMQ queues (if added later)
  */
 
-import Redis, { RedisOptions } from "ioredis";
+import Redis, { type RedisOptions } from "ioredis";
 import { env } from "./env";
 import { createLogger } from "./logger";
 

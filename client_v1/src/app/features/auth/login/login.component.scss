@@ -1,0 +1,66 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(26,58,92,0.82) 0%, rgba(12,35,64,0.88) 100%),
+              url('/images/timesheet.jpg') center / cover no-repeat;
+  padding: 2rem 1rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 480px;
+  border-radius: var(--ts-radius-lg) !important;
+  box-shadow: var(--ts-shadow-md) !important;
+  overflow: hidden;
+}
+
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 2rem 1.5rem 1.25rem;
+  text-align: center;
+
+  .brand-icon {
+    font-size: 2.5rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    color: var(--ts-accent);
+  }
+
+  .brand-title {
+    margin: 0.25rem 0 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ts-primary);
+  }
+
+  .brand-sub {
+    margin: 0;
+    color: var(--ts-text-muted);
+    font-size: 0.8125rem;
+  }
+}
+
+mat-card-content {
+  padding: 2rem !important;
+}
+
+.full-width { width: 100%; }
+
+.submit-btn {
+  height: 44px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.login-error {
+  color: var(--ts-error);
+  font-size: 0.875rem;
+  margin: 0 0 0.75rem;
+}

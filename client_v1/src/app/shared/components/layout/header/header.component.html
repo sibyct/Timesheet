@@ -1,0 +1,19 @@
+<mat-toolbar class="header-toolbar">
+  <span class="spacer"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar-btn">
+    <span class="avatar">{{ initials }}</span>
+  </button>
+
+  <mat-menu #userMenu="matMenu" xPosition="before">
+    <button mat-menu-item routerLink="/profile">
+      <mat-icon>person_outline</mat-icon>
+      <span>Profile</span>
+    </button>
+    <mat-divider />
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Sign out</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

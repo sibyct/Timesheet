@@ -1,0 +1,36 @@
+<mat-sidenav-container class="shell-container">
+  <mat-sidenav mode="side" opened class="shell-sidenav">
+    <div class="brand-header">
+      <mat-icon class="brand-icon">schedule</mat-icon>
+      <span class="brand-name">Timesheet</span>
+    </div>
+
+    <mat-nav-list>
+      <span class="section-label">Main</span>
+      @for (item of navItems; track item.route) {
+        <a mat-list-item [routerLink]="item.route" routerLinkActive="nav-active">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+
+      @if (isAdmin) {
+        <mat-divider />
+        <span class="section-label">Admin</span>
+        @for (item of adminNavItems; track item.route) {
+          <a mat-list-item [routerLink]="item.route" routerLinkActive="nav-active">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.label }}</span>
+          </a>
+        }
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="shell-content">
+    <app-header />
+    <main class="page-content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
