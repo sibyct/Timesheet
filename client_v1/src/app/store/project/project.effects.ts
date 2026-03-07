@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ProjectService } from '../../core/services/project.service';
-import { UiActions } from '../ui/ui.actions';
+import { UiActions } from '@core/store/ui/ui.actions';
 import { ProjectActions } from './project.actions';
 
 // ── Load ──────────────────────────────────────────────────────────────────────
@@ -14,10 +14,16 @@ export const loadEffect = createEffect(
       ofType(ProjectActions.load),
       switchMap(({ params }) =>
         svc.list(params ?? {}).pipe(
-          map(({ data, meta }) => ProjectActions.loadSuccess({ projects: data, meta })),
-          catchError((err) => of(ProjectActions.loadFailure({
-            error: err?.error?.message ?? 'Failed to load projects.',
-          }))),
+          map(({ data, meta }) =>
+            ProjectActions.loadSuccess({ projects: data, meta }),
+          ),
+          catchError((err) =>
+            of(
+              ProjectActions.loadFailure({
+                error: err?.error?.message ?? 'Failed to load projects.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -33,9 +39,13 @@ export const createEffect_ = createEffect(
       exhaustMap(({ payload }) =>
         svc.create(payload).pipe(
           map((project) => ProjectActions.createSuccess({ project })),
-          catchError((err) => of(ProjectActions.createFailure({
-            error: err?.error?.message ?? 'Failed to create project.',
-          }))),
+          catchError((err) =>
+            of(
+              ProjectActions.createFailure({
+                error: err?.error?.message ?? 'Failed to create project.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -46,7 +56,12 @@ export const createSuccessEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
       ofType(ProjectActions.createSuccess),
-      map(() => UiActions.showNotification({ message: 'Project created.', kind: 'success' })),
+      map(() =>
+        UiActions.showNotification({
+          message: 'Project created.',
+          kind: 'success',
+        }),
+      ),
     ),
   { functional: true },
 );
@@ -60,9 +75,13 @@ export const updateEffect = createEffect(
       exhaustMap(({ id, payload }) =>
         svc.update(id, payload).pipe(
           map((project) => ProjectActions.updateSuccess({ project })),
-          catchError((err) => of(ProjectActions.updateFailure({
-            error: err?.error?.message ?? 'Failed to update project.',
-          }))),
+          catchError((err) =>
+            of(
+              ProjectActions.updateFailure({
+                error: err?.error?.message ?? 'Failed to update project.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -73,7 +92,12 @@ export const updateSuccessEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
       ofType(ProjectActions.updateSuccess),
-      map(() => UiActions.showNotification({ message: 'Project updated.', kind: 'success' })),
+      map(() =>
+        UiActions.showNotification({
+          message: 'Project updated.',
+          kind: 'success',
+        }),
+      ),
     ),
   { functional: true },
 );
@@ -87,9 +111,13 @@ export const deleteEffect = createEffect(
       exhaustMap(({ id }) =>
         svc.delete(id).pipe(
           map(() => ProjectActions.deleteSuccess({ id })),
-          catchError((err) => of(ProjectActions.deleteFailure({
-            error: err?.error?.message ?? 'Failed to delete project.',
-          }))),
+          catchError((err) =>
+            of(
+              ProjectActions.deleteFailure({
+                error: err?.error?.message ?? 'Failed to delete project.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -100,7 +128,12 @@ export const deleteSuccessEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
       ofType(ProjectActions.deleteSuccess),
-      map(() => UiActions.showNotification({ message: 'Project deleted.', kind: 'success' })),
+      map(() =>
+        UiActions.showNotification({
+          message: 'Project deleted.',
+          kind: 'success',
+        }),
+      ),
     ),
   { functional: true },
 );
@@ -114,9 +147,13 @@ export const addMemberEffect = createEffect(
       exhaustMap(({ projectId, userId }) =>
         svc.addMember(projectId, userId).pipe(
           map((project) => ProjectActions.addMemberSuccess({ project })),
-          catchError((err) => of(ProjectActions.addMemberFailure({
-            error: err?.error?.message ?? 'Failed to add member.',
-          }))),
+          catchError((err) =>
+            of(
+              ProjectActions.addMemberFailure({
+                error: err?.error?.message ?? 'Failed to add member.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -130,9 +167,13 @@ export const removeMemberEffect = createEffect(
       exhaustMap(({ projectId, userId }) =>
         svc.removeMember(projectId, userId).pipe(
           map((project) => ProjectActions.removeMemberSuccess({ project })),
-          catchError((err) => of(ProjectActions.removeMemberFailure({
-            error: err?.error?.message ?? 'Failed to remove member.',
-          }))),
+          catchError((err) =>
+            of(
+              ProjectActions.removeMemberFailure({
+                error: err?.error?.message ?? 'Failed to remove member.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -142,7 +183,10 @@ export const removeMemberEffect = createEffect(
 export const memberSuccessEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
-      ofType(ProjectActions.addMemberSuccess, ProjectActions.removeMemberSuccess),
+      ofType(
+        ProjectActions.addMemberSuccess,
+        ProjectActions.removeMemberSuccess,
+      ),
       map(({ project }) =>
         UiActions.showNotification({
           message: `Members updated for "${project.name}".`,
@@ -166,7 +210,9 @@ export const failureEffect = createEffect(
         ProjectActions.addMemberFailure,
         ProjectActions.removeMemberFailure,
       ),
-      map(({ error }) => UiActions.showNotification({ message: error, kind: 'error' })),
+      map(({ error }) =>
+        UiActions.showNotification({ message: error, kind: 'error' }),
+      ),
     ),
   { functional: true },
 );

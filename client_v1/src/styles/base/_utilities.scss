@@ -1,0 +1,183 @@
+// =============================================================================
+// BASE — Utilities
+// Global utility classes. Keep additions minimal — prefer component-scoped
+// styles for anything not truly reused across many components.
+// =============================================================================
+@use '../abstracts' as a;
+
+// ─── Card surface ─────────────────────────────────────────────────────────────
+.ts-card {
+  background:    white;
+  border:        1px solid var(--ts-border);
+  border-radius: var(--ts-radius-lg);
+  box-shadow:    var(--ts-shadow-sm);
+  padding:       1.5rem;
+}
+
+// ─── Badge ────────────────────────────────────────────────────────────────────
+.badge {
+  display:     inline-flex;
+  align-items: center;
+  gap:         4px;
+  padding:     2px 8px;
+  border-radius: var(--ts-radius-full, 9999px);
+  font-size:   0.75rem;
+  font-weight: map-get(a.$font-weights, 'medium');
+  line-height: 1.5;
+  white-space: nowrap;
+
+  &--success { background: a.$badge-success-bg; color: a.$badge-success-fg; }
+  &--warning { background: a.$badge-warning-bg; color: a.$badge-warning-fg; }
+  &--error   { background: a.$badge-error-bg;   color: a.$badge-error-fg;   }
+  &--info    { background: a.$badge-info-bg;    color: a.$badge-info-fg;    }
+  &--neutral { background: a.$badge-neutral-bg; color: a.$badge-neutral-fg; }
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+.empty-state {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  padding:         4rem 1rem;
+  text-align:      center;
+  color:           var(--ts-text-muted);
+  gap:             0.75rem;
+
+  mat-icon {
+    font-size: 3rem;
+    height:    3rem;
+    width:     3rem;
+    opacity:   0.35;
+  }
+
+  h3 {
+    margin:      0;
+    font-size:   1rem;
+    font-weight: map-get(a.$font-weights, 'medium');
+    color:       var(--ts-text);
+  }
+
+  p {
+    margin:    0;
+    font-size: 0.875rem;
+  }
+}
+
+// ─── Page loader (full-screen overlay) ───────────────────────────────────────
+.page-loader {
+  position:        fixed;
+  inset:           0;
+  display:         grid;
+  place-items:     center;
+  background:      rgb(255 255 255 / 75%);
+  z-index:         a.z('overlay');
+  backdrop-filter: blur(2px);
+}
+
+// ─── Table container ──────────────────────────────────────────────────────────
+.table-container {
+  overflow-x:    auto;
+  border-radius: var(--ts-radius-md);
+  border:        1px solid var(--ts-border);
+}
+
+// ─── Spacing utilities ────────────────────────────────────────────────────────
+// Pattern: .mt-{key}, .mb-{key}, .ml-{key}, .mr-{key}, .mx-{key}, .my-{key}, .m-{key}
+// Pattern: .pt-{key}, .pb-{key}, .pl-{key}, .pr-{key}, .px-{key}, .py-{key}, .p-{key}
+// Keys: 0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16
+@each $key, $val in a.$spacing {
+  .mt-#{$key} { margin-top:    $val !important; }
+  .mb-#{$key} { margin-bottom: $val !important; }
+  .ml-#{$key} { margin-left:   $val !important; }
+  .mr-#{$key} { margin-right:  $val !important; }
+  .mx-#{$key} { margin-left:   $val !important; margin-right:  $val !important; }
+  .my-#{$key} { margin-top:    $val !important; margin-bottom: $val !important; }
+  .m-#{$key}  { margin:        $val !important; }
+
+  .pt-#{$key} { padding-top:    $val !important; }
+  .pb-#{$key} { padding-bottom: $val !important; }
+  .pl-#{$key} { padding-left:   $val !important; }
+  .pr-#{$key} { padding-right:  $val !important; }
+  .px-#{$key} { padding-left:   $val !important; padding-right:  $val !important; }
+  .py-#{$key} { padding-top:    $val !important; padding-bottom: $val !important; }
+  .p-#{$key}  { padding:        $val !important; }
+}
+
+// ─── Flex utilities ───────────────────────────────────────────────────────────
+.flex          { display: flex; }
+.inline-flex   { display: inline-flex; }
+.flex-col      { flex-direction: column; }
+.flex-row      { flex-direction: row; }
+.flex-wrap     { flex-wrap: wrap; }
+.flex-nowrap   { flex-wrap: nowrap; }
+.flex-1        { flex: 1; }
+.flex-auto     { flex: auto; }
+.flex-none     { flex: none; }
+.flex-shrink-0 { flex-shrink: 0; }
+
+.items-start   { align-items: flex-start; }
+.items-center  { align-items: center; }
+.items-end     { align-items: flex-end; }
+.items-stretch { align-items: stretch; }
+
+.justify-start    { justify-content: flex-start; }
+.justify-center   { justify-content: center; }
+.justify-end      { justify-content: flex-end; }
+.justify-between  { justify-content: space-between; }
+.justify-around   { justify-content: space-around; }
+.justify-evenly   { justify-content: space-evenly; }
+
+.gap-1  { gap: a.spacing(1); }
+.gap-2  { gap: a.spacing(2); }
+.gap-3  { gap: a.spacing(3); }
+.gap-4  { gap: a.spacing(4); }
+.gap-6  { gap: a.spacing(6); }
+.gap-8  { gap: a.spacing(8); }
+
+// ─── Text utilities ───────────────────────────────────────────────────────────
+.text-left    { text-align: left; }
+.text-center  { text-align: center; }
+.text-right   { text-align: right; }
+
+.text-xs   { font-size: map-get(a.$font-sizes, 'xs');   }
+.text-sm   { font-size: map-get(a.$font-sizes, 'sm');   }
+.text-base { font-size: map-get(a.$font-sizes, 'base'); }
+.text-md   { font-size: map-get(a.$font-sizes, 'md');   }
+.text-lg   { font-size: map-get(a.$font-sizes, 'lg');   }
+
+.font-light    { font-weight: map-get(a.$font-weights, 'light');    }
+.font-regular  { font-weight: map-get(a.$font-weights, 'regular');  }
+.font-medium   { font-weight: map-get(a.$font-weights, 'medium');   }
+.font-semibold { font-weight: map-get(a.$font-weights, 'semibold'); }
+.font-bold     { font-weight: map-get(a.$font-weights, 'bold');     }
+
+.text-muted   { color: var(--ts-text-muted); }
+.text-primary { color: var(--ts-primary);    }
+.text-accent  { color: var(--ts-accent);     }
+.text-error   { color: var(--ts-error);      }
+.text-success { color: var(--ts-success);    }
+.text-warning { color: var(--ts-warning);    }
+
+.truncate {
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  white-space:   nowrap;
+}
+
+// ─── Display utilities ────────────────────────────────────────────────────────
+.block        { display: block;        }
+.inline-block { display: inline-block; }
+.hidden       { display: none;         }
+
+// ─── Width / height ───────────────────────────────────────────────────────────
+.w-full  { width: 100%;  }
+.h-full  { height: 100%; }
+.w-auto  { width: auto;  }
+.h-auto  { height: auto; }
+
+// ─── Overflow ─────────────────────────────────────────────────────────────────
+.overflow-hidden { overflow: hidden; }
+.overflow-auto   { overflow: auto;   }
+.overflow-x-auto { overflow-x: auto; }
+.overflow-y-auto { overflow-y: auto; }

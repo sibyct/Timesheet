@@ -1,0 +1,162 @@
+// =============================================================================
+// ABSTRACTS — Mixins
+// No CSS output until a mixin is @include'd.
+// =============================================================================
+@use 'sass:math';
+@use 'sass:map';
+@use 'sass:list';
+@use 'variables' as v;
+@use 'functions' as fn;
+
+// ─── Respond-to ───────────────────────────────────────────────────────────────
+// Wraps content in a named breakpoint media query.
+//
+// Usage:
+//   @include respond-to('md')         { … }   // min-width: 768px
+//   @include respond-to('lg', 'down') { … }   // max-width: 991.98px
+//   @include respond-to('sm', 'only') { … }   // 576px … 767.98px
+//
+@mixin respond-to($breakpoint, $direction: 'up') {
+  @if not map.has-key(v.$breakpoints, $breakpoint) {
+    @warn "Unknown breakpoint `#{$breakpoint}`. Available: #{map.keys(v.$breakpoints)}";
+  } @else {
+    $bp: map.get(v.$breakpoints, $breakpoint);
+
+    @if $direction == 'up' {
+      @media (min-width: #{$bp}) { @content; }
+
+    } @else if $direction == 'down' {
+      // Subtract 0.02px to avoid overlap with the 'up' query at the same key
+      @media (max-width: #{$bp - 0.02px}) { @content; }
+
+    } @else if $direction == 'only' {
+      $keys: map.keys(v.$breakpoints);
+      $idx:  list.index($keys, $breakpoint);
+
+      @if $idx < list.length($keys) {
+        $next-key: list.nth($keys, $idx + 1);
+        $next-bp:  map.get(v.$breakpoints, $next-key);
+        @media (min-width: #{$bp}) and (max-width: #{$next-bp - 0.02px}) { @content; }
+      } @else {
+        // Last breakpoint — treat 'only' as 'up'
+        @media (min-width: #{$bp}) { @content; }
+      }
+
+    } @else {
+      @warn "Unknown direction `#{$direction}`. Use 'up', 'down', or 'only'.";
+    }
+  }
+}
+
+// ─── Fluid type ───────────────────────────────────────────────────────────────
+// Scales font-size fluidly between $min-size and $max-size across a viewport
+// range, with hard clamps at both ends.
+//
+// Usage:
+//   @include fluid-type(14px, 18px)
+//   @include fluid-type(1rem, 1.5rem, 375px, 1440px)
+//
+@mixin fluid-type($min-size, $max-size, $min-width: 375px, $max-width: 1440px) {
+  $min-s: fn.strip-unit($min-size);
+  $max-s: fn.strip-unit($max-size);
+  $min-w: fn.strip-unit($min-width);
+  $max-w: fn.strip-unit($max-width);
+
+  $slope:     math.div($max-s - $min-s, $max-w - $min-w);
+  $intercept: $min-s - $slope * $min-w;
+  $slope-vw:  $slope * 100;
+
+  @if $intercept >= 0 {
+    font-size: clamp(#{$min-size}, #{$slope-vw}vw + #{$intercept}px, #{$max-size});
+  } @else {
+    font-size: clamp(#{$min-size}, #{$slope-vw}vw - #{math.abs($intercept)}px, #{$max-size});
+  }
+}
+
+// ─── Text truncation ──────────────────────────────────────────────────────────
+// Single-line ellipsis by default; pass $lines ≥ 2 for multi-line clamp.
+//
+// Usage:
+//   @include truncate          // single line
+//   @include truncate(3)       // 3-line clamp
+//
+@mixin truncate($lines: 1) {
+  @if $lines == 1 {
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    white-space:   nowrap;
+  } @else {
+    display:            -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow:           hidden;
+  }
+}
+
+// ─── Focus ring ───────────────────────────────────────────────────────────────
+// WCAG 2.4.11-compliant focus indicator.
+//
+// Usage:
+//   @include focus-ring
+//   @include focus-ring(var(--ts-error), 4px)
+//
+@mixin focus-ring($color: var(--ts-accent), $offset: 2px, $width: 2px) {
+  &:focus-visible {
+    outline:        #{$width} solid #{$color};
+    outline-offset: #{$offset};
+    border-radius:  inherit;
+  }
+}
+
+// ─── Elevation ────────────────────────────────────────────────────────────────
+// Applies a standardised box-shadow at level 0–5.
+//
+// Usage:
+//   @include elevation(2)
+//
+@mixin elevation($level: 1) {
+  $levels: (
+    0: none,
+    1: (0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px -1px rgb(0 0 0 / 10%)),
+    2: (0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%)),
+    3: (0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%)),
+    4: (0 20px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -6px rgb(0 0 0 / 10%)),
+    5: (0 25px 50px -12px rgb(0 0 0 / 25%)),
+  );
+
+  @if map.has-key($levels, $level) {
+    box-shadow: map.get($levels, $level);
+  } @else {
+    @warn "Unknown elevation level `#{$level}`. Use 0–5.";
+  }
+}
+
+// ─── Visually hidden (accessible off-screen) ─────────────────────────────────
+// Hides an element visually while keeping it accessible to screen readers.
+//
+// Usage:
+//   @include visually-hidden
+//
+@mixin visually-hidden {
+  position:   absolute;
+  width:      1px;
+  height:     1px;
+  padding:    0;
+  margin:    -1px;
+  overflow:   hidden;
+  clip:       rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ─── Card ─────────────────────────────────────────────────────────────────────
+// Shared card surface. Prefer the .ts-card utility class for HTML;
+// use this mixin when you need card appearance on a non-HTML-authored element.
+//
+@mixin card($padding: 1.5rem) {
+  background:    white;
+  border:        1px solid var(--ts-border);
+  border-radius: var(--ts-radius-lg);
+  box-shadow:    var(--ts-shadow-sm);
+  padding:       $padding;
+}

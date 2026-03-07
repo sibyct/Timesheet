@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LoginFormComponent } from '../../components/login-form/login-form.component';
 
 @Component({
-  selector: 'app-login',
+  selector: 'ts-login',
   standalone: true,
   imports: [MatCardModule, MatIconModule, LoginFormComponent],
   templateUrl: './login.component.html',

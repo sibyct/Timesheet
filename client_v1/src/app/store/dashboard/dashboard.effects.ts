@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { UiActions } from '../ui/ui.actions';
+import { UiActions } from '@core/store/ui/ui.actions';
 import { DashboardActions } from './dashboard.actions';
 
 export const loadEffect = createEffect(
@@ -13,9 +13,13 @@ export const loadEffect = createEffect(
       exhaustMap(() =>
         svc.getStats().pipe(
           map((stats) => DashboardActions.loadSuccess({ stats })),
-          catchError((err) => of(DashboardActions.loadFailure({
-            error: err?.error?.message ?? 'Failed to load dashboard.',
-          }))),
+          catchError((err) =>
+            of(
+              DashboardActions.loadFailure({
+                error: err?.error?.message ?? 'Failed to load dashboard.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -26,7 +30,9 @@ export const failureEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
       ofType(DashboardActions.loadFailure),
-      map(({ error }) => UiActions.showNotification({ message: error, kind: 'error' })),
+      map(({ error }) =>
+        UiActions.showNotification({ message: error, kind: 'error' }),
+      ),
     ),
   { functional: true },
 );

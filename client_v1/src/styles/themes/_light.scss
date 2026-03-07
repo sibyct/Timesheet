@@ -1,0 +1,72 @@
+// =============================================================================
+// THEMES — Light (default)
+// Bootstraps Angular Material M3 and defines the :root design token layer.
+// This file MUST be the first @use in main.scss so that mat.core() runs
+// before any component theme mixins.
+// =============================================================================
+@use '@angular/material' as mat;
+
+// ─── Angular Material core ────────────────────────────────────────────────────
+// Must be called exactly once, before any component themes.
+@include mat.core();
+
+// ─── Theme definition ─────────────────────────────────────────────────────────
+$_ts-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary:   mat.$azure-palette,
+    tertiary:  mat.$blue-palette,
+  ),
+  typography: (
+    brand-family: "'Inter', 'Roboto', sans-serif",
+    plain-family: "'Inter', 'Roboto', sans-serif",
+  ),
+  density: (scale: 0),
+));
+
+// ─── Apply theme to all components + root token layer ─────────────────────────
+:root {
+  // Angular Material component themes
+  @include mat.all-component-themes($_ts-theme);
+
+  // ── Color tokens ────────────────────────────────────────────────────────────
+  --ts-primary:      #1a3a5c;
+  --ts-accent:       #0ea5e9;
+  --ts-surface:      #f8fafc;
+  --ts-surface-alt:  #f1f5f9;
+  --ts-border:       #e2e8f0;
+  --ts-text:         #0f172a;
+  --ts-text-muted:   #64748b;
+  --ts-error:        #dc2626;
+  --ts-success:      #16a34a;
+  --ts-warning:      #d97706;
+  --ts-info:         #0ea5e9;
+
+  // ── Radius tokens ───────────────────────────────────────────────────────────
+  --ts-radius-none:  0;
+  --ts-radius-sm:    4px;
+  --ts-radius-md:    8px;
+  --ts-radius-lg:   12px;
+  --ts-radius-xl:   16px;
+  --ts-radius-full: 9999px;
+
+  // ── Shadow tokens ───────────────────────────────────────────────────────────
+  --ts-shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px -1px rgb(0 0 0 / 10%);
+  --ts-shadow-md:  0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%);
+  --ts-shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%);
+  --ts-shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -6px rgb(0 0 0 / 10%);
+
+  // ── Layout tokens ───────────────────────────────────────────────────────────
+  --ts-sidenav-width:     256px;
+  --ts-header-height:      64px;
+  --ts-content-max-width: 1440px;
+
+  // ── Transition tokens ───────────────────────────────────────────────────────
+  --ts-transition-fast: 150ms ease;
+  --ts-transition-base: 200ms ease;
+  --ts-transition-slow: 300ms ease;
+
+  // ── Overlay / backdrop ──────────────────────────────────────────────────────
+  --ts-overlay-bg:  rgb(0 0 0 / 50%);
+  --ts-scrim-bg:    rgb(0 0 0 / 32%);
+}

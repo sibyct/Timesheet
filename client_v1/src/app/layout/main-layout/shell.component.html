@@ -7,11 +7,11 @@
     [mode]="sidenavMode()"
     [opened]="sidenavOpen()"
   >
-    <app-sidebar />
+    <app-sidebar [isAdmin]="isAdmin()" />
   </mat-sidenav>
 
   <mat-sidenav-content class="shell-content">
-    <app-header />
+    <app-header (logout)="logOut()" (toggleSidenav)="toggleSidenav()" />
     <main class="page-content">
       <router-outlet />
     </main>

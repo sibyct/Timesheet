@@ -1,0 +1,90 @@
+// =============================================================================
+// THEMES — Dark
+// Overrides design tokens for dark mode. Supports two activation strategies:
+//
+//   1. System preference: @media (prefers-color-scheme: dark)
+//      — auto-activates when the OS is in dark mode and no explicit
+//        [data-theme] attribute has been set on <html>.
+//
+//   2. Explicit override: [data-theme="dark"] on <html>
+//      — activated by JavaScript (e.g. a theme toggle button).
+//      Set [data-theme="light"] to force-lock the light theme.
+// =============================================================================
+
+// ─── Token overrides ──────────────────────────────────────────────────────────
+// Defined as a mixin so we can include it in both selectors without repetition.
+@mixin _dark-tokens {
+  // Colors
+  --ts-primary:     #60a5fa;    // sky-400 — legible on dark bg
+  --ts-accent:      #38bdf8;    // sky-300
+  --ts-surface:     #0f172a;    // slate-900
+  --ts-surface-alt: #1e293b;    // slate-800
+  --ts-border:      #334155;    // slate-700
+  --ts-text:        #f8fafc;    // slate-50
+  --ts-text-muted:  #94a3b8;    // slate-400
+  --ts-error:       #f87171;    // red-400
+  --ts-success:     #4ade80;    // green-400
+  --ts-warning:     #fbbf24;    // amber-400
+  --ts-info:        #38bdf8;    // sky-300
+
+  // Shadows (lighter on dark bg)
+  --ts-shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 30%), 0 1px 2px -1px rgb(0 0 0 / 30%);
+  --ts-shadow-md:  0 4px 6px -1px rgb(0 0 0 / 30%), 0 2px 4px -2px rgb(0 0 0 / 30%);
+  --ts-shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 30%), 0 4px 6px -4px rgb(0 0 0 / 30%);
+  --ts-shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 30%), 0 8px 10px -6px rgb(0 0 0 / 30%);
+
+  // Overlay
+  --ts-overlay-bg: rgb(0 0 0 / 70%);
+  --ts-scrim-bg:   rgb(0 0 0 / 50%);
+}
+
+// ─── System preference (auto dark, unless light is forced) ────────────────────
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include _dark-tokens;
+  }
+}
+
+// ─── Explicit dark override ───────────────────────────────────────────────────
+:root[data-theme='dark'] {
+  @include _dark-tokens;
+}
+
+// ─── Surface & card adaptations ───────────────────────────────────────────────
+// Angular Material card and dialog surfaces need an explicit background
+// in dark mode because they default to white.
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    .ts-card,
+    .mat-mdc-card,
+    .mat-mdc-dialog-surface {
+      background-color: var(--ts-surface-alt);
+    }
+
+    .mat-mdc-table {
+      background: var(--ts-surface);
+    }
+
+    tr.mat-mdc-row,
+    tr.mat-mdc-header-row {
+      background: transparent;
+    }
+  }
+}
+
+:root[data-theme='dark'] {
+  .ts-card,
+  .mat-mdc-card,
+  .mat-mdc-dialog-surface {
+    background-color: var(--ts-surface-alt);
+  }
+
+  .mat-mdc-table {
+    background: var(--ts-surface);
+  }
+
+  tr.mat-mdc-row,
+  tr.mat-mdc-header-row {
+    background: transparent;
+  }
+}

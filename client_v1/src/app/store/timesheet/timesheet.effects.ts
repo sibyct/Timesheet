@@ -1,10 +1,16 @@
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, exhaustMap, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import {
+  catchError,
+  exhaustMap,
+  map,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { of } from 'rxjs';
 import { TimesheetService } from '../../core/services/timesheet.service';
-import { UiActions } from '../ui/ui.actions';
+import { UiActions } from '@core/store/ui/ui.actions';
 import { TimesheetActions } from './timesheet.actions';
 import { selectActiveTimesheet } from './timesheet.selectors';
 
@@ -16,11 +22,15 @@ export const loadMyTimesheetsEffect = createEffect(
       ofType(TimesheetActions.loadMyTimesheets),
       switchMap(() =>
         svc.list({ limit: 52, sortBy: 'periodStart', order: 'desc' }).pipe(
-          map(({ data }) => TimesheetActions.loadMyTimesheetsSuccess({ timesheets: data })),
+          map(({ data }) =>
+            TimesheetActions.loadMyTimesheetsSuccess({ timesheets: data }),
+          ),
           catchError((err) =>
-            of(TimesheetActions.loadMyTimesheetsFailure({
-              error: err?.error?.message ?? 'Failed to load timesheets.',
-            })),
+            of(
+              TimesheetActions.loadMyTimesheetsFailure({
+                error: err?.error?.message ?? 'Failed to load timesheets.',
+              }),
+            ),
           ),
         ),
       ),
@@ -37,13 +47,17 @@ export const loadForWeekEffect = createEffect(
       switchMap(({ periodStart }) =>
         svc.list({ limit: 1, sortBy: 'periodStart', order: 'desc' }).pipe(
           map(({ data }) => {
-            const match = data.find((t) => t.periodStart.slice(0, 10) === periodStart) ?? null;
+            const match =
+              data.find((t) => t.periodStart.slice(0, 10) === periodStart) ??
+              null;
             return TimesheetActions.loadForWeekSuccess({ timesheet: match });
           }),
           catchError((err) =>
-            of(TimesheetActions.loadForWeekFailure({
-              error: err?.error?.message ?? 'Failed to load timesheet.',
-            })),
+            of(
+              TimesheetActions.loadForWeekFailure({
+                error: err?.error?.message ?? 'Failed to load timesheet.',
+              }),
+            ),
           ),
         ),
       ),
@@ -61,9 +75,11 @@ export const createEffect_ = createEffect(
         svc.create(payload).pipe(
           map((timesheet) => TimesheetActions.createSuccess({ timesheet })),
           catchError((err) =>
-            of(TimesheetActions.createFailure({
-              error: err?.error?.message ?? 'Failed to create timesheet.',
-            })),
+            of(
+              TimesheetActions.createFailure({
+                error: err?.error?.message ?? 'Failed to create timesheet.',
+              }),
+            ),
           ),
         ),
       ),
@@ -75,7 +91,12 @@ export const createSuccessEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
       ofType(TimesheetActions.createSuccess),
-      map(() => UiActions.showNotification({ message: 'Timesheet created.', kind: 'success' })),
+      map(() =>
+        UiActions.showNotification({
+          message: 'Timesheet created.',
+          kind: 'success',
+        }),
+      ),
     ),
   { functional: true },
 );
@@ -88,11 +109,15 @@ export const saveEntriesEffect = createEffect(
       ofType(TimesheetActions.saveEntries),
       exhaustMap(({ id, entries, notes }) =>
         svc.update(id, { entries, notes }).pipe(
-          map((timesheet) => TimesheetActions.saveEntriesSuccess({ timesheet })),
+          map((timesheet) =>
+            TimesheetActions.saveEntriesSuccess({ timesheet }),
+          ),
           catchError((err) =>
-            of(TimesheetActions.saveEntriesFailure({
-              error: err?.error?.message ?? 'Failed to save entries.',
-            })),
+            of(
+              TimesheetActions.saveEntriesFailure({
+                error: err?.error?.message ?? 'Failed to save entries.',
+              }),
+            ),
           ),
         ),
       ),
@@ -104,7 +129,12 @@ export const saveEntriesSuccessEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
       ofType(TimesheetActions.saveEntriesSuccess),
-      map(() => UiActions.showNotification({ message: 'Changes saved.', kind: 'success' })),
+      map(() =>
+        UiActions.showNotification({
+          message: 'Changes saved.',
+          kind: 'success',
+        }),
+      ),
     ),
   { functional: true },
 );
@@ -112,8 +142,13 @@ export const saveEntriesSuccessEffect = createEffect(
 export const saveEntriesFailureEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
-      ofType(TimesheetActions.saveEntriesFailure, TimesheetActions.createFailure),
-      map(({ error }) => UiActions.showNotification({ message: error, kind: 'error' })),
+      ofType(
+        TimesheetActions.saveEntriesFailure,
+        TimesheetActions.createFailure,
+      ),
+      map(({ error }) =>
+        UiActions.showNotification({ message: error, kind: 'error' }),
+      ),
     ),
   { functional: true },
 );
@@ -128,9 +163,11 @@ export const submitEffect = createEffect(
         svc.submit(id).pipe(
           map((timesheet) => TimesheetActions.submitSuccess({ timesheet })),
           catchError((err) =>
-            of(TimesheetActions.submitFailure({
-              error: err?.error?.message ?? 'Failed to submit timesheet.',
-            })),
+            of(
+              TimesheetActions.submitFailure({
+                error: err?.error?.message ?? 'Failed to submit timesheet.',
+              }),
+            ),
           ),
         ),
       ),
@@ -143,7 +180,10 @@ export const submitSuccessEffect = createEffect(
     actions$.pipe(
       ofType(TimesheetActions.submitSuccess),
       map(() =>
-        UiActions.showNotification({ message: 'Timesheet submitted for approval.', kind: 'success' }),
+        UiActions.showNotification({
+          message: 'Timesheet submitted for approval.',
+          kind: 'success',
+        }),
       ),
     ),
   { functional: true },
@@ -153,7 +193,9 @@ export const submitFailureEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
       ofType(TimesheetActions.submitFailure),
-      map(({ error }) => UiActions.showNotification({ message: error, kind: 'error' })),
+      map(({ error }) =>
+        UiActions.showNotification({ message: error, kind: 'error' }),
+      ),
     ),
   { functional: true },
 );
@@ -168,9 +210,11 @@ export const recallEffect = createEffect(
         svc.recall(id).pipe(
           map((timesheet) => TimesheetActions.recallSuccess({ timesheet })),
           catchError((err) =>
-            of(TimesheetActions.recallFailure({
-              error: err?.error?.message ?? 'Failed to recall timesheet.',
-            })),
+            of(
+              TimesheetActions.recallFailure({
+                error: err?.error?.message ?? 'Failed to recall timesheet.',
+              }),
+            ),
           ),
         ),
       ),
@@ -183,7 +227,10 @@ export const recallSuccessEffect = createEffect(
     actions$.pipe(
       ofType(TimesheetActions.recallSuccess),
       map(() =>
-        UiActions.showNotification({ message: 'Timesheet recalled to draft.', kind: 'info' }),
+        UiActions.showNotification({
+          message: 'Timesheet recalled to draft.',
+          kind: 'info',
+        }),
       ),
     ),
   { functional: true },
@@ -193,7 +240,9 @@ export const recallFailureEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
       ofType(TimesheetActions.recallFailure),
-      map(({ error }) => UiActions.showNotification({ message: error, kind: 'error' })),
+      map(({ error }) =>
+        UiActions.showNotification({ message: error, kind: 'error' }),
+      ),
     ),
   { functional: true },
 );

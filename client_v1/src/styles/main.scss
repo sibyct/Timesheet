@@ -1,0 +1,39 @@
+// =============================================================================
+// MAIN — Global stylesheet entry point
+// 7-1 Architecture load order:
+//
+//   themes/light  → Angular Material bootstrap + light CSS custom properties
+//   themes/dark   → Dark-mode token overrides (system + explicit)
+//   base/reset    → Box-model normalisation
+//   base/typography → Font loading, type scale, label classes
+//   base/utilities  → Badges, cards, spacing, flex, text helpers
+//   base/accessibility → Focus ring, sr-only, reduced-motion, touch targets
+//   layout        → (structural partials added via layout/_index.scss)
+//   components    → (global Material overrides added via components/_index.scss)
+//   vendors       → (third-party overrides added via vendors/_index.scss)
+//
+// All @use statements must appear before any other rules (Sass requirement).
+// =============================================================================
+
+// ── 1. Themes ─────────────────────────────────────────────────────────────────
+// Light MUST come first — it calls mat.core() and sets all CSS custom props.
+@use 'themes/light';
+@use 'themes/dark';
+
+// ── 2. Base ───────────────────────────────────────────────────────────────────
+@use 'base/reset';
+@use 'base/typography';
+@use 'base/utilities';
+@use 'base/accessibility';
+
+// ── 3. Layout ─────────────────────────────────────────────────────────────────
+// Uncomment when layout partials are added to layout/_index.scss
+// @use 'layout';
+
+// ── 4. Components ─────────────────────────────────────────────────────────────
+// Uncomment when global component overrides are added to components/_index.scss
+// @use 'components';
+
+// ── 5. Vendors ────────────────────────────────────────────────────────────────
+// Uncomment when third-party overrides are added to vendors/_index.scss
+// @use 'vendors';

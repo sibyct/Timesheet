@@ -1,0 +1,88 @@
+// =============================================================================
+// ABSTRACTS — Placeholders
+// Silent classes extended with @extend.
+//
+// NOTE: With Dart Sass @use modules, extend a placeholder from the module that
+// directly @forward's this file:
+//   @use 'abstracts' as a;
+//   .my-class { @extend a.%card; }
+//
+// If that syntax is unsupported by your tooling version, @use this file
+// directly:
+//   @use 'styles/abstracts/placeholders' as p;
+//   .my-class { @extend p.%card; }
+// =============================================================================
+
+// ─── Clearfix ─────────────────────────────────────────────────────────────────
+%clearfix {
+  &::after {
+    content: '';
+    display: table;
+    clear:   both;
+  }
+}
+
+// ─── Visually hidden ──────────────────────────────────────────────────────────
+%visually-hidden {
+  position:    absolute;
+  width:       1px;
+  height:      1px;
+  padding:     0;
+  margin:     -1px;
+  overflow:    hidden;
+  clip:        rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ─── Reset list ───────────────────────────────────────────────────────────────
+%reset-list {
+  margin:     0;
+  padding:    0;
+  list-style: none;
+}
+
+// ─── Flex center ──────────────────────────────────────────────────────────────
+%flex-center {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+}
+
+// ─── Truncate (single line) ───────────────────────────────────────────────────
+%truncate {
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  white-space:   nowrap;
+}
+
+// ─── Card surface ─────────────────────────────────────────────────────────────
+%card {
+  background:    white;
+  border:        1px solid var(--ts-border);
+  border-radius: var(--ts-radius-lg);
+  box-shadow:    var(--ts-shadow-sm);
+  padding:       1.5rem;
+}
+
+// ─── Link reset ───────────────────────────────────────────────────────────────
+%link-reset {
+  color:           inherit;
+  text-decoration: none;
+  cursor:          pointer;
+
+  &:hover { text-decoration: none; }
+}
+
+// ─── Button reset ─────────────────────────────────────────────────────────────
+%button-reset {
+  appearance:  none;
+  border:      none;
+  background:  transparent;
+  padding:     0;
+  margin:      0;
+  cursor:      pointer;
+  font:        inherit;
+  line-height: inherit;
+  color:       inherit;
+}

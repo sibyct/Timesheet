@@ -1,20 +1,24 @@
 <mat-toolbar class="topbar">
   <!-- Hamburger — toggles sidenav (visible always, collapses on mobile) -->
-  <button mat-icon-button
-          class="menu-btn"
-          (click)="toggleSidenav()"
-          aria-label="Toggle navigation">
+  <button
+    mat-icon-button
+    class="menu-btn"
+    (click)="toggleSidenav.emit()"
+    aria-label="Toggle navigation"
+  >
     <mat-icon>menu</mat-icon>
   </button>
 
   <span class="spacer"></span>
 
   <!-- User avatar + dropdown menu -->
-  <button mat-icon-button
-          class="avatar-btn"
-          [matMenuTriggerFor]="userMenu"
-          [matTooltip]="fullName()"
-          aria-label="Open user menu">
+  <button
+    mat-icon-button
+    class="avatar-btn"
+    [matMenuTriggerFor]="userMenu"
+    [matTooltip]="fullName()"
+    aria-label="Open user menu"
+  >
     <span class="avatar">{{ initials() }}</span>
   </button>
 
@@ -33,7 +37,7 @@
 
     <mat-divider />
 
-    <button mat-menu-item class="logout-item" (click)="logout()">
+    <button mat-menu-item class="logout-item" (click)="logout.emit()">
       <mat-icon>logout</mat-icon>
       <span>Sign out</span>
     </button>

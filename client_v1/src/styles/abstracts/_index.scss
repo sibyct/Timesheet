@@ -1,0 +1,20 @@
+// =============================================================================
+// ABSTRACTS — Barrel
+// Single entry point for all abstract members.
+// No CSS output — pure SCSS variables, functions, mixins, and placeholders.
+//
+// Usage in component stylesheets (requires includePaths: ['src/styles']):
+//   @use 'abstracts' as a;
+//
+//   .my-component {
+//     font-size: a.rem(14);
+//     padding: a.spacing(4);
+//     @include a.respond-to('md') { … }
+//     @include a.focus-ring;
+//   }
+// =============================================================================
+
+@forward 'variables';
+@forward 'functions';
+@forward 'mixins';
+@forward 'placeholders';

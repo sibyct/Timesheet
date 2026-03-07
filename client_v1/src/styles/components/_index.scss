@@ -1,0 +1,12 @@
+// =============================================================================
+// COMPONENTS — Barrel
+// Global component style overrides and Angular Material customisations.
+// Prefer component-scoped SCSS for everything that is truly component-local.
+// This layer is for overrides that cannot be achieved via encapsulated styles
+// (e.g., Angular Material overlay panels rendered outside the component tree).
+//
+// Example:
+//   @forward 'mat-overrides';    // Angular Material global tweaks
+//   @forward 'data-table';       // shared table appearance
+//   @forward 'dialog';           // shared dialog chrome
+// =============================================================================

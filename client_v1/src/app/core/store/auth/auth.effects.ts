@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { AuthActions } from './auth.actions';
 
 const TOKEN_KEY = 'timesheet_token';

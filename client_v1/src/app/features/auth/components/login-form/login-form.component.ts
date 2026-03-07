@@ -12,11 +12,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AuthActions } from '../../store/auth.actions';
-import { selectAuthLoading, selectAuthError } from '../../store/auth.selectors';
+import { AuthActions } from '@core/store/auth/auth.actions';
+import {
+  selectAuthLoading,
+  selectAuthError,
+} from '@core/store/auth/auth.selectors';
 
 @Component({
-  selector: 'app-login-form',
+  selector: 'ts-login-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,

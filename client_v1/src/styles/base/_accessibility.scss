@@ -1,0 +1,101 @@
+// =============================================================================
+// BASE — Accessibility
+// Styles that support assistive technologies and user preferences.
+// =============================================================================
+@use '../abstracts' as a;
+
+// ─── Screen-reader only ───────────────────────────────────────────────────────
+// Hides element visually but keeps it in the accessibility tree.
+.sr-only {
+  @include a.visually-hidden;
+}
+
+// ─── Skip navigation link ─────────────────────────────────────────────────────
+// Allows keyboard users to bypass repetitive navigation blocks.
+.skip-nav {
+  @include a.visually-hidden;
+
+  &:focus-visible {
+    position:       fixed;
+    top:            1rem;
+    left:           1rem;
+    z-index:        a.z('toast');
+    width:          auto;
+    height:         auto;
+    padding:        0.75rem 1.25rem;
+    margin:         0;
+    overflow:       visible;
+    clip:           auto;
+    white-space:    normal;
+    border-width:   2px;
+
+    background:    var(--ts-primary);
+    color:         white;
+    font-weight:   map-get(a.$font-weights, 'semibold');
+    font-size:     0.875rem;
+    border-radius: var(--ts-radius-md);
+    border:        2px solid white;
+    outline:       none;
+    box-shadow:    var(--ts-shadow-md);
+    text-decoration: none;
+  }
+}
+
+// ─── Enhanced focus-visible ───────────────────────────────────────────────────
+// Apply a consistent focus ring to all interactive elements that receive
+// keyboard focus. Mouse-focused elements are excluded via :focus-visible.
+:focus-visible {
+  outline:        2px solid var(--ts-accent);
+  outline-offset: 2px;
+}
+
+// Remove default :focus outline — we rely on :focus-visible above
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Angular Material overrides — restore the focus ring on mat components
+.mat-mdc-button:focus-visible,
+.mat-mdc-icon-button:focus-visible,
+.mat-mdc-fab:focus-visible,
+.mat-mdc-mini-fab:focus-visible {
+  outline:        2px solid var(--ts-accent);
+  outline-offset: 2px;
+}
+
+// ─── Reduced motion ───────────────────────────────────────────────────────────
+// Respects the user's operating-system motion preference.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto !important;
+  }
+}
+
+// ─── High contrast mode ───────────────────────────────────────────────────────
+@media (forced-colors: active) {
+  .badge {
+    border: 1px solid ButtonText;
+  }
+
+  .ts-card {
+    border: 1px solid ButtonText;
+  }
+}
+
+// ─── Pointer coarse (touch targets) ──────────────────────────────────────────
+// Ensures touch targets meet the WCAG 2.5.5 minimum of 44×44px.
+@media (pointer: coarse) {
+  button,
+  [role='button'],
+  a,
+  input[type='checkbox'],
+  input[type='radio'] {
+    min-height: 44px;
+    min-width:  44px;
+  }
+}

@@ -1,0 +1,73 @@
+// =============================================================================
+// ABSTRACTS — Functions
+// Pure SCSS functions. No CSS output from this file.
+// =============================================================================
+@use 'sass:math';
+@use 'sass:map';
+@use 'variables' as v;
+
+// ─── Strip unit from a number ─────────────────────────────────────────────────
+// strip-unit(16px)  → 16
+// strip-unit(1.5em) → 1.5
+@function strip-unit($value) {
+  @return math.div($value, ($value * 0 + 1));
+}
+
+// ─── px → rem ─────────────────────────────────────────────────────────────────
+// rem(16)    → 1rem
+// rem(16px)  → 1rem
+// rem(24, 16) → 1.5rem
+@function rem($pixels, $base: 16) {
+  @if not math.is-unitless($pixels) {
+    $pixels: strip-unit($pixels);
+  }
+  @if not math.is-unitless($base) {
+    $base: strip-unit($base);
+  }
+  @return math.div($pixels, $base) * 1rem;
+}
+
+// ─── px → em (relative to a context font-size) ───────────────────────────────
+// em(16, 16)  → 1em
+// em(24, 16)  → 1.5em
+@function em($pixels, $context: 16) {
+  @if not math.is-unitless($pixels) {
+    $pixels: strip-unit($pixels);
+  }
+  @if not math.is-unitless($context) {
+    $context: strip-unit($context);
+  }
+  @return math.div($pixels, $context) * 1em;
+}
+
+// ─── Spacing lookup ───────────────────────────────────────────────────────────
+// spacing(4)  → 1rem
+// spacing(8)  → 2rem
+@function spacing($key) {
+  @if map.has-key(v.$spacing, $key) {
+    @return map.get(v.$spacing, $key);
+  }
+  @warn "Unknown spacing key `#{$key}`. Available keys: #{map.keys(v.$spacing)}";
+  @return null;
+}
+
+// ─── Z-index lookup ───────────────────────────────────────────────────────────
+// z('modal')    → 1300
+// z('dropdown') → 1000
+@function z($key) {
+  @if map.has-key(v.$z-index, $key) {
+    @return map.get(v.$z-index, $key);
+  }
+  @warn "Unknown z-index key `#{$key}`. Available keys: #{map.keys(v.$z-index)}";
+  @return null;
+}
+
+// ─── Breakpoint value lookup ──────────────────────────────────────────────────
+// bp('md')  → 768px
+@function bp($key) {
+  @if map.has-key(v.$breakpoints, $key) {
+    @return map.get(v.$breakpoints, $key);
+  }
+  @warn "Unknown breakpoint `#{$key}`. Available keys: #{map.keys(v.$breakpoints)}";
+  @return null;
+}

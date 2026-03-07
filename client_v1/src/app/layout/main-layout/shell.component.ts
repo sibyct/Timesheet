@@ -6,13 +6,20 @@ import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter, map, distinctUntilChanged, tap } from 'rxjs/operators';
-import { UiActions } from '../../../../store/ui/ui.actions';
+import { UiActions } from '@core/store/ui/ui.actions';
 import {
   selectSidenavOpen,
   selectNotification,
-} from '../../../../store/ui/ui.selectors';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { HeaderComponent } from '../header/header.component';
+} from '@core/store/ui/ui.selectors';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { HeaderComponent } from './components/header/header.component';
+import {
+  selectAuthUser,
+  selectIsAdmin,
+  selectUserFullName,
+  selectUserInitials,
+} from '@core/store/auth/auth.selectors';
+import { AuthActions } from '@core/store/auth/auth.actions';
 
 @Component({
   selector: 'app-shell',
@@ -31,6 +38,10 @@ export class ShellComponent implements OnInit {
     initialValue: true,
   });
 
+  readonly isAdmin = toSignal(this.store.select(selectIsAdmin), {
+    initialValue: false,
+  });
+
   /** 'side' on desktop, 'over' on mobile */
   readonly sidenavMode = toSignal(
     this.bp
@@ -38,6 +49,18 @@ export class ShellComponent implements OnInit {
       .pipe(map((r) => (r.matches ? 'over' : 'side') as 'side' | 'over')),
     { initialValue: 'side' as 'side' | 'over' },
   );
+
+  readonly initials = toSignal(this.store.select(selectUserInitials), {
+    initialValue: '',
+  });
+
+  readonly fullName = toSignal(this.store.select(selectUserFullName), {
+    initialValue: '',
+  });
+
+  readonly user = toSignal(this.store.select(selectAuthUser), {
+    initialValue: null,
+  });
 
   ngOnInit(): void {
     // On mobile, collapse sidenav when breakpoint becomes handset
@@ -75,6 +98,13 @@ export class ShellComponent implements OnInit {
       .subscribe();
   }
 
+  logOut(): void {
+    this.store.dispatch(AuthActions.logout());
+  }
+
+  toggleSidenav(): void {
+    this.store.dispatch(UiActions.toggleSidenav());
+  }
   onBackdropClick(): void {
     this.store.dispatch(UiActions.setSidenavOpen({ open: false }));
   }

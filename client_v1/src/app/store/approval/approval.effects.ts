@@ -1,11 +1,17 @@
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, exhaustMap, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import {
+  catchError,
+  exhaustMap,
+  map,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { of } from 'rxjs';
-import { TimesheetService } from '../../core/services/timesheet.service';
-import { UserService } from '../../core/services/user.service';
-import { UiActions } from '../ui/ui.actions';
+import { TimesheetService } from '@core/services/timesheet.service';
+import { UserService } from '@core/services/user.service';
+import { UiActions } from '@core/store/ui/ui.actions';
 import { ApprovalActions } from './approval.actions';
 import { selectSelected } from './approval.selectors';
 
@@ -16,16 +22,27 @@ export const loadQueueEffect = createEffect(
     actions$.pipe(
       ofType(ApprovalActions.loadQueue),
       switchMap(({ page = 1, limit = 20 }) =>
-        svc.list({ status: 'submitted', page, limit, sortBy: 'submittedAt', order: 'asc' }).pipe(
-          map(({ data, meta }) =>
-            ApprovalActions.loadQueueSuccess({ queue: data, meta }),
+        svc
+          .list({
+            status: 'submitted',
+            page,
+            limit,
+            sortBy: 'submittedAt',
+            order: 'asc',
+          })
+          .pipe(
+            map(({ data, meta }) =>
+              ApprovalActions.loadQueueSuccess({ queue: data, meta }),
+            ),
+            catchError((err) =>
+              of(
+                ApprovalActions.loadQueueFailure({
+                  error:
+                    err?.error?.message ?? 'Failed to load approval queue.',
+                }),
+              ),
+            ),
           ),
-          catchError((err) =>
-            of(ApprovalActions.loadQueueFailure({
-              error: err?.error?.message ?? 'Failed to load approval queue.',
-            })),
-          ),
-        ),
       ),
     ),
   { functional: true },
@@ -46,7 +63,9 @@ export const loadUsersForQueueEffect = createEffect(
             }
             return ApprovalActions.loadUsersSuccess({ userMap });
           }),
-          catchError(() => of(ApprovalActions.loadUsersSuccess({ userMap: {} }))),
+          catchError(() =>
+            of(ApprovalActions.loadUsersSuccess({ userMap: {} })),
+          ),
         ),
       ),
     ),
@@ -63,10 +82,12 @@ export const approveEffect = createEffect(
         svc.approve(id).pipe(
           map((timesheet) => ApprovalActions.approveSuccess({ timesheet })),
           catchError((err) =>
-            of(ApprovalActions.approveFailure({
-              id,
-              error: err?.error?.message ?? 'Failed to approve timesheet.',
-            })),
+            of(
+              ApprovalActions.approveFailure({
+                id,
+                error: err?.error?.message ?? 'Failed to approve timesheet.',
+              }),
+            ),
           ),
         ),
       ),
@@ -79,7 +100,10 @@ export const approveSuccessEffect = createEffect(
     actions$.pipe(
       ofType(ApprovalActions.approveSuccess),
       map(() =>
-        UiActions.showNotification({ message: 'Timesheet approved.', kind: 'success' }),
+        UiActions.showNotification({
+          message: 'Timesheet approved.',
+          kind: 'success',
+        }),
       ),
     ),
   { functional: true },
@@ -106,10 +130,12 @@ export const rejectEffect = createEffect(
         svc.reject(id, reason).pipe(
           map((timesheet) => ApprovalActions.rejectSuccess({ timesheet })),
           catchError((err) =>
-            of(ApprovalActions.rejectFailure({
-              id,
-              error: err?.error?.message ?? 'Failed to reject timesheet.',
-            })),
+            of(
+              ApprovalActions.rejectFailure({
+                id,
+                error: err?.error?.message ?? 'Failed to reject timesheet.',
+              }),
+            ),
           ),
         ),
       ),
@@ -122,7 +148,10 @@ export const rejectSuccessEffect = createEffect(
     actions$.pipe(
       ofType(ApprovalActions.rejectSuccess),
       map(() =>
-        UiActions.showNotification({ message: 'Timesheet rejected.', kind: 'warning' }),
+        UiActions.showNotification({
+          message: 'Timesheet rejected.',
+          kind: 'warning',
+        }),
       ),
     ),
   { functional: true },
@@ -142,7 +171,11 @@ export const rejectFailureEffect = createEffect(
 // ── Bulk approve ──────────────────────────────────────────────────────────────
 
 export const bulkApproveEffect = createEffect(
-  (actions$ = inject(Actions), svc = inject(TimesheetService), store = inject(Store)) =>
+  (
+    actions$ = inject(Actions),
+    svc = inject(TimesheetService),
+    store = inject(Store),
+  ) =>
     actions$.pipe(
       ofType(ApprovalActions.bulkApprove),
       withLatestFrom(store.select(selectSelected)),
@@ -152,9 +185,11 @@ export const bulkApproveEffect = createEffect(
             ApprovalActions.bulkApproveSuccess({ approved, skipped }),
           ),
           catchError((err) =>
-            of(ApprovalActions.bulkApproveFailure({
-              error: err?.error?.message ?? 'Bulk approve failed.',
-            })),
+            of(
+              ApprovalActions.bulkApproveFailure({
+                error: err?.error?.message ?? 'Bulk approve failed.',
+              }),
+            ),
           ),
         ),
       ),

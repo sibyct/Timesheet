@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ReportService } from '../../core/services/report.service';
-import { UiActions } from '../ui/ui.actions';
+import { UiActions } from '@core/store/ui/ui.actions';
 import { ReportActions } from './report.actions';
 
 // ── Utilization ───────────────────────────────────────────────────────────────
@@ -15,9 +15,14 @@ export const loadUtilizationEffect = createEffect(
       exhaustMap(({ filters }) =>
         svc.getUtilization(filters).pipe(
           map((rows) => ReportActions.loadUtilizationSuccess({ rows })),
-          catchError((err) => of(ReportActions.loadUtilizationFailure({
-            error: err?.error?.message ?? 'Failed to load utilization report.',
-          }))),
+          catchError((err) =>
+            of(
+              ReportActions.loadUtilizationFailure({
+                error:
+                  err?.error?.message ?? 'Failed to load utilization report.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -33,9 +38,13 @@ export const loadBillingEffect = createEffect(
       exhaustMap(({ filters }) =>
         svc.getBilling(filters).pipe(
           map((rows) => ReportActions.loadBillingSuccess({ rows })),
-          catchError((err) => of(ReportActions.loadBillingFailure({
-            error: err?.error?.message ?? 'Failed to load billing report.',
-          }))),
+          catchError((err) =>
+            of(
+              ReportActions.loadBillingFailure({
+                error: err?.error?.message ?? 'Failed to load billing report.',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -47,8 +56,13 @@ export const loadBillingEffect = createEffect(
 export const failureEffect = createEffect(
   (actions$ = inject(Actions)) =>
     actions$.pipe(
-      ofType(ReportActions.loadUtilizationFailure, ReportActions.loadBillingFailure),
-      map(({ error }) => UiActions.showNotification({ message: error, kind: 'error' })),
+      ofType(
+        ReportActions.loadUtilizationFailure,
+        ReportActions.loadBillingFailure,
+      ),
+      map(({ error }) =>
+        UiActions.showNotification({ message: error, kind: 'error' }),
+      ),
     ),
   { functional: true },
 );
