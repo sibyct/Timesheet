@@ -19,31 +19,31 @@
  *   res.status(200).json(ApiResponse.paginated(users, meta, 'Users retrieved'));
  */
 
-import type { Response } from 'express';
-import type { FieldError } from './ApiError';
+import type { Response } from "express";
+import type { FieldError } from "./ApiError";
 
 // ─── Envelope Types ───────────────────────────────────────────────────────────
 
 export interface PaginationMeta {
-  total:      number;
-  page:       number;
-  limit:      number;
+  total: number;
+  page: number;
+  limit: number;
   totalPages: number;
-  hasNext:    boolean;
-  hasPrev:    boolean;
+  hasNext: boolean;
+  hasPrev: boolean;
 }
 
 export interface SuccessEnvelope<T> {
   success: true;
   message: string;
-  data:    T;
+  data: T;
 }
 
 export interface PaginatedEnvelope<T> {
   success: true;
   message: string;
-  data:    T[];
-  meta:    PaginationMeta;
+  data: T[];
+  meta: PaginationMeta;
 }
 
 export interface ErrorEnvelope {
@@ -62,7 +62,7 @@ export class ApiResponse {
    * @param data    - Payload to include in `data`
    * @param message - Human-readable success message (default: "Success")
    */
-  static ok<T>(res: Response, data: T, message = 'Success'): Response {
+  static ok<T>(res: Response, data: T, message = "Success"): Response {
     return res.status(200).json({
       success: true,
       message,
@@ -77,7 +77,11 @@ export class ApiResponse {
    * @param data    - Newly created resource
    * @param message - Human-readable success message (default: "Created successfully")
    */
-  static created<T>(res: Response, data: T, message = 'Created successfully'): Response {
+  static created<T>(
+    res: Response,
+    data: T,
+    message = "Created successfully",
+  ): Response {
     return res.status(201).json({
       success: true,
       message,
@@ -107,7 +111,7 @@ export class ApiResponse {
     res: Response,
     data: T[],
     meta: PaginationMeta,
-    message = 'Retrieved successfully',
+    message = "Retrieved successfully",
   ): Response {
     return res.status(200).json({
       success: true,

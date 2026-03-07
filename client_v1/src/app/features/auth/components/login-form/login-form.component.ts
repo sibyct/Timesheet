@@ -1,37 +1,36 @@
-import { Component, OnDestroy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  inject,
+} from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AuthActions } from '../../../store/auth/auth.actions';
-import {
-  selectAuthLoading,
-  selectAuthError,
-} from '../../../store/auth/auth.selectors';
+import { AuthActions } from '../../store/auth.actions';
+import { selectAuthLoading, selectAuthError } from '../../store/auth.selectors';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-form',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  templateUrl: './login-form.component.html',
+  styleUrl: './login-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements OnDestroy {
+export class LoginFormComponent implements OnDestroy {
   private fb = inject(FormBuilder);
   private store = inject(Store);
 
@@ -42,7 +41,6 @@ export class LoginComponent implements OnDestroy {
 
   hidePassword = true;
 
-  // Store-driven reactive state as signals
   readonly loading = toSignal(this.store.select(selectAuthLoading), {
     initialValue: false,
   });
@@ -57,7 +55,6 @@ export class LoginComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Clear any lingering error when navigating away from the login page
     this.store.dispatch(AuthActions.clearError());
   }
 }

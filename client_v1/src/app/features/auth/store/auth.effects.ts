@@ -14,7 +14,9 @@ export const loginEffect = createEffect(
       ofType(AuthActions.login),
       exhaustMap(({ username, password }) =>
         authService.login(username, password).pipe(
-          map(({ accessToken, user }) => AuthActions.loginSuccess({ token: accessToken, user })),
+          map(({ accessToken, user }) =>
+            AuthActions.loginSuccess({ token: accessToken, user }),
+          ),
           catchError((err) =>
             of(
               AuthActions.loginFailure({
@@ -33,7 +35,6 @@ export const loginSuccessEffect = createEffect(
     actions$.pipe(
       ofType(AuthActions.loginSuccess),
       tap(({ token, user }) => {
-        debugger;
         localStorage.setItem(TOKEN_KEY, token);
         const destination =
           user.role === 'admin'

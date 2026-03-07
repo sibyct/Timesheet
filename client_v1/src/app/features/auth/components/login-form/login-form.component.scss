@@ -1,0 +1,14 @@
+.full-width { width: 100%; }
+
+.submit-btn {
+  height: 44px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.login-error {
+  color: var(--ts-error);
+  font-size: 0.875rem;
+  margin: 0 0 0.75rem;
+}
