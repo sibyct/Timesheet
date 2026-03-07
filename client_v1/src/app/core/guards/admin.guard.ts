@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, take } from 'rxjs/operators';
 import { selectAuthState } from '../store/auth/auth.selectors';
-
+import { ROUTES } from '@core/constants/routes-path.constants';
 export const adminGuard: CanActivateFn = () => {
   const store = inject(Store);
   const router = inject(Router);
@@ -12,7 +12,7 @@ export const adminGuard: CanActivateFn = () => {
     take(1),
     map(({ token, user }) => {
       if (token && user?.role === 'admin') return true;
-      return router.createUrlTree(['/timesheet']);
+      return router.createUrlTree([`/${ROUTES.TIMESHEET}`]);
     }),
   );
 };

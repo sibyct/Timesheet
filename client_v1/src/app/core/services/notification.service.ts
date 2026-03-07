@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { UiActions } from '../../store/ui/ui.actions';
-import type { NotificationType } from '../../store/ui/ui.state';
+import { UiActions } from '../store/ui/ui.actions';
+import type { NotificationType } from '../store/ui/ui.state';
 
 /**
  * Thin facade over the NgRx UI slice for dispatching notifications.

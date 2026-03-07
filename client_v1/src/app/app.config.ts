@@ -1,5 +1,6 @@
 import {
   ApplicationConfig,
+  ErrorHandler,
   isDevMode,
   provideZoneChangeDetection,
 } from '@angular/core';
@@ -11,7 +12,11 @@ import { provideEffects } from '@ngrx/effects';
 import { provideRouterStore } from '@ngrx/router-store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
+import { APP_CONFIG } from '@core/config/app/app.tokens';
+import { APP_CONSTANTS } from '@core/config/app/app.config';
+import { GlobalErrorHandler } from '@core/handlers/global-error.handler';
 import { routes } from './app.routes';
+import { baseUrlInterceptor } from '@core/interceptors/base-url.interceptor';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
 import { errorInterceptor } from '@core/interceptors/error.interceptor';
 import { loggingInterceptor } from '@core/interceptors/logging.interceptor';
@@ -31,8 +36,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(
       withInterceptors([
-        loggingInterceptor, // 1st — measures total round-trip time
-        authInterceptor, // 2nd — attaches Bearer token
+        baseUrlInterceptor, // 1st — prepends environment.baseUrl to relative URLs
+        loggingInterceptor, // 2nd — measures total round-trip time
+        authInterceptor, // 3rd — attaches Bearer token
         apiResponseInterceptor, // 3rd — unwraps { success, message, data } envelope
         errorInterceptor, // 4th — catches errors after response
       ]),
@@ -57,5 +63,7 @@ export const appConfig: ApplicationConfig = {
       autoPause: true,
       trace: false,
     }),
+    { provide: APP_CONFIG, useValue: APP_CONSTANTS },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
   ],
 };

@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
-
+import { ROUTES } from '@core/constants/routes-path.constants';
 export const routes: Routes = [
-  { path: '', redirectTo: 'timesheet', pathMatch: 'full' },
+  { path: '', redirectTo: ROUTES.TIMESHEET, pathMatch: 'full' },
   {
-    path: 'login',
+    path: ROUTES.LOGIN,
     loadComponent: () =>
       import('./features/auth/pages/login/login.component').then(
         (m) => m.LoginComponent,
@@ -20,73 +20,25 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'timesheet',
+        path: ROUTES.TIMESHEET,
         loadComponent: () =>
           import('./features/timesheet/timesheet.component').then(
             (m) => m.TimesheetComponent,
           ),
       },
       {
-        path: 'profile',
+        path: ROUTES.PROFILE,
         loadComponent: () =>
           import('./features/profile/profile.component').then(
             (m) => m.ProfileComponent,
           ),
       },
       {
-        path: 'admin',
+        path: ROUTES.ADMIN,
         canActivate: [adminGuard],
         loadChildren: () =>
           import('./features/admin/admin.routes').then((m) => m.adminRoutes),
       },
-      // {
-      //   path: 'admin/dashboard',
-      //   canActivate: [adminGuard],
-      //   loadComponent: () =>
-      //     import('./features/admin/dashboard/dashboard.component').then(
-      //       (m) => m.DashboardComponent,
-      //     ),
-      // },
-      // {
-      //   path: 'admin/users',
-      //   canActivate: [adminGuard],
-      //   loadComponent: () =>
-      //     import('./features/admin/user-management/user-management.component').then(
-      //       (m) => m.UserManagementComponent,
-      //     ),
-      // },
-      // {
-      //   path: 'admin/timesheet',
-      //   canActivate: [adminGuard],
-      //   loadComponent: () =>
-      //     import('./features/admin/timesheet/admin-timesheet.component').then(
-      //       (m) => m.AdminTimesheetComponent,
-      //     ),
-      // },
-      // {
-      //   path: 'admin/approvals',
-      //   canActivate: [adminGuard],
-      //   loadComponent: () =>
-      //     import('./features/admin/approval/approval.component').then(
-      //       (m) => m.ApprovalComponent,
-      //     ),
-      // },
-      // {
-      //   path: 'admin/projects',
-      //   canActivate: [adminGuard],
-      //   loadComponent: () =>
-      //     import('./features/admin/projects/projects.component').then(
-      //       (m) => m.ProjectsComponent,
-      //     ),
-      // },
-      // {
-      //   path: 'admin/reports',
-      //   canActivate: [adminGuard],
-      //   loadComponent: () =>
-      //     import('./features/admin/reports/reports.component').then(
-      //       (m) => m.ReportsComponent,
-      //     ),
-      // },
     ],
   },
   { path: '**', redirectTo: 'timesheet' },

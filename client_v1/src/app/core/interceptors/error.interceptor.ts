@@ -5,34 +5,16 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthActions } from '../store/auth/auth.actions';
 import { UiActions } from '../store/ui/ui.actions';
-
+import { HTTP_ERRORS } from '../constants/http-error.constants';
 /** Maps HTTP status codes to user-facing messages. */
 function friendlyMessage(err: HttpErrorResponse): string {
   // Prefer the server's own message when it's a known operational error
   const serverMsg: string | undefined = err.error?.message;
-
-  switch (err.status) {
-    case 0:
-      return 'No response from server. Check your connection.';
-    case 400:
-      return serverMsg ?? 'Bad request.';
-    case 401:
-      return serverMsg ?? 'Session expired. Please sign in again.';
-    case 403:
-      return serverMsg ?? 'You do not have permission to do that.';
-    case 404:
-      return serverMsg ?? 'The requested resource was not found.';
-    case 409:
-      return serverMsg ?? 'Conflict — this resource already exists.';
-    case 422:
-      return serverMsg ?? 'Validation failed. Check the form fields.';
-    case 429:
-      return 'Too many requests. Please wait a moment and try again.';
-    case 503:
-      return 'Service temporarily unavailable. Try again shortly.';
-    default:
-      return serverMsg ?? 'An unexpected error occurred.';
+  const errStatus = err.status as keyof typeof HTTP_ERRORS;
+  if (HTTP_ERRORS[errStatus]) {
+    return serverMsg ?? HTTP_ERRORS[errStatus];
   }
+  return serverMsg ?? 'An unexpected error occurred.';
 }
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
