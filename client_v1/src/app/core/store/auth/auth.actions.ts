@@ -15,6 +15,10 @@ export const AuthActions = createActionGroup({
     // Token refresh (bootstrap from localStorage)
     'Restore Session': props<{ token: string }>(),
 
+    // Silent token refresh (triggered by auth interceptor on 401)
+    'Refresh Token Success': props<{ token: string }>(),
+    'Refresh Token Failure': emptyProps(),
+
     // Clear transient error
     'Clear Error': emptyProps(),
   },

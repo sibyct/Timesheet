@@ -12,8 +12,14 @@ import { provideEffects } from '@ngrx/effects';
 import { provideRouterStore } from '@ngrx/router-store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
-import { APP_CONFIG } from '@core/config/app/app.tokens';
-import { APP_CONSTANTS } from '@core/config/app/app.config';
+import {
+  APP_CONFIG,
+  HTTP_CONFIG_TOKEN,
+  ENVIRONMENT,
+} from '@core/config/app.tokens';
+import { HTTP_CONFIG } from '@core/config/http.config';
+import { APP_CONSTANTS } from '@core/config/app.config';
+import { ENV } from '../environments/environment';
 import { GlobalErrorHandler } from '@core/handlers/global-error.handler';
 import { routes } from './app.routes';
 import { baseUrlInterceptor } from '@core/interceptors/base-url.interceptor';
@@ -64,6 +70,8 @@ export const appConfig: ApplicationConfig = {
       trace: false,
     }),
     { provide: APP_CONFIG, useValue: APP_CONSTANTS },
+    { provide: HTTP_CONFIG_TOKEN, useValue: HTTP_CONFIG },
+    { provide: ENVIRONMENT, useValue: ENV },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
   ],
 };

@@ -2,8 +2,7 @@ import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject, isDevMode } from '@angular/core';
 import { tap, finalize } from 'rxjs/operators';
 import { scopedLogger } from '@core/services/logger.service';
-import { HTTP_CONFIG } from '@core/config/http/http.config';
-
+import { HTTP_CONFIG_TOKEN } from '@core/config/app.tokens';
 // Singleton scoped logger — DI creates this once, not on every request.
 const LOGGER = scopedLogger('LoggingInterceptor');
 
@@ -12,16 +11,26 @@ const LOGGER = scopedLogger('LoggingInterceptor');
  * Slow-request warnings fire in all environments; debug traces are dev-only.
  */
 export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
-  const logger = inject(LOGGER);
+  const logger = inject(LOGGER).withContext('LoggingInterceptor');
+  const httpConfig = inject(HTTP_CONFIG_TOKEN);
   const started = Date.now();
   const tag = `[HTTP] ${req.method} ${req.urlWithParams}`;
+  let elapsed = 0;
+
+  if (isDevMode()) {
+    logger.debug(`${tag} — REQUEST`, {
+      method: req.method,
+      url: req.urlWithParams,
+      body: req.body,
+    });
+  }
 
   return next(req).pipe(
     tap({
       next: (event) => {
         if (!(event instanceof HttpResponse)) return;
 
-        const elapsed = Date.now() - started;
+        elapsed = Date.now() - started;
 
         if (isDevMode()) {
           logger.debug(`${tag} — ${event.status}`, {
@@ -30,15 +39,15 @@ export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
           });
         }
 
-        if (elapsed > HTTP_CONFIG.performance.slowThreshold) {
+        if (elapsed > httpConfig.performance.slowThreshold) {
           logger.warn(`${tag} — SLOW REQUEST`, {
             elapsed: `${elapsed}ms`,
-            threshold: `${HTTP_CONFIG.performance.slowThreshold}ms`,
+            threshold: `${httpConfig.performance.slowThreshold}ms`,
           });
         }
       },
       error: (err) => {
-        const elapsed = Date.now() - started;
+        elapsed = Date.now() - started;
 
         logger.error(`${tag} — ERROR`, {
           status: err?.status ?? 'unknown',
@@ -49,7 +58,6 @@ export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
     }),
     finalize(() => {
       if (isDevMode()) {
-        const elapsed = Date.now() - started;
         logger.debug(`${tag} — COMPLETE`, { elapsed: `${elapsed}ms` });
       }
     }),

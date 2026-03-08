@@ -41,6 +41,18 @@ export const authReducer = createReducer(
     token,
   })),
 
+  on(AuthActions.refreshTokenSuccess, (state, { token }): AuthState => ({
+    ...state,
+    token,
+  })),
+
+  on(AuthActions.refreshTokenFailure, (): AuthState => ({
+    user:    null,
+    token:   null,
+    loading: false,
+    error:   null,
+  })),
+
   on(AuthActions.clearError, (state): AuthState => ({
     ...state,
     error: null,

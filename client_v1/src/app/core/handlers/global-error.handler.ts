@@ -1,4 +1,10 @@
-import { ErrorHandler, Injectable, Injector, inject } from '@angular/core';
+import {
+  ErrorHandler,
+  Injectable,
+  Injector,
+  inject,
+  isDevMode,
+} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../services/notification.service';
 import { LoggerService } from '../services/logger.service';
@@ -25,47 +31,45 @@ import { LoggerService } from '../services/logger.service';
  */
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
-  // Lazy injector — prevents circular DI during bootstrap
   private readonly injector = inject(Injector);
 
-  private get logger(): LoggerService {
-    return this.injector.get(LoggerService).withContext('GlobalErrorHandler');
-  }
+  // ✅ Resolved once — not on every access
+  private readonly logger = this.injector
+    .get(LoggerService)
+    .withContext('GlobalErrorHandler');
 
-  private get notify(): NotificationService {
-    return this.injector.get(NotificationService);
-  }
+  private readonly notify = this.injector.get(NotificationService);
 
   handleError(error: unknown): void {
-    // ── HTTP errors ─────────────────────────────────────────────────────────
-    // Already handled (logged + notified) by errorInterceptor.
-    // Re-throwing here would double-notify the user.
-    if (error instanceof HttpErrorResponse) {
-      return;
-    }
+    // ✅ HTTP errors already handled by errorInterceptor
+    if (error instanceof HttpErrorResponse) return;
 
     const message = this.extractMessage(error);
 
-    // ── Logging ─────────────────────────────────────────────────────────────
-    // In dev: full stack trace; in prod: message only.
-    // Production hook → swap logger.error for an error-tracking call:
-    //   inject(ErrorTrackingService).capture(error);
-    this.logger.error(message, error);
+    // ✅ Structured payload with dev/prod distinction
+    this.logger.error(message, {
+      url: window.location.href,
+      timestamp: new Date().toISOString(),
+      ...(isDevMode() && {
+        stack: error instanceof Error ? error.stack : undefined,
+        raw: error instanceof Error ? error.message : error,
+      }),
+    });
 
-    // ── User notification ───────────────────────────────────────────────────
-    // Guard against NotificationService itself throwing (e.g. Store not ready)
+    // ✅ Notify user with fallback console log
     try {
       this.notify.error(message);
-    } catch {
-      // Swallow — avoids infinite loop if the notification system is broken
+    } catch (notifyError) {
+      console.error(
+        '[GlobalErrorHandler] NotificationService failed',
+        notifyError,
+      );
     }
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
-
   private extractMessage(error: unknown): string {
-    if (error instanceof Error) {
-      return error.message || 'An unexpected error occurred.';
+    if (error instanceof Error && error.message) {
+      return error.message;
     }
     if (typeof error === 'string' && error.length > 0) {
       return error;
